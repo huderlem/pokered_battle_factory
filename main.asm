@@ -221,7 +221,7 @@ MapHeaderPointers: ; 01ae (0:01ae)
 	dw Route24_h
 	dw Route25_h
 	dw RedsHouse1F_h
-	dw RedsHouse2F_h
+	dw BattleFactory_h
 	dw BluesHouse_h
 	dw OaksLab_h ;id=40
 	dw ViridianPokecenter_h
@@ -15046,8 +15046,8 @@ DungeonWarpData: ; 63d8 (1:63d8)
 ;	FLYWARP_DATA [Map Width][Y-pos][X-pos]
 ;	db Tileset_id
 FirstMapSpec: ; 6420 (1:6420)
-	db REDS_HOUSE_2F
-	FLYWARP_DATA REDS_HOUSE_2F_WIDTH,6,3
+	db BATTLE_FACTORY
+	FLYWARP_DATA BATTLE_FACTORY_WIDTH,6,3
 	db $04
 
 BattleCenterSpec1: ; 6428 (1:6428)
@@ -20374,7 +20374,7 @@ MapSongBanks: ; c04d (3:404d)
 	db (Music_PalletTown - $4000) / 3
 	db BANK(Music_PalletTown) ; RedsHouse1F
 	db (Music_PalletTown - $4000) / 3
-	db BANK(Music_PalletTown) ; RedsHouse2F
+	db BANK(Music_PalletTown) ; BattleFactory
 	db (Music_PalletTown - $4000) / 3
 	db BANK(Music_PalletTown) ; BluesHouse
 	db (Music_OaksLab - $4000) / 3
@@ -20834,7 +20834,7 @@ MapHeaderBanks: ; c23d (3:423d)
 	db BANK(Route24_h) ; ROUTE_24
 	db BANK(Route25_h) ; ROUTE_25
 	db BANK(RedsHouse1F_h)
-	db BANK(RedsHouse2F_h)
+	db BANK(BattleFactory_h)
 	db BANK(BluesHouse_h)
 	db BANK(OaksLab_h)
 	db BANK(ViridianPokecenter_h)
@@ -77074,7 +77074,7 @@ Func_46a01: ; 46a01 (11:6a01)
 	ret
 
 HiddenObjectMaps: ; 46a40 (11:6a40)
-	db REDS_HOUSE_2F
+	db BATTLE_FACTORY
 	db BLUES_HOUSE
 	db OAKS_LAB
 	db VIRIDIAN_POKECENTER
@@ -77163,7 +77163,7 @@ HiddenObjectMaps: ; 46a40 (11:6a40)
 
 HiddenObjectPointers: ; 46a96 (11:6a96)
 ; each of these pointers is for the corresponding map in HiddenObjectMaps
-	dw RedsHouse2FHiddenObjects
+	dw BattleFactoryHiddenObjects
 	dw BluesHouseHiddenObjects
 	dw OaksLabHiddenObjects
 	dw ViridianPokecenterHiddenObjects
@@ -77261,7 +77261,7 @@ TradeCenterHiddenObjects: ; 46b4d (11:6b4d)
 	db $04,$04,$d0 ; XXX, y, x
 	dbw Bank(Func_21825), Func_21825
 	db $FF
-RedsHouse2FHiddenObjects: ; 46b5a (11:6b5a)
+BattleFactoryHiddenObjects: ; 46b5a (11:6b5a)
 	db $01,$00,$04 ; XXX, y, x
 	dbw Bank(Func_5db86), Func_5db86
 	db $05,$03,$d0 ; XXX, y, x
@@ -94940,7 +94940,7 @@ VermilionMartBlocks: ; 5c000 (17:4000)
 	INCBIN "maps/vermilionmart.blk"
 
 CopycatsHouseF2Blocks: ; 5c010 (17:4010)
-RedsHouse2FBlocks: ; 0x5c010 16?
+BattleFactoryBlocks: ; 0x5c010 16?
 	INCBIN "maps/redshouse2f.blk"
 
 MuseumF1Blocks: ; 5c020 (17:4020)
@@ -94966,39 +94966,127 @@ ViridianForestEntranceBlocks: ; 5c090 (17:4090)
 ViridianForestexitBlocks: ; 5c090 (17:4090)
 	INCBIN "maps/viridianforestexit.blk"
 
-RedsHouse2F_h: ; 5c0a4 (17:40a4)
+BattleFactory_h: ; 5c0a4 (17:40a4)
 	db $04 ; tileset
-	db REDS_HOUSE_2F_HEIGHT, REDS_HOUSE_2F_WIDTH ; dimensions
-	dw RedsHouse2FBlocks, RedsHouse2FTextPointers, RedsHouse2FScript
+	db BATTLE_FACTORY_HEIGHT, BATTLE_FACTORY_WIDTH ; dimensions
+	dw BattleFactoryBlocks, BattleFactoryTextPointers, BattleFactoryScript
 	db $00 ; no connections
-	dw RedsHouse2FObject
+	dw BattleFactoryObject
 
-RedsHouse2FScript: ; 5c0b0 (17:40b0)
-	call EnableAutoTextBoxDrawing
-	ld hl,RedsHouse2FScriptPointers
-	ld a,[W_REDSHOUSE2CURSCRIPT]
-	jp CallFunctionInTable
-
-RedsHouse2FScriptPointers: ; 5c0bc (17:40bc)
-	dw RedsHouse2FScript0
-	dw RedsHouse2FScript1
-
-RedsHouse2FScript0: ; 5c0c0 (17:40c0)
-	xor a
-	ld [H_CURRENTPRESSEDBUTTONS],a
-	ld a,8
-	ld [$D528],a
-	ld a,1
-	ld [W_REDSHOUSE2CURSCRIPT],a
+BattleFactoryScript: ; 5c0b0 (17:40b0)
 	ret
 
-RedsHouse2FScript1: ; 5c0ce (17:40ce)
-	ret
+BattleFactoryTextPointers: ; 5c0cf (17:40cf)
+	dw BattleFactoryText1
 
-RedsHouse2FTextPointers: ; 5c0cf (17:40cf)
+BattleFactoryText1: ; (17:656c)
+	db $08 ; asm
+	ld hl, BattleFactoryText2
+	call PrintText
+	call YesNoChoice
+	ld a, [$cc26]
+	and a
+	jr z, .saidYes
+	ld hl, BattleFactoryText4
+	call PrintText
+	jp TextScriptEnd
+.saidYes:
+	ld hl, BattleFactoryText3
+	call PrintText
+	call ClearParty
+	call Fill6MonChoices
+	call ShowFactoryMon
+	jp TextScriptEnd
+
+BattleFactoryText2:
+	TX_FAR _BattleFactoryText2
 	db "@"
 
-RedsHouse2FObject: ; 0x5c0d0 ?
+BattleFactoryText3:
+	TX_FAR _BattleFactoryText3
+	db "@"
+
+BattleFactoryText4:
+	TX_FAR _BattleFactoryText4
+	db "@"
+
+ClearParty:
+; clears all pokemon from party
+.clearloop
+	ld a, [W_NUMINPARTY]
+	cp $0
+	jr z, .doneClearing
+	xor a
+	ld [wWhichPokemon], a
+	ld [$cf95], a
+	call RemovePokemon
+	jr .clearloop
+.doneClearing
+	ret
+
+Fill6MonChoices:
+; places 6 random pokemon
+	ld a, 6
+	ld [W_NUMINBOX], a
+	ld b, a
+	ld hl, W_NUMINBOX + 1
+.fillLoop
+	call PickMon
+	ld [hli], a
+	dec b
+	jp nz, .fillLoop
+	ld a, $ff
+	ld [hli], a
+	ret
+	
+PickMon:
+; randomly chooses a mon
+; mon id stored in a
+	ld a, $a5
+	ret
+
+ShowFactoryMon: ; 216be (8:56be)
+	xor a
+	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
+	ld a,1
+	ld [$ffb7],a ; joypad state update flag
+	ld hl,$d730
+	set 6,[hl] ; turn off letter printing delay
+	xor a
+	ld [$cc35],a ; 0 means no item is currently being swapped
+	ld [$d12a],a
+	ld hl, W_NUMINBOX
+	ld a,[hl]
+	ld [$d12a],a ; [$d12a] = number of list entries
+	ld a,$0d ; list menu text box ID
+	ld [$d125],a
+	call DisplayTextBoxID ; draw the menu text box
+	call UpdateSprites ; move sprites
+	FuncCoord 4,2 ; coordinates of upper left corner of menu text box
+	ld hl,Coord
+	ld de,$090e ; height and width of menu text box
+	call UpdateSprites ; move sprites; possibly delete this line
+	ld a,1 ; max menu item ID is 1 if the list has less than 2 entries
+	ld [$cc37],a
+	ld a,[$d12a]
+	cp a,2 ; does the list have less than 2 entries?
+	jr c,.setMenuVariables
+	ld a,2 ; max menu item ID is 2 if the list has at least 2 entries
+.setMenuVariables
+	ld [wMaxMenuItem],a
+	ld a,4
+	ld [wTopMenuItemY],a
+	ld a,5
+	ld [wTopMenuItemX],a
+	ld a,%00000111 ; A button, B button, Select button
+	ld [wMenuWatchedKeys],a
+	ld c,10
+	call DelayFrames
+	call DisplayListMenuIDLoop
+	ret
+
+
+BattleFactoryObject: ; 0x5c0d0 ?
 	db $0A ; border tile
 
 	db 1 ; warps
@@ -95006,10 +95094,11 @@ RedsHouse2FObject: ; 0x5c0d0 ?
 
 	db 0 ; signs
 
-	db 0 ; people
+	db 1 ; people
+	db SPRITE_OAK, $2 + 4, $5 + 4, $ff, $d0, $1 ; person
 
 	; warp-to
-	EVENT_DISP REDS_HOUSE_2F_WIDTH, 1, 7
+	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
 
 Func_5c0dc: ; 5c0dc (17:40dc)
 	ld a, $4b
@@ -135438,6 +135527,17 @@ _UsedCutText: ; a8315 (2a:4315)
 	TX_RAM $cd6d
 	db $0, " hacked", $4f
 	db "away with CUT!", $58
+
+_BattleFactoryText2:
+	db $0, "Welcome to the", $4f
+	db "BATTLE FACTORY!", $57
+
+_BattleFactoryText3:
+	db $0, "Alright! Let's", $4f
+	db "go!", $57
+
+_BattleFactoryText4:
+	db $0, "Come back later!", $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
