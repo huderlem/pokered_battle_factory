@@ -10415,9 +10415,9 @@ GiveItem: ; 3e2e (0:3e2e)
 
 GivePokemon: ; 3e48 (0:3e48)
 	ld a, b
-	ld [$cf91], a
+	ld [$cf91], a ; pokemon id
 	ld a, c
-	ld [$d127], a
+	ld [$d127], a ; level
 	xor a
 	ld [$cc49], a
 	ld b, BANK(Func_4fda5)
@@ -15164,51 +15164,51 @@ Func_64ea: ; 64ea (1:64ea)
 	ret
 
 AskForMonNickname: ; 64eb (1:64eb)
-	call SaveScreenTilesToBuffer1
+;	call SaveScreenTilesToBuffer1
 	call Load16BitRegisters
-	push hl
-	ld a, [W_ISINBATTLE] ; $d057
-	dec a
-	ld hl, wTileMap
-	ld b, $4
-	ld c, $b
-	call z, ClearScreenArea ; only if in wild batle
-	ld a, [$cf91]
-	ld [$d11e], a
-	call GetMonName
-	ld hl, DoYouWantToNicknameText ; $6557
-	call PrintText
-	FuncCoord 14, 7 ; $c43a
-	ld hl, Coord
-	ld bc, $80f
-	ld a, $14
-	ld [$d125], a
-	call DisplayTextBoxID
-	pop hl
-	ld a, [wCurrentMenuItem] ; $cc26
-	and a
-	jr nz, .asm_654c
-	ld a, [$cfcb]
-	push af
-	xor a
-	ld [$cfcb], a
-	push hl
-	ld a, $2
-	ld [$d07d], a
-	call Func_6596
-	ld a, [W_ISINBATTLE] ; $d057
-	and a
-	jr nz, .asm_653e
-	call Func_3e08
-.asm_653e
-	call LoadScreenTilesFromBuffer1
-	pop hl
-	pop af
-	ld [$cfcb], a
-	ld a, [$cf4b]
-	cp $50
-	ret nz
-.asm_654c
+;	push hl
+;	ld a, [W_ISINBATTLE] ; $d057
+;	dec a
+;	ld hl, wTileMap
+;	ld b, $4
+;	ld c, $b
+;	call z, ClearScreenArea ; only if in wild batle
+;	ld a, [$cf91]
+;	ld [$d11e], a
+;	call GetMonName
+;	ld hl, DoYouWantToNicknameText ; $6557
+;	call PrintText
+;	FuncCoord 14, 7 ; $c43a
+;	ld hl, Coord
+;	ld bc, $80f
+;	ld a, $14
+;	ld [$d125], a
+;	call DisplayTextBoxID
+;	pop hl
+;	ld a, [wCurrentMenuItem] ; $cc26
+;	and a
+;	jr nz, .asm_654c
+;	ld a, [$cfcb]
+;	push af
+;	xor a
+;	ld [$cfcb], a
+;	push hl
+;	ld a, $2
+;	ld [$d07d], a
+;	call Func_6596
+;	ld a, [W_ISINBATTLE] ; $d057
+;	and a
+;	jr nz, .asm_653e
+;	call Func_3e08
+;.asm_653e
+;	call LoadScreenTilesFromBuffer1
+;	pop hl
+;	pop af
+;	ld [$cfcb], a
+;	ld a, [$cf4b]
+;	cp $50
+;	ret nz
+;.asm_654c
 	ld d, h
 	ld e, l
 	ld hl, $cd6d
@@ -94994,7 +94994,7 @@ BattleFactoryText1: ; (17:656c)
 	ld hl, BattleFactoryText3
 	call PrintText
 	call ClearParty
-	call Fill6MonChoices
+	call FillMonChoices
 	call ShowFactoryMon
 	jp TextScriptEnd
 
@@ -95024,25 +95024,41 @@ ClearParty:
 .doneClearing
 	ret
 
-Fill6MonChoices:
+FillMonChoices:
 ; places 6 random pokemon
-	ld a, 6
-	ld [W_NUMINBOX], a
-	ld b, a
-	ld hl, W_NUMINBOX + 1
+	ld b, 6 ; num mons to place
 .fillLoop
 	call PickMon
-	ld [hli], a
+	ld [$cf91], a
+	ld a, $32
+	ld [$d127], a
+	call FillMonData
 	dec b
 	jp nz, .fillLoop
-	ld a, $ff
-	ld [hli], a
 	ret
-	
+
 PickMon:
 ; randomly chooses a mon
 ; mon id stored in a
 	ld a, $a5
+	ret
+
+FillMonData:
+	push bc
+	call EnableAutoTextBoxDrawing
+	xor a
+	ld [$ccd3], a
+	xor a
+	ld [W_ENEMYBATTSTATUS3], a ; $d069
+	ld a, [$cf91]
+	ld [W_ENEMYMONID], a
+	ld hl, Func_3eb01
+	ld b, BANK(Func_3eb01)
+	call Bankswitch ; indirect jump to Func_3eb01 (3eb01 (f:6b01))
+	ld hl, Func_e7a4
+	ld b, BANK(Func_e7a4)
+	call Bankswitch ; indirect jump to Func_e7a4 (e7a4 (3:67a4))
+	pop bc
 	ret
 
 ShowFactoryMon: ; 216be (8:56be)
@@ -95082,7 +95098,42 @@ ShowFactoryMon: ; 216be (8:56be)
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
+.pickMon
+	ld hl, W_NUMINBOX
+	ld a, l
+	ld [$cf8b], a
+	ld a, h
+	ld [$cf8c], a
+	xor a
+	ld [wCurrentMenuItem], a
+	ld [wListScrollOffset], a
 	call DisplayListMenuIDLoop
+	ret c ; player closed menu
+	ld a, [wCurrentMenuItem]
+	ld b, a
+	ld a, [wListScrollOffset]
+	add b ; a = menuitem (0-based indexing)
+	ld [wWhichPokemon], a
+	call TakeFromFactory
+	ld a, [W_NUMINPARTY]
+	cp $3 ; num allowed for factory
+	jr nz, ShowFactoryMon
+	ret
+
+TakeFromFactory: ; 21618 (8:5618)
+	ld a, [wWhichPokemon] ; $cf92
+	ld hl, W_BOXMON1NAME
+	call GetPartyMonName
+	ld a, [$cf91]
+	call GetCryData
+	call PlaySoundWaitForCurrent
+	xor a
+	ld [$cf95], a
+	call Func_3a68
+	ld a, $1
+	ld [$cf95], a
+	call RemovePokemon
+	call WaitForSoundToFinish
 	ret
 
 
