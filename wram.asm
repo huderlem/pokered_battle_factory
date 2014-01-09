@@ -1079,7 +1079,7 @@ W_GAMEPROGRESSFLAGS: ; d5f0
 ; $c8 bytes
 	ds 0
 
-W_OAKSLABCURSCRIPT: ; d5f0
+W_CURSTREAK: ; d5f0 current win streak
 	ds 1
 W_PALLETTOWNCURSCRIPT: ; d5f1
 	ds 1

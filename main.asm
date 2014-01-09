@@ -40024,7 +40024,7 @@ OaksLabScript: ; 1cb0e (7:4b0e)
 	xor a
 	ld [$cc3c], a
 	ld hl, OaksLabScriptPointers
-	ld a, [W_OAKSLABCURSCRIPT]
+	ld a, [W_CURSTREAK]
 	jp CallFunctionInTable
 
 OaksLabScriptPointers: ; 1cb28 (7:4b28)
@@ -40063,7 +40063,7 @@ OaksLabScript0: ; 1cb4e (7:4b4e)
 	res 4, [hl]
 
 	ld a, $1
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript1: ; 1cb6e (7:4b6e)
@@ -40073,7 +40073,7 @@ OaksLabScript1: ; 1cb6e (7:4b6e)
 	call MoveSprite
 
 	ld a, $2
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OakEntryMovement: ; 1cb7e (7:4b7e)
@@ -40093,7 +40093,7 @@ OaksLabScript2: ; 1cb82 (7:4b82)
 	call Predef
 
 	ld a, $3
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript3: ; 1cba2 (7:4ba2)
@@ -40116,7 +40116,7 @@ OaksLabScript3: ; 1cba2 (7:4ba2)
 	call Func_34a6 ; face object
 
 	ld a, $4
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 PlayerEntryMovementRLE: ; 1cbcf (7:4bcf)
@@ -40141,7 +40141,7 @@ OaksLabScript4: ; 1cbd2 (7:4bd2)
 	call Func_2307
 
 	ld a, $5
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript5: ; 1cbfd (7:4bfd)
@@ -40168,7 +40168,7 @@ OaksLabScript5: ; 1cbfd (7:4bfd)
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $6
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript6: ; 1cc36 (7:4c36)
@@ -40198,7 +40198,7 @@ OaksLabScript6: ; 1cc36 (7:4c36)
 	ld [$d528], a
 
 	ld a, $7
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript7: ; 1cc72 (7:4c72)
@@ -40208,7 +40208,7 @@ OaksLabScript7: ; 1cc72 (7:4c72)
 	call Delay3
 
 	ld a, $6
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript8: ; 1cc80 (7:4c80)
@@ -40280,7 +40280,7 @@ OaksLabScript8: ; 1cc80 (7:4c80)
 	call MoveSprite
 
 	ld a, $9
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript9: ; 1cd00 (7:4d00)
@@ -40333,7 +40333,7 @@ OaksLabScript9: ; 1cd00 (7:4d00)
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $a
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript10: ; 1cd6d (7:4d6d)
@@ -40371,7 +40371,7 @@ OaksLabScript10: ; 1cd6d (7:4d6d)
 	call MoveSprite
 
 	ld a, $b
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript11: ; 1cdb9 (7:4db9)
@@ -40410,7 +40410,7 @@ OaksLabScript11: ; 1cdb9 (7:4db9)
 	ld a, $8
 	ld [$d528], a
 	ld a, $c
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript12: ; 1ce03 (7:4e03)
@@ -40433,7 +40433,7 @@ OaksLabScript12: ; 1ce03 (7:4e03)
 	set 3, [hl]
 
 	ld a, $d
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript13: ; 1ce32 (7:4e32)
@@ -40461,7 +40461,7 @@ OaksLabScript13: ; 1ce32 (7:4e32)
 	ld [$cc5b], a
 
 	ld a, $e
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 .RivalExitMovement
@@ -40479,7 +40479,7 @@ OaksLabScript14: ; 1ce6d (7:4e6d)
 	ld [wJoypadForbiddenButtonsMask], a
 	call Func_2307 ; reset to map music
 	ld a, $12
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	jr .done ; 0x1ce8a $23
 .asm_1ce8c
 	ld a, [$cf0f]
@@ -40535,7 +40535,7 @@ OaksLabScript15: ; 1ceb0 (7:4eb0)
 	call MoveSprite
 
 	ld a, $10
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript_1cefd ; 1cefd (7:4efd)
@@ -40629,7 +40629,7 @@ OaksLabScript16: ; 1cf12 (7:4f12)
 	call MoveSprite
 
 	ld a, $11
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript17: ; 1cfd4 (7:4fd4)
@@ -40655,7 +40655,7 @@ OaksLabScript17: ; 1cfd4 (7:4fd4)
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $12
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	ret
 
 OaksLabScript18: ; 1d009 (7:5009)
@@ -40950,7 +40950,7 @@ asm_1d1e5: ; 1d1e5 (7:51e5)
 	ld a, $fc
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $8
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 OaksLabMonChoiceEnd: ; 1d21f (7:521f)
 	jp TextScriptEnd
 
@@ -41034,7 +41034,7 @@ OaksLabText5: ; 1d248 (7:5248)
 	call PrintText
 	call OaksLabScript_1d00a
 	ld a, $f
-	ld [W_OAKSLABCURSCRIPT], a
+	ld [W_CURSTREAK], a
 	jr .asm_0f042 ; 0x1d2c6
 .asm_333a2 ; 0x1d2c8
 	ld hl, OaksLabAroundWorldText
@@ -94978,6 +94978,7 @@ BattleFactoryScript: ; 5c0b0 (17:40b0)
 
 BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryText1
+	dw BattleFactoryWinsText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -95013,6 +95014,10 @@ BattleFactoryText3:
 
 BattleFactoryText4:
 	TX_FAR _BattleFactoryText4
+	db "@"
+
+BattleFactoryWinsText:
+	TX_FAR _BattleFactoryWinsText
 	db "@"
 
 ClearParty:
@@ -95147,7 +95152,8 @@ BattleFactoryObject: ; 0x5c0d0 ?
 	db 1 ; warps
 	db 1, 7, 2, REDS_HOUSE_1F
 
-	db 0 ; signs
+	db 1 ; signs
+	db $0, $4, $2
 
 	db 1 ; people
 	db SPRITE_OAK, $2 + 4, $5 + 4, $ff, $d0, $1 ; person
@@ -135593,6 +135599,12 @@ _BattleFactoryText3:
 
 _BattleFactoryText4:
 	db $0, "Come back later!", $57
+
+_BattleFactoryWinsText:
+	db $0, "CURRENT WINNING", $4f
+	db "STREAK: @"
+	TX_NUM W_CURSTREAK, 1, 3
+	db $0, $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
