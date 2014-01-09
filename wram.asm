@@ -1081,12 +1081,12 @@ W_GAMEPROGRESSFLAGS: ; d5f0
 
 W_CURSTREAK: ; d5f0 current win streak
 	ds 1
-W_PALLETTOWNCURSCRIPT: ; d5f1
+W_BESTSTREAK: ; d5f1 best win streak
 	ds 1
 	ds 1
-W_BLUESHOUSECURSCRIPT: ; d5f3
+W_CURCLASS: ; d5f3 increments every time you beat 7 in a row
 	ds 1
-W_VIRIDIANCITYCURSCRIPT: ; d5f4
+W_CURTRAINER: ; d5f4 increments every time you beat a trainer
 	ds 1
 	ds 2
 W_PEWTERCITYCURSCRIPT: ; d5f7
@@ -1096,11 +1096,11 @@ W_ROUTE3CURSCRIPT: ; d5f8
 W_ROUTE4CURSCRIPT: ; d5f9
 	ds 1
 	ds 1
-W_VIRIDIANGYMCURSCRIPT: ; d5fb
+W_MON1: ; d5fb
 	ds 1
-W_PEWTERGYMCURSCRIPT: ; d5fc
+W_MON2: ; d5fc
 	ds 1
-W_CERULEANGYMCURSCRIPT: ; d5fd
+W_MON3: ; d5fd
 	ds 1
 W_VERMILIONGYMCURSCRIPT: ; d5fe
 	ds 1

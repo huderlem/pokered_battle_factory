@@ -36119,7 +36119,7 @@ PalletTownScript: ; 18e5b (6:4e5b)
 .next
 	call EnableAutoTextBoxDrawing
 	ld hl,PalletTownScriptPointers
-	ld a,[W_PALLETTOWNCURSCRIPT]
+	ld a,[W_BESTSTREAK]
 	jp CallFunctionInTable
 
 PalletTownScriptPointers: ; 18e73 (6:4e73)
@@ -36155,7 +36155,7 @@ PalletTownScript0: ; 18e81 (6:4e81)
 
 	; trigger the next script
 	ld a,1
-	ld [W_PALLETTOWNCURSCRIPT],a
+	ld [W_BESTSTREAK],a
 	ret
 
 PalletTownScript1: ; 18eb2 (6:4eb2)
@@ -36173,7 +36173,7 @@ PalletTownScript1: ; 18eb2 (6:4eb2)
 
 	; trigger the next script
 	ld a,2
-	ld [W_PALLETTOWNCURSCRIPT],a
+	ld [W_BESTSTREAK],a
 	ret
 
 PalletTownScript2: ; 18ed2 (6:4ed2)
@@ -36205,7 +36205,7 @@ PalletTownScript2: ; 18ed2 (6:4ed2)
 
 	; trigger the next script
 	ld a,3
-	ld [W_PALLETTOWNCURSCRIPT],a
+	ld [W_BESTSTREAK],a
 	ret
 
 PalletTownScript3: ; 18f12 (6:4f12)
@@ -36234,7 +36234,7 @@ PalletTownScript3: ; 18f12 (6:4f12)
 
 	; trigger the next script
 	ld a,4
-	ld [W_PALLETTOWNCURSCRIPT],a
+	ld [W_BESTSTREAK],a
 	ret
 
 PalletTownScript4: ; 18f4b (6:4f4b)
@@ -36244,7 +36244,7 @@ PalletTownScript4: ; 18f4b (6:4f4b)
 
 	; trigger the next script
 	ld a,5
-	ld [W_PALLETTOWNCURSCRIPT],a
+	ld [W_BESTSTREAK],a
 	ret
 
 PalletTownScript5: ; 18f56 (6:4f56)
@@ -36342,7 +36342,7 @@ PalletTownText7: ; 0x18fec sign by Blue’s house
 ViridianCityScript: ; 18ff1 (6:4ff1)
 	call EnableAutoTextBoxDrawing
 	ld hl, ViridianCityScriptPointers
-	ld a, [W_VIRIDIANCITYCURSCRIPT]
+	ld a, [W_CURTRAINER]
 	jp CallFunctionInTable
 
 ViridianCityScriptPointers: ; 18ffd (6:4ffd)
@@ -36379,7 +36379,7 @@ ViridianCityScript_1900b: ; 1900b (6:500b)
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	ret
 
 ViridianCityScript_1903d: ; 1903d (6:503d)
@@ -36399,7 +36399,7 @@ ViridianCityScript_1903d: ; 1903d (6:503d)
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	ret
 
 ViridianCityScript1: ; 19062 (6:5062)
@@ -36422,7 +36422,7 @@ ViridianCityScript1: ; 19062 (6:5062)
 	ld a, WEEDLE
 	ld [W_CUROPPONENT], a
 	ld a, $2
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	ret
 
 ViridianCityScript2: ; 1908f (6:508f)
@@ -36445,7 +36445,7 @@ ViridianCityScript2: ; 1908f (6:508f)
 	ld [W_BATTLETYPE], a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	ret
 
 ViridianCityScript3: ; 190c1 (6:50c1)
@@ -36454,7 +36454,7 @@ ViridianCityScript3: ; 190c1 (6:50c1)
 	ret nz
 	call Delay3
 	ld a, 0
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	ret
 
 ViridianCityScript_190cf: ; 190cf (6:50cf)
@@ -36568,7 +36568,7 @@ ViridianCityText5: ; 1917f (6:517f)
 	call PrintText
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	jp TextScriptEnd
 
 UnnamedText_19191: ; 19191 (6:5191)
@@ -36629,7 +36629,7 @@ ViridianCityText7: ; 191df (6:51df)
 	ld hl, UnnamedText_1920f
 	call PrintText
 	ld a, $1
-	ld [W_VIRIDIANCITYCURSCRIPT], a
+	ld [W_CURTRAINER], a
 	jr .asm_2413a ; 0x191ff
 .asm_42f68 ; 0x19201
 	ld hl, UnnamedText_19214
@@ -38026,7 +38026,7 @@ BluesHouse_h: ; 0x19b2f id=39
 BluesHouseScript: ; 19b3b (6:5b3b)
 	call EnableAutoTextBoxDrawing
 	ld hl,BluesHouseScriptPointers
-	ld a,[W_BLUESHOUSECURSCRIPT]
+	ld a,[W_CURTRAINER]
 	jp CallFunctionInTable
 
 BluesHouseScriptPointers: ; 19b47 (6:5b47)
@@ -38039,7 +38039,7 @@ BluesHouseScript0: ; 19b4b (6:5b4b)
 
 	; trigger the next script
 	ld a,1
-	ld [W_BLUESHOUSECURSCRIPT],a
+	ld [W_CURTRAINER],a
 	ret
 
 BluesHouseScript1: ; 19b56 (6:5b56)
@@ -40650,7 +40650,7 @@ OaksLabScript17: ; 1cfd4 (7:4fd4)
 	ld a, $15
 	call Predef
 	ld a, $5
-	ld [W_PALLETTOWNCURSCRIPT], a
+	ld [W_BESTSTREAK], a
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 
@@ -56320,133 +56320,23 @@ ReadTrainer: ; 39c53 (e:5c53)
 	dec a
 	ld [hl],a
 
-; get the pointer to trainer data for this class
-	ld a,[W_CUROPPONENT]
-	sub $C9 ; convert value from pokemon to trainer
-	add a,a
-	ld hl,TrainerDataPointers
-	ld c,a
-	ld b,0
-	add hl,bc ; hl points to trainer class
-	ld a,[hli]
-	ld h,[hl]
-	ld l,a
-	ld a,[W_TRAINERNO]
-	ld b,a
-; At this point b contains the trainer number,
-; and hl points to the trainer class.
-; Our next task is to iterate through the trainers,
-; decrementing b each time, until we get to the right one.
-.outer
+; read the three pokemon ids from memory
+	ld a, 50
+	ld [W_CURENEMYLVL],a
+	ld hl, W_MON1
+	ld b, 3
+.monLoop
+	ld a, [hli] ; a contains species
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	push hl
+	push bc
+	call AddPokemonToParty
+	pop bc
+	pop hl
 	dec b
-	jr z,.IterateTrainer
-.inner
-	ld a,[hli]
-	and a
-	jr nz,.inner
-	jr .outer
-
-; if the first byte of trainer data is FF,
-; - each pokemon has a specific level
-;      (as opposed to the whole team being of the same level)
-; - if [W_LONEATTACKNO] != 0, one pokemon on the team has a special move
-; else the first byte is the level of every pokemon on the team
-.IterateTrainer
-	ld a,[hli]
-	cp $FF ; is the trainer special?
-	jr z,.SpecialTrainer ; if so, check for special moves
-	ld [W_CURENEMYLVL],a
-.LoopTrainerData
-	ld a,[hli]
-	and a ; have we reached the end of the trainer data?
-	jr z,.FinishUp
-	ld [$CF91],a ; write species somewhere (XXX why?)
-	ld a,1
-	ld [$CC49],a
-	push hl
-	call AddPokemonToParty
-	pop hl
-	jr .LoopTrainerData
-.SpecialTrainer
-; if this code is being run:
-; - each pokemon has a specific level
-;      (as opposed to the whole team being of the same level)
-; - if [W_LONEATTACKNO] != 0, one pokemon on the team has a special move
-	ld a,[hli]
-	and a ; have we reached the end of the trainer data?
-	jr z,.AddLoneMove
-	ld [W_CURENEMYLVL],a
-	ld a,[hli]
-	ld [$CF91],a
-	ld a,1
-	ld [$CC49],a
-	push hl
-	call AddPokemonToParty
-	pop hl
-	jr .SpecialTrainer
-.AddLoneMove
-; does the trainer have a single monster with a different move
-	ld a,[W_LONEATTACKNO] ; Brock is 01, Misty is 02, Erika is 04, etc
-	and a
-	jr z,.AddTeamMove
-	dec a
-	add a,a
-	ld c,a
-	ld b,0
-	ld hl,LoneMoves
-	add hl,bc
-	ld a,[hli]
-	ld d,[hl]
-	ld hl,W_ENEMYMON1MOVE3
-	ld bc,W_ENEMYMON2MOVE3 - W_ENEMYMON1MOVE3
-	call AddNTimes
-	ld [hl],d
-	jr .FinishUp
-.AddTeamMove
-; check if our trainer's team has special moves
-
-; get trainer class number
-	ld a,[$D059]
-	sub $C8
-	ld b,a
-	ld hl,TeamMoves
-
-; iterate through entries in TeamMoves, checking each for our trainer class
-.IterateTeamMoves
-	ld a,[hli]
-	cp b
-	jr z,.GiveTeamMoves ; is there a match?
-	inc hl ; if not, go to the next entry
-	inc a
-	jr nz,.IterateTeamMoves
-
-	; no matches found. is this trainer champion rival?
-	ld a,b
-	cp SONY3
-	jr z,.ChampionRival
-	jr .FinishUp ; nope
-.GiveTeamMoves
-	ld a,[hl]
-	ld [$D95E],a
-	jr .FinishUp
-.ChampionRival ; give moves to his team
-
-; pidgeot
-	ld a,SKY_ATTACK
-	ld [W_ENEMYMON1MOVE3],a
-
-; starter
-	ld a,[W_RIVALSTARTER]
-	cp BULBASAUR
-	ld b,MEGA_DRAIN
-	jr z,.GiveStarterMove
-	cp CHARMANDER
-	ld b,FIRE_BLAST
-	jr z,.GiveStarterMove
-	ld b,BLIZZARD ; must be squirtle
-.GiveStarterMove
-	ld a,b
-	ld [W_ENEMYMON6MOVE3],a
+	jr nz, .monLoop
 .FinishUp ; XXX this needs documenting
 	xor a       ; clear D079-D07B
 	ld de,$D079
@@ -94979,6 +94869,7 @@ BattleFactoryScript: ; 5c0b0 (17:40b0)
 BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryText1
 	dw BattleFactoryWinsText
+	dw BattleFactoryBestText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -95002,7 +94893,32 @@ BattleFactoryText1: ; (17:656c)
 	call UpdateSprites
 	ld hl, BattleFactoryText3
 	call PrintText
+	call FightTrainer
 	jp TextScriptEnd
+
+FightTrainer:
+	ld a, $a6
+	ld [W_MON1], a
+	ld [W_MON2], a
+	ld [W_MON3], a
+	ld a, YOUNGSTER + $C8
+	ld [W_CUROPPONENT], a ; $d059
+	call ClearScreen
+	call Delay3
+	ld hl, W_OPTIONS ; $d355
+	res 7, [hl]
+	ld a, $2c
+	call Predef ; indirect jump to Func_3ef18 (3ef18 (f:6f18))
+	ret
+
+; loads data of some trainer on the current map and plays pre-battle music
+; a contains trainer class
+; [hl] contains a list of trainer's mons
+EngageMapTrainer2: ; 336a (0:336a)
+	ld [wEngagedTrainerClass], a
+	ld a, [hl]     ; load trainer mon set
+	ld [wEnemyMonAttackMod], a ; $cd2e
+	jp PlayTrainerMusic
 
 BattleFactoryText2:
 	TX_FAR _BattleFactoryText2
@@ -95018,6 +94934,10 @@ BattleFactoryText4:
 
 BattleFactoryWinsText:
 	TX_FAR _BattleFactoryWinsText
+	db "@"
+
+BattleFactoryBestText:
+	TX_FAR _BattleFactoryBestText
 	db "@"
 
 ClearParty:
@@ -95152,14 +95072,19 @@ BattleFactoryObject: ; 0x5c0d0 ?
 	db 1 ; warps
 	db 1, 7, 2, REDS_HOUSE_1F
 
-	db 1 ; signs
+	db 2 ; signs
 	db $0, $4, $2
+	db $0, $5, $3
 
 	db 1 ; people
 	db SPRITE_OAK, $2 + 4, $5 + 4, $ff, $d0, $1 ; person
 
 	; warp-to
 	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
+
+Team:
+	db 50, PIKACHU, CHARMANDER, SQUIRTLE, 0
+
 
 Func_5c0dc: ; 5c0dc (17:40dc)
 	ld a, $4b
@@ -95539,9 +95464,9 @@ PewterGymScript: ; 5c387 (17:4387)
 	call EnableAutoTextBoxDrawing
 	ld hl, PewterGymTrainerHeaders
 	ld de, PewterGymScriptPointers
-	ld a, [W_PEWTERGYMCURSCRIPT]
+	ld a, [W_MON2]
 	call ExecuteCurMapScriptInTable
-	ld [W_PEWTERGYMCURSCRIPT], a
+	ld [W_MON2], a
 	ret
 
 PewterGymScript_5c3a4: ; 5c3a4 (17:43a4)
@@ -95558,7 +95483,7 @@ Gym1LeaderName: ; 5c3b9 (17:43b9)
 Func_5c3bf: ; 5c3bf (17:43bf)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_PEWTERGYMCURSCRIPT], a
+	ld [W_MON2], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -95666,7 +95591,7 @@ PewterGymText1: ; 5c44e (17:444e)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_PEWTERGYMCURSCRIPT], a
+	ld [W_MON2], a
 	ld [W_CURMAPSCRIPT], a
 .asm_e0ffb ; 0x5c49b
 	jp TextScriptEnd
@@ -95955,9 +95880,9 @@ CeruleanGymScript: ; 5c6b3 (17:46b3)
 	call EnableAutoTextBoxDrawing
 	ld hl, CeruleanGymTrainerHeaders
 	ld de, CeruleanGymScriptPointers
-	ld a, [W_CERULEANGYMCURSCRIPT]
+	ld a, [W_MON3]
 	call ExecuteCurMapScriptInTable
-	ld [W_CERULEANGYMCURSCRIPT], a
+	ld [W_MON3], a
 	ret
 
 CeruleanGymScript_5c6d0: ; 5c6d0 (17:46d0)
@@ -95974,7 +95899,7 @@ Gym2LeaderName: ; 5c6e7 (17:46e7)
 Func_5c6ed: ; 5c6ed (17:46ed)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_CERULEANGYMCURSCRIPT], a
+	ld [W_MON3], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -96082,7 +96007,7 @@ CeruleanGymText1: ; 5c771 (17:4771)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_CERULEANGYMCURSCRIPT], a
+	ld [W_MON3], a
 .asm_95b04 ; 0x5c7bb
 	jp TextScriptEnd
 
@@ -109293,9 +109218,9 @@ ViridianGymScript: ; 748a3 (1d:48a3)
 	call EnableAutoTextBoxDrawing
 	ld hl, ViridianGymTrainerHeaders
 	ld de, ViridianGymScriptPointers
-	ld a, [W_VIRIDIANGYMCURSCRIPT]
+	ld a, [W_MON1]
 	call ExecuteCurMapScriptInTable
-	ld [W_VIRIDIANGYMCURSCRIPT], a
+	ld [W_MON1], a
 	ret
 
 Gym8CityName: ; 748bf (1d:48bf)
@@ -109306,7 +109231,7 @@ Gym8LeaderName: ; 748cd (1d:48cd)
 Func_748d6: ; 748d6 (1d:48d6)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_VIRIDIANGYMCURSCRIPT], a
+	ld [W_MON1], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -109600,7 +109525,7 @@ ViridianGymText1: ; 74a69 (1d:4a69)
 	ld a, $8
 	ld [$d05c], a
 	ld a, $3
-	ld [W_VIRIDIANGYMCURSCRIPT], a
+	ld [W_MON1], a
 .asm_6dff7 ; 0x74acb
 	jp TextScriptEnd
 
@@ -135605,6 +135530,12 @@ _BattleFactoryWinsText:
 	db "STREAK: @"
 	TX_NUM W_CURSTREAK, 1, 3
 	db $0, $57
+
+_BattleFactoryBestText:
+	db $0, "BEST WINNING", $4f
+	db "STREAK: @"
+	TX_NUM W_BESTSTREAK, 1, 3
+	db $0, $57	
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
