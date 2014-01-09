@@ -94995,7 +94995,12 @@ BattleFactoryText1: ; (17:656c)
 	call PrintText
 	call ClearParty
 	call FillMonChoices
+	call SaveScreenTilesToBuffer2
 	call ShowFactoryMon
+	call LoadScreenTilesFromBuffer2
+	call UpdateSprites
+	ld hl, BattleFactoryText3
+	call PrintText
 	jp TextScriptEnd
 
 BattleFactoryText2:
@@ -95108,7 +95113,7 @@ ShowFactoryMon: ; 216be (8:56be)
 	ld [wCurrentMenuItem], a
 	ld [wListScrollOffset], a
 	call DisplayListMenuIDLoop
-	ret c ; player closed menu
+	jr c, ShowFactoryMon ; player tried to close menu
 	ld a, [wCurrentMenuItem]
 	ld b, a
 	ld a, [wListScrollOffset]
@@ -95135,7 +95140,6 @@ TakeFromFactory: ; 21618 (8:5618)
 	call RemovePokemon
 	call WaitForSoundToFinish
 	ret
-
 
 BattleFactoryObject: ; 0x5c0d0 ?
 	db $0A ; border tile
