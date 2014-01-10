@@ -61976,6 +61976,10 @@ HandlePlayerBlackOut: ; 3c837 (f:4837)
 	res 5, a
 	ld [$d732], a
 	call ClearScreen
+; update win streak
+	xor a
+	ld [W_CURSTREAK], a
+	ld [W_STARTBATTLE], a
 	scf
 	ret
 
@@ -87703,9 +87707,9 @@ Route4Script: ; 55658 (15:5658)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route4TrainerHeaders
 	ld de, Route4ScriptPointers
-	ld a, [W_ROUTE4CURSCRIPT]
+	ld a, [W_STARTBATTLE]
 	call ExecuteCurMapScriptInTable
-	ld [W_ROUTE4CURSCRIPT], a
+	ld [W_STARTBATTLE], a
 	ret
 
 Route4ScriptPointers: ; 5566b (15:566b)
@@ -94864,6 +94868,21 @@ BattleFactory_h: ; 5c0a4 (17:40a4)
 	dw BattleFactoryObject
 
 BattleFactoryScript: ; 5c0b0 (17:40b0)
+	call EnableAutoTextBoxDrawing
+	ld hl, BattleFactoryScriptPointers
+	ld a, [W_PEWTERCITYCURSCRIPT]
+	jp CallFunctionInTable
+
+BattleFactoryScriptPointers:
+	dw BattleFactoryScript1
+
+BattleFactoryScript1:
+	ld a, [W_STARTBATTLE]
+	and a
+	ret z
+	call FightTrainer
+	ld a, $0
+	ld [W_PEWTERCITYCURSCRIPT], a
 	ret
 
 BattleFactoryTextPointers: ; 5c0cf (17:40cf)
@@ -94893,22 +94912,48 @@ BattleFactoryText1: ; (17:656c)
 	call UpdateSprites
 	ld hl, BattleFactoryText3
 	call PrintText
-	call FightTrainer
+	ld a, $1
+	ld [W_STARTBATTLE], a
 	jp TextScriptEnd
 
 FightTrainer:
-	ld a, $a6
+	ld a, $b4
 	ld [W_MON1], a
 	ld [W_MON2], a
 	ld [W_MON3], a
 	ld a, YOUNGSTER + $C8
 	ld [W_CUROPPONENT], a ; $d059
-	call ClearScreen
 	call Delay3
 	ld hl, W_OPTIONS ; $d355
 	res 7, [hl]
 	ld a, $2c
-	call Predef ; indirect jump to Func_3ef18 (3ef18 (f:6f18))
+	call Predef ; indirect jump to Func_3ef18 (3ef18 (f:6f18)) Runs the battle.
+	ld a, $7
+	call Predef ; healparty
+	call AfterBattle
+	ret
+
+AfterBattle:
+	call GBPalWhiteOutWithDelay3
+	ld hl, $cfc4
+	ld a, [hl]
+	push af
+	push hl
+	res 0, [hl]
+	xor a
+	ld [$d72d], a
+	dec a
+	ld [$d42f], a
+	call LoadMapData
+	ld b, BANK(Func_c335)
+	ld hl, Func_c335
+	call Bankswitch ; indirect jump to Func_c335 (c335 (3:4335))
+	ld a, 1
+	ld [H_AUTOBGTRANSFERENABLED], a
+	pop hl
+	pop af
+	ld [hl], a
+	call GBFadeIn2
 	ret
 
 ; loads data of some trainer on the current map and plays pre-battle music
@@ -94960,7 +95005,7 @@ FillMonChoices:
 .fillLoop
 	call PickMon
 	ld [$cf91], a
-	ld a, $32
+	ld a, $2
 	ld [$d127], a
 	call FillMonData
 	dec b
