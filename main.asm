@@ -67603,9 +67603,9 @@ asm_3ef3d: ; 3ef3d (f:6f3d)
 	jp c, Func_3ef8b
 	ld [W_TRAINERCLASS], a ; $d031
 	call Func_3566
-	ld hl, ReadTrainer
-	ld b, BANK(ReadTrainer)
-	call Bankswitch ; indirect jump to ReadTrainer (39c53 (e:5c53))
+	ld hl, InitTrainer
+	ld b, BANK(InitTrainer)
+	call Bankswitch ; indirect jump to InitTrainer (39c53 (e:5c53))
 	call Func_3ec32
 	call Func_3f04b
 	xor a
@@ -94952,6 +94952,55 @@ FightTrainer:
 	call AfterBattle
 	ret
 
+LABEL:
+	db $c2, $c4, $c9
+
+InitTrainer:
+; set [wEnemyPartyCount] to 0, [$D89D] to FF
+; XXX first is total enemy pokemon?
+; XXX second is species of first pokemon?
+	ld hl,wEnemyPartyCount
+	xor a
+	ld [hli],a
+	dec a
+	ld [hl],a
+	ld b, 3
+.monLoop
+	call PickMon
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	push hl
+	push bc
+	call AddPokemonToParty
+	; TODO: change moves here
+	pop bc
+	pop hl
+	dec b
+	jr nz, .monLoop
+.FinishUp ; XXX this needs documenting
+	xor a       ; clear D079-D07B
+	ld de,$D079
+	ld [de],a
+	inc de
+	ld [de],a
+	inc de
+	ld [de],a
+	ld a,[W_CURENEMYLVL]
+	ld b,a
+.LastLoop
+	ld hl,$D047
+	ld c,2
+	push bc
+	ld a,$B
+	call Predef
+	pop bc
+	inc de
+	inc de
+	dec b
+	jr nz,.LastLoop
+	ret
+
 AfterBattle:
 	call GBPalWhiteOutWithDelay3
 	ld hl, $cfc4
@@ -95036,6 +95085,9 @@ FillMonChoices:
 PickMon:
 ; randomly chooses a mon
 ; mon id stored in a
+	push bc
+	push de
+	push hl
 	ld b, 0
 	ld a, [W_CURCLASS]
 	ld c, a
@@ -95086,6 +95138,9 @@ PickMon:
 	ld [W_MOVE4], a
 .done
 	ld a, d ; place mon id in a
+	pop hl
+	pop de
+	pop bc
 	ret
 
 MonClassPointers:
@@ -95094,19 +95149,17 @@ MonClassPointers:
 MonClass1:
 ; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
 ; second byte is $FF is no moves specified
-	db 4 - 1; num mons in this list - 1
-	dbw RATTATA, MonClass1Moves1
-	dbw EKANS,   MonClass1Moves2
-	dbw PIDGEY,  MonClass1Moves3
-	dbw SPEAROW, MonClass1Moves4
+	db 8 - 1; num mons in this list - 1
+	dbw RATTATA,    NoDefinedMoves
+	dbw EKANS,      NoDefinedMoves
+	dbw PIDGEY,     NoDefinedMoves
+	dbw SPEAROW,    NoDefinedMoves
+	dbw JIGGLYPUFF, NoDefinedMoves
+	dbw CLEFAIRY,   NoDefinedMoves
+	dbw PARAS,      NoDefinedMoves
+	dbw CATERPIE,   NoDefinedMoves
 
-MonClass1Moves1:
-	db $FF
-MonClass1Moves2:
-	db $FF
-MonClass1Moves3:
-	db $FF
-MonClass1Moves4:
+NoDefinedMoves:
 	db $FF
 
 FillMonData:
@@ -95218,9 +95271,6 @@ BattleFactoryObject: ; 0x5c0d0 ?
 
 	; warp-to
 	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
-
-Team:
-	db 50, PIKACHU, CHARMANDER, SQUIRTLE, 0
 
 
 Func_5c0dc: ; 5c0dc (17:40dc)
