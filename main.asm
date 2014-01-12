@@ -56320,8 +56320,8 @@ ReadTrainer: ; 39c53 (e:5c53)
 	dec a
 	ld [hl],a
 
-; read the three pokemon ids from memory
-	ld a, 50
+; read the three pokemon ids from memory for battlefactory
+	ld a, 2
 	ld [W_CURENEMYLVL],a
 	ld hl, W_MON1
 	ld b, 3
@@ -61758,17 +61758,21 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld a, [W_ISLINKBATTLE] ; $d12b
 	cp $4
 	ret z
+	; battlefactory-related things on victory
+	ld hl, W_CURSTREAK
+	inc [hl] ; increment current win streak
+	ld a, [hl]
+	ld hl, W_BESTSTREAK
+	cp [hl]
+	jp c, .noStreakUpdate
+	ld [hl], a ; save best streak
+.noStreakUpdate
+	xor a
+	ld [W_STARTBATTLE], a ; no battle starting
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
-	call Func_3381
-	ld hl, MoneyForWinningText ; $46e4
-	call PrintText
-	ld de, wPlayerMoney + 2 ; $d349
-	ld hl, $d07b
-	ld c, $3
-	ld a, $b
-	jp Predef ; indirect jump to Func_f81d (f81d (3:781d))
+	jp Func_3381 ; prints losing text from trainer
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -87053,7 +87057,7 @@ FuchsiaHouse3Blocks: ; 5523f (15:523f)
 Func_5524f: ; 5524f (15:524f)
 	ld a, [W_ISLINKBATTLE] ; $d12b
 	cp $4
-	ret z
+	ret ; battlefactory just return so no experience is gained
 	call Func_5546c
 	ld hl, W_PARTYMON1_NUM ; $d16b (aliases: W_PARTYMON1DATA)
 	xor a
@@ -94917,7 +94921,7 @@ BattleFactoryText1: ; (17:656c)
 	jp TextScriptEnd
 
 FightTrainer:
-	ld a, $b4
+	ld a, $a5
 	ld [W_MON1], a
 	ld [W_MON2], a
 	ld [W_MON3], a
@@ -95005,7 +95009,7 @@ FillMonChoices:
 .fillLoop
 	call PickMon
 	ld [$cf91], a
-	ld a, $2
+	ld a, $32
 	ld [$d127], a
 	call FillMonData
 	dec b
@@ -95015,7 +95019,7 @@ FillMonChoices:
 PickMon:
 ; randomly chooses a mon
 ; mon id stored in a
-	ld a, $a5
+	ld a, $b4
 	ret
 
 FillMonData:
