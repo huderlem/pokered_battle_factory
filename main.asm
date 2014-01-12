@@ -67033,6 +67033,21 @@ Func_3eb01: ; 3eb01 (f:6b01)
 	dec de
 	xor a
 	ld [$cee9], a
+	ld a, [W_MOVE1]
+	cp $ff
+	jp z, .writeMovesNormalWay
+	ld [de], a
+	inc de
+	ld a, [W_MOVE2]
+	ld [de], a
+	inc de
+	ld a, [W_MOVE3]
+	ld [de], a
+	inc de
+	ld a, [W_MOVE4]
+	ld [de], a
+	jr .asm_3ebca
+.writeMovesNormalWay
 	ld a, $3e
 	call Predef ; indirect jump to WriteMonMoves (3afb8 (e:6fb8))
 .asm_3ebca
@@ -78907,9 +78922,9 @@ CeladonGymScript: ; 4890a (12:490a)
 	call EnableAutoTextBoxDrawing
 	ld hl, CeladonGymTrainerHeaders
 	ld de, CeladonGymScriptPointers
-	ld a, [W_CELADONGYMCURSCRIPT]
+	ld a, [W_MOVE2]
 	call ExecuteCurMapScriptInTable
-	ld [W_CELADONGYMCURSCRIPT], a
+	ld [W_MOVE2], a
 	ret
 
 CeladonGymScript_48927: ; 48927 (12:4927)
@@ -78926,7 +78941,7 @@ Gym4LeaderName: ; 4893d (12:493d)
 Func_48943: ; 48943 (12:4943)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_CELADONGYMCURSCRIPT], a
+	ld [W_MOVE2], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -79083,7 +79098,7 @@ CeladonGymText1: ; 48a11 (12:4a11)
 	ld a, $4
 	ld [$d05c], a
 	ld a, $3
-	ld [W_CELADONGYMCURSCRIPT], a
+	ld [W_MOVE2], a
 	ld [W_CURMAPSCRIPT], a
 .asm_96252 ; 0x48a5b
 	jp TextScriptEnd
@@ -91692,9 +91707,9 @@ Route6Script: ; 590b0 (16:50b0)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route6TrainerHeaders
 	ld de, Route6ScriptPointers
-	ld a, [W_ROUTE6CURSCRIPT]
+	ld a, [W_MOVE3]
 	call ExecuteCurMapScriptInTable
-	ld [W_ROUTE6CURSCRIPT], a
+	ld [W_MOVE3], a
 	ret
 
 Route6ScriptPointers: ; 590c3 (16:50c3)
@@ -91880,9 +91895,9 @@ Route8Script: ; 591b6 (16:51b6)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route8TrainerHeaders
 	ld de, Route8ScriptPointers
-	ld a, [W_ROUTE8CURSCRIPT]
+	ld a, [W_MOVE4]
 	call ExecuteCurMapScriptInTable
-	ld [W_ROUTE8CURSCRIPT], a
+	ld [W_MOVE4], a
 	ret
 
 Route8ScriptPointers: ; 591c9 (16:51c9)
@@ -95007,9 +95022,11 @@ FillMonChoices:
 ; places 6 random pokemon
 	ld b, 6 ; num mons to place
 .fillLoop
+	push bc
 	call PickMon
+	pop bc
 	ld [$cf91], a
-	ld a, $32
+	ld a, 50 ; mon level
 	ld [$d127], a
 	call FillMonData
 	dec b
@@ -95019,8 +95036,78 @@ FillMonChoices:
 PickMon:
 ; randomly chooses a mon
 ; mon id stored in a
-	ld a, $b4
+	ld b, 0
+	ld a, [W_CURCLASS]
+	ld c, a
+	sla c ; multiply by 2
+	ld hl, MonClassPointers
+	add hl, bc ; hl contains class pointer
+	ld a, [hli]
+	ld e, a
+	ld a, [hl]
+	ld d, a
+	ld h, d
+	ld l, e
+	ld a, [hli] ; num mons in class list
+	ld b, a
+	call GenRandom
+	and b ; mask to length of list
+	ld b, a
+	add b
+	add b ; multiplied a by 3
+	ld c, a
+	ld b, $0
+	add hl, bc ; hl contains pointer to [mon id][moves_pointer]
+	ld a, [hli] ; a contains mon id
+	ld d, a
+.readMoves
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	ld b, a ; bc contains pointer to moves list
+	ld h, b
+	ld l, c
+	ld a, [hl]
+	cp $ff
+	jp nz, .movesListed
+	ld [W_MOVE1], a
+	ld [W_MOVE2], a
+	ld [W_MOVE3], a
+	ld [W_MOVE4], a
+	jr .done
+.movesListed
+	ld a, [hli]
+	ld [W_MOVE1], a
+	ld a, [hli]
+	ld [W_MOVE2], a
+	ld a, [hli]
+	ld [W_MOVE3], a
+	ld a, [hl]
+	ld [W_MOVE4], a
+.done
+	ld a, d ; place mon id in a
 	ret
+
+MonClassPointers:
+	dw MonClass1
+
+MonClass1:
+; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
+; second byte is $FF is no moves specified
+	db 4 - 1; num mons in this list - 1
+	dbw RATTATA, MonClass1Moves1
+	dbw EKANS,   MonClass1Moves2
+	dbw PIDGEY,  MonClass1Moves3
+	dbw SPEAROW, MonClass1Moves4
+
+MonClass1Moves1:
+	db $FF
+MonClass1Moves2:
+	db $FF
+MonClass1Moves3:
+	db $FF
+MonClass1Moves4:
+	db $FF
 
 FillMonData:
 	push bc
@@ -95037,10 +95124,11 @@ FillMonData:
 	ld hl, Func_e7a4
 	ld b, BANK(Func_e7a4)
 	call Bankswitch ; indirect jump to Func_e7a4 (e7a4 (3:67a4))
+	; fill in moves if there are moves
 	pop bc
 	ret
 
-ShowFactoryMon: ; 216be (8:56be)
+ShowFactoryMon:
 	xor a
 	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
 	ld a,1
@@ -96426,9 +96514,9 @@ VermilionGymScript: ; 5ca26 (17:4a26)
 	call EnableAutoTextBoxDrawing
 	ld hl, VermilionGymTrainerHeader0
 	ld de, VermilionGymScriptPointers
-	ld a, [W_VERMILIONGYMCURSCRIPT]
+	ld a, [W_MOVE1]
 	call ExecuteCurMapScriptInTable
-	ld [W_VERMILIONGYMCURSCRIPT], a
+	ld [W_MOVE1], a
 	ret
 
 VermilionGymScript_5ca4c: ; 5ca4c (17:4a4c)
@@ -96461,7 +96549,7 @@ VermilionGymScript_5ca6d: ; 5ca6d (17:4a6d)
 VermilionGymScript_5ca8a: ; 5ca8a (17:4a8a)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_VERMILIONGYMCURSCRIPT], a
+	ld [W_MOVE1], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -96579,7 +96667,7 @@ VermilionGymText1: ; 5cb1d (17:4b1d)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_VERMILIONGYMCURSCRIPT], a
+	ld [W_MOVE1], a
 	ld [W_CURMAPSCRIPT], a
 .asm_23621 ; 0x5cb6a
 	jp TextScriptEnd
