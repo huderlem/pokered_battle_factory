@@ -7509,6 +7509,9 @@ ExitListMenu: ; 2e3b (0:2e3b)
 	scf
 	ret
 
+LBAL:
+	db $c1, $c2, $c3, $c4
+
 PrintListMenuEntries: ; 2e5a (0:2e5a)
 	FuncCoord 5, 3 ; $c3e1
 	ld hl,Coord
@@ -7556,8 +7559,28 @@ PrintListMenuEntries: ; 2e5a (0:2e5a)
 	jr z,.pokemonPCMenu
 	cp a,$01
 	jr z,.movesMenu
+	cp a,$77
+	jr z, .trainerMonMenu
 .itemMenu
 	call GetItemName
+	jr .placeNameString
+.trainerMonMenu
+	ld a,[wWhichPokemon]
+	ld b,a
+	ld a,4
+	sub b
+	ld b,a
+	ld a,[wListScrollOffset]
+	add b ; a contains mon index?
+	ld c, a
+	ld b, $0
+	push hl
+	ld hl, wEnemyPartyMons
+	add hl, bc ; hl contains address of enemy mon id
+	ld a, [hl]
+	ld [$d11e], a
+	call GetMonName
+	pop hl
 	jr .placeNameString
 .pokemonPCMenu
 	push hl
@@ -7600,6 +7623,8 @@ PrintListMenuEntries: ; 2e5a (0:2e5a)
 	call PrintBCDNumber
 .skipPrintingItemPrice
 	ld a,[wListMenuID]
+	cp $77
+	jr z, .printPokemonLevel
 	and a
 	jr nz,.skipPrintingPokemonLevel
 .printPokemonLevel
@@ -61766,13 +61791,92 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	cp [hl]
 	jp c, .noStreakUpdate
 	ld [hl], a ; save best streak
+	ld c, 0
+.divisionLoop
+	cp 7
+	jp c, .divisionDone
+	inc c
+	sub 7
+.divisionDone
+	ld a, c
+	ld [W_CURCLASS], a
 .noStreakUpdate
 	xor a
 	ld [W_STARTBATTLE], a ; no battle starting
+	ld a, $2
+	ld [W_PEWTERCITYCURSCRIPT], a
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
-	jp Func_3381 ; prints losing text from trainer
+	call Func_3381 ; prints losing text from trainer
+	ld hl, SwapText
+	call PrintText
+	call SwapPokemon
+	ret
+
+SwapText:
+	TX_FAR _SwapText
+	db "@"
+
+SwapPokemon:
+	xor a
+	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
+	ld a,1
+	ld [$ffb7],a ; joypad state update flag
+	ld hl,$d730
+	set 6,[hl] ; turn off letter printing delay
+	xor a
+	ld [$cc35],a ; 0 means no item is currently being swapped
+	ld [$d12a],a
+	ld hl, wEnemyPartyCount
+	ld a,[hl]
+	ld [$d12a],a ; [$d12a] = number of list entries
+	ld a,$0d ; list menu text box ID
+	ld [$d125],a
+	call DisplayTextBoxID ; draw the menu text box
+	call UpdateSprites ; move sprites
+	FuncCoord 4,2 ; coordinates of upper left corner of menu text box
+	ld hl,Coord
+	ld de,$090e ; height and width of menu text box
+	call UpdateSprites ; move sprites; possibly delete this line
+	ld a,1 ; max menu item ID is 1 if the list has less than 2 entries
+	ld [$cc37],a
+	ld a,[$d12a]
+	cp a,2 ; does the list have less than 2 entries?
+	jr c,.setMenuVariables
+	ld a,2 ; max menu item ID is 2 if the list has at least 2 entries
+.setMenuVariables
+	ld [wMaxMenuItem],a
+	ld a,4
+	ld [wTopMenuItemY],a
+	ld a,5
+	ld [wTopMenuItemX],a
+	ld a,%00000111 ; A button, B button, Select button
+	ld [wMenuWatchedKeys],a
+	ld c,10
+	call DelayFrames
+.pickMon
+	ld hl, wEnemyPartyCount
+	ld a, l
+	ld [$cf8b], a
+	ld a, h
+	ld [$cf8c], a
+	xor a
+	ld [wCurrentMenuItem], a
+	ld [wListScrollOffset], a
+	ld a, $77
+	ld [wListMenuID], a
+	call DisplayListMenuIDLoop
+	jr c, SwapPokemon ; player tried to close menu
+	ld a, [wCurrentMenuItem]
+	ld b, a
+	ld a, [wListScrollOffset]
+	add b ; a = menuitem (0-based indexing)
+	ld [wWhichPokemon], a
+	;
+	ld a, [W_NUMINPARTY]
+	cp $3 ; num allowed for factory
+	jp SwapPokemon
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -94894,13 +94998,21 @@ BattleFactoryScript: ; 5c0b0 (17:40b0)
 
 BattleFactoryScriptPointers:
 	dw BattleFactoryScript1
+	dw BattleFactoryScript2
 
 BattleFactoryScript1:
 	ld a, [W_STARTBATTLE]
 	and a
 	ret z
 	call FightTrainer
-	ld a, $0
+	xor a
+	ld [W_PEWTERCITYCURSCRIPT], a
+	ret
+
+BattleFactoryScript2:
+	ld hl, SwapText
+	call PrintText
+	xor a
 	ld [W_PEWTERCITYCURSCRIPT], a
 	ret
 
@@ -135722,7 +135834,11 @@ _BattleFactoryBestText:
 	db $0, "BEST WINNING", $4f
 	db "STREAK: @"
 	TX_NUM W_BESTSTREAK, 1, 3
-	db $0, $57	
+	db $0, $57
+
+_SwapText:
+	db $0, "Swap now."
+	db $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
