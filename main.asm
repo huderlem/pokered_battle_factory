@@ -7295,6 +7295,8 @@ DisplayListMenuIDLoop: ; 2c53 (0:2c53)
 	ld a,[wListMenuID]
 	and a ; is it a PC pokemon list?
 	jr z,.pokemonList
+	cp $77
+	jr z, .pokemonList
 	push hl
 	call GetItemPrice
 	pop hl
@@ -7508,9 +7510,6 @@ ExitListMenu: ; 2e3b (0:2e3b)
 	ld [$cc35],a ; 0 means no item is currently being swapped
 	scf
 	ret
-
-LBAL:
-	db $c1, $c2, $c3, $c4
 
 PrintListMenuEntries: ; 2e5a (0:2e5a)
 	FuncCoord 5, 3 ; $c3e1
@@ -61811,14 +61810,17 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	call Func_3381 ; prints losing text from trainer
 	ld hl, SwapText
 	call PrintText
-	call SwapPokemon
+	call SwapPokemonEnemy
+	ld hl, SwapText
+	call PrintText
+	call SwapPokemonPlayer
 	ret
 
 SwapText:
 	TX_FAR _SwapText
 	db "@"
 
-SwapPokemon:
+SwapPokemonEnemy:
 	xor a
 	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
 	ld a,1
@@ -61867,16 +61869,111 @@ SwapPokemon:
 	ld a, $77
 	ld [wListMenuID], a
 	call DisplayListMenuIDLoop
-	jr c, SwapPokemon ; player tried to close menu
+	jr c, SwapPokemonEnemy ; player tried to close menu
 	ld a, [wCurrentMenuItem]
 	ld b, a
 	ld a, [wListScrollOffset]
 	add b ; a = menuitem (0-based indexing)
-	ld [wWhichPokemon], a
-	;
-	ld a, [W_NUMINPARTY]
-	cp $3 ; num allowed for factory
-	jp SwapPokemon
+	ld [W_SWAPMONENEMYINDEX], a
+	ret
+
+LBAL:
+	db $c1, $c2, $c3, $c4
+
+SwapPokemonPlayer:
+	xor a
+	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
+	ld a,1
+	ld [$ffb7],a ; joypad state update flag
+	ld hl,$d730
+	set 6,[hl] ; turn off letter printing delay
+	xor a
+	ld [$cc35],a ; 0 means no item is currently being swapped
+	ld [$d12a],a
+	ld hl, W_NUMINPARTY
+	ld a,[hl]
+	ld [$d12a],a ; [$d12a] = number of list entries
+	ld a,$0d ; list menu text box ID
+	ld [$d125],a
+	call DisplayTextBoxID ; draw the menu text box
+	call UpdateSprites ; move sprites
+	FuncCoord 4,2 ; coordinates of upper left corner of menu text box
+	ld hl,Coord
+	ld de,$090e ; height and width of menu text box
+	call UpdateSprites ; move sprites; possibly delete this line
+	ld a,1 ; max menu item ID is 1 if the list has less than 2 entries
+	ld [$cc37],a
+	ld a,[$d12a]
+	cp a,2 ; does the list have less than 2 entries?
+	jr c,.setMenuVariables
+	ld a,2 ; max menu item ID is 2 if the list has at least 2 entries
+.setMenuVariables
+	ld [wMaxMenuItem],a
+	ld a,4
+	ld [wTopMenuItemY],a
+	ld a,5
+	ld [wTopMenuItemX],a
+	ld a,%00000111 ; A button, B button, Select button
+	ld [wMenuWatchedKeys],a
+	ld c,10
+	call DelayFrames
+.pickMon
+	ld hl, W_NUMINPARTY
+	ld a, l
+	ld [$cf8b], a
+	ld a, h
+	ld [$cf8c], a
+	xor a
+	ld [wCurrentMenuItem], a
+	ld [wListScrollOffset], a
+	ld [wListMenuID], a
+	call DisplayListMenuIDLoop
+	jr c, SwapPokemonPlayer ; player tried to close menu
+	ld a, [wCurrentMenuItem]
+	ld b, a
+	ld a, [wListScrollOffset]
+	add b ; a = menuitem (0-based indexing)
+	; swap mon data
+	ld hl, W_PARTYMON1DATA
+	ld bc, $002c
+	call AddNTimes
+	ld d, h
+	ld e, l ; de contains pointer to party mon data which will be overwritten
+	ld hl, wEnemyMon1
+	ld a, [W_SWAPMONENEMYINDEX]
+	call AddNTimes
+	ld a, [hl] ; save enemy mon id for later
+	push af
+	call CopyData ; swap mon data
+	; swap mon id
+	ld a, [wCurrentMenuItem]
+	ld b, a
+	ld a, [wListScrollOffset]
+	add b ; a = menuitem (0-based indexing)
+	ld c, a
+	ld b, 0
+	ld hl, W_PARTYMON1
+	add hl, bc
+	pop af
+	ld [hl], a
+	; now place mon name
+	ld [$d11e], a ; used for GetMonName
+	ld hl, W_PARTYMON1NAME
+	ld a, [wCurrentMenuItem]
+	ld b, a
+	ld a, [wListScrollOffset]
+	add b ; a = menuitem (0-based indexing)
+	ld bc, $000b
+	call AddNTimes ; hl contains pointer to mon name which is 0xb bytes
+	ld d, h
+	ld e, l
+	push de
+	call GetMonName
+	pop de
+	ld hl, $cd6d
+	ld bc, $000b
+	call CopyData
+	ret
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -84026,15 +84123,15 @@ Route24Script: ; 513ad (14:53ad)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route24TrainerHeaders
 	ld de, Route24ScriptPointers
-	ld a, [W_ROUTE24CURSCRIPT]
+	ld a, [W_SWAPMONENEMYINDEX]
 	call ExecuteCurMapScriptInTable
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ret
 
 Func_513c0: ; 513c0 (14:53c0)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -84067,7 +84164,7 @@ Route24Script0: ; 513d5 (14:53d5)
 	ld [$cd38], a
 	call Func_3486
 	ld a, $4
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -84080,7 +84177,7 @@ Route24Script4: ; 51411 (14:5411)
 	ret nz
 	call Delay3
 	ld a, $0
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -84099,7 +84196,7 @@ Route24Script3: ; 51422 (14:5422)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -84201,7 +84298,7 @@ Route24Text1: ; 514a4 (14:54a4)
 	xor a
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	ld a, $3
-	ld [W_ROUTE24CURSCRIPT], a
+	ld [W_SWAPMONENEMYINDEX], a
 	ld [W_CURMAPSCRIPT], a
 	jp TextScriptEnd
 .asm_a03f5 ; 0x514f9
