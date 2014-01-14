@@ -61796,6 +61796,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	jp c, .divisionDone
 	inc c
 	sub 7
+	jr .divisionLoop
 .divisionDone
 	ld a, c
 	ld [W_CURCLASS], a
@@ -61808,12 +61809,23 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld c, $28
 	call DelayFrames
 	call Func_3381 ; prints losing text from trainer
+	; was this battle 7?
+	ld a, [W_CURSTREAK]
+.divisionLoop2
+	cp 7
+	jp c, .divisionDone2
+	sub 7
+	jr .divisionLoop2
+.divisionDone2
+	cp $0
+	jr z, .noSwap
 	ld hl, SwapText
 	call PrintText
 	call SwapPokemonEnemy
 	ld hl, SwapText
 	call PrintText
 	call SwapPokemonPlayer
+.noSwap
 	ret
 
 SwapText:
