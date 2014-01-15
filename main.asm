@@ -62197,6 +62197,7 @@ HandlePlayerBlackOut: ; 3c837 (f:4837)
 	xor a
 	ld [W_CURSTREAK], a
 	ld [W_STARTBATTLE], a
+	ld [W_INCHALLENGE], a
 	scf
 	ret
 
@@ -84463,9 +84464,9 @@ Route25Script: ; 515cb (14:55cb)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route25TrainerHeaders
 	ld de, Route25ScriptPointers
-	ld a, [W_ROUTE25CURSCRIPT]
+	ld a, [W_INCHALLENGE]
 	call ExecuteCurMapScriptInTable
-	ld [W_ROUTE25CURSCRIPT], a
+	ld [W_INCHALLENGE], a
 	ret
 
 Route25Script_515e1: ; 515e1 (14:55e1)
@@ -95107,7 +95108,6 @@ BattleFactoryScript: ; 5c0b0 (17:40b0)
 
 BattleFactoryScriptPointers:
 	dw BattleFactoryScript1
-	dw BattleFactoryScript2
 
 BattleFactoryScript1:
 	ld a, [W_STARTBATTLE]
@@ -95118,20 +95118,22 @@ BattleFactoryScript1:
 	ld [W_PEWTERCITYCURSCRIPT], a
 	ret
 
-BattleFactoryScript2:
-	ld hl, SwapText
-	call PrintText
-	xor a
-	ld [W_PEWTERCITYCURSCRIPT], a
-	ret
-
 BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryText1
+	dw BattleFactoryReceptionist
+	dw BattleFactoryGuide
 	dw BattleFactoryWinsText
 	dw BattleFactoryBestText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
+	ld a, [W_INCHALLENGE]
+	cp $0
+	jr z, .askToStart
+	ld hl, AlreadyStartedText
+	call PrintText
+	jp TextScriptEnd
+.askToStart
 	ld hl, BattleFactoryText2
 	call PrintText
 	call YesNoChoice
@@ -95153,7 +95155,7 @@ BattleFactoryText1: ; (17:656c)
 	ld hl, BattleFactoryText3
 	call PrintText
 	ld a, $1
-	ld [W_STARTBATTLE], a
+	ld [W_INCHALLENGE], a
 	jp TextScriptEnd
 
 FightTrainer:
@@ -95166,15 +95168,13 @@ FightTrainer:
 	call Delay3
 	ld hl, W_OPTIONS ; $d355
 	res 7, [hl]
+	set 6, [hl]
 	ld a, $2c
 	call Predef ; indirect jump to Func_3ef18 (3ef18 (f:6f18)) Runs the battle.
 	ld a, $7
 	call Predef ; healparty
 	call AfterBattle
 	ret
-
-LABEL:
-	db $c2, $c4, $c9
 
 InitTrainer:
 ; set [wEnemyPartyCount] to 0, [$D89D] to FF
@@ -95254,6 +95254,49 @@ EngageMapTrainer2: ; 336a (0:336a)
 	ld [wEnemyMonAttackMod], a ; $cd2e
 	jp PlayTrainerMusic
 
+BattleFactoryReceptionist:
+	db $08 ; asm
+	ld a, [W_INCHALLENGE]
+	cp $1
+	jr z, .battleTrainer
+	ld hl, NotStartedText
+	call PrintText
+	jr .endReceptionist
+.battleTrainer
+	ld hl, ReadyBattleText
+	call PrintText
+	call YesNoChoice
+	ld a, [$cc26]
+	and a
+	jr z, .saidStartBattle
+	ld hl, NotYetText
+	call PrintText
+	jr .endReceptionist
+.saidStartBattle
+	ld hl, StartNowText
+	call PrintText
+	ld a, $1
+	ld [W_STARTBATTLE], a
+.endReceptionist
+	jp TextScriptEnd
+
+BattleFactoryGuide:
+	db $08 ; asm
+	ld hl, GuideIntro
+	call PrintText
+	call YesNoChoice
+	ld a, [$cc26]
+	and a
+	jr z, .saidYesGuide
+	ld hl, GuideNoText
+	call PrintText
+	jr .doneGuide
+.saidYesGuide
+	ld hl, GuideText
+	call PrintText
+.doneGuide
+	jp TextScriptEnd
+
 BattleFactoryText2:
 	TX_FAR _BattleFactoryText2
 	db "@"
@@ -95272,6 +95315,38 @@ BattleFactoryWinsText:
 
 BattleFactoryBestText:
 	TX_FAR _BattleFactoryBestText
+	db "@"
+
+AlreadyStartedText:
+	TX_FAR _AlreadyStartedText
+	db "@"
+
+NotStartedText:
+	TX_FAR _NotStartedText
+	db "@"
+
+ReadyBattleText:
+	TX_FAR _ReadyBattleText
+	db "@"
+
+NotYetText:
+	TX_FAR _NotYetText
+	db "@"
+
+StartNowText:
+	TX_FAR _StartNowText
+	db "@"
+
+GuideIntro:
+	TX_FAR _GuideIntro
+	db "@"
+
+GuideText:
+	TX_FAR _GuideText
+	db "@"
+
+GuideNoText:
+	TX_FAR _GuideNoText
 	db "@"
 
 ClearParty:
@@ -95484,11 +95559,13 @@ BattleFactoryObject: ; 0x5c0d0 ?
 	db 1, 7, 2, REDS_HOUSE_1F
 
 	db 2 ; signs
-	db $0, $4, $2
-	db $0, $5, $3
+	db $0, $4, $4
+	db $0, $5, $5
 
-	db 1 ; people
+	db 3 ; people
 	db SPRITE_OAK, $2 + 4, $5 + 4, $ff, $d0, $1 ; person
+	db SPRITE_OAK, $2 + 4, $6 + 4, $ff, $d0, $2 ; person
+	db SPRITE_OAK, $2 + 4, $4 + 4, $ff, $d0, $3 ; person
 
 	; warp-to
 	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
@@ -135948,6 +136025,112 @@ _BattleFactoryBestText:
 _SwapText:
 	db $0, "Swap now."
 	db $57
+
+_AlreadyStartedText:
+	db $0, "You already", $4f
+	db "selected your", $55
+	db "#MON team.", $51
+	db "Please speak with", $4f
+	db "the battle", $55
+	db "receptionist to", $55
+	db "begin your next", $55
+	db "battle.", $57
+
+_NotStartedText:
+	db $0, "I am the battle", $4f
+	db "receptionist.", $51
+	db "To begin your", $4f
+	db "challenge, you", $55
+	db "must first select", $55
+	db "your team by", $55
+	db "speaking with the", $55
+	db "BATTLE FACTORY", $55
+	db "administrator.", $57
+
+_ReadyBattleText:
+	db $0, "Are you ready to", $4f
+	db "start your next", $55
+	db "battle, ", $52, "?", $57
+
+_NotYetText:
+	db $0, "No problem.", $51
+	db "Just talk to me", $4f
+	db "again when you are", $55
+	db "are ready.", $57
+
+_StartNowText:
+	db $0, "Your current win", $4f
+	db "streak is @"
+	TX_NUM W_CURSTREAK, 1, 3
+	db $0, ".", $51
+	db "I wish you the", $4f
+	db "best of luck!", $57
+
+_GuideIntro:
+	db $0, "I'm the BATTLE", $4f
+	db "FACTORY guide!", $51
+	db "Should I explain", $4f
+	db "how this place", $55
+	db "works?", $57
+
+_GuideText:
+	db $0, "Alrighty then!", $51
+	db "The concept of a", $4f
+	db "BATTLE FACTORY", $55
+	db "originated in the", $55
+	db "HOENN region many", $55
+	db "years ago.", $51
+	db "The general idea", $4f
+	db "is fairly simple.", $51
+	db "Rather than using", $4f
+	db "your own #MON", $55
+	db "team, you rent a", $55
+	db "team of three", $55
+	db "#MON from us!", $51
+	db "With that team", $4f
+	db "you fight against", $55
+	db "other trainers", $55
+	db "who also rented", $55
+	db "their teams from", $55
+	db "us.", $51
+	db "When you defeat a", $4f
+	db "trainer, you may", $55
+	db "swap one of their", $55
+	db "#MON with one", $55
+	db "of your own.", $51
+	db "If you defeat 7", $4f
+	db "trainers in a", $55
+	db "row, you will be", $55
+	db "promoted to the", $55
+	db "next class.", $51
+	db "You will rent a", $4f
+	db "brand new team", $55
+	db "each time you", $55
+	db "are promoted, and", $55
+	db "higher classes", $55
+	db "contain tougher", $55
+	db "#MON!", $51
+	db "If you're good", $4f
+	db "enough, you might", $55
+	db "confront some", $55
+	db "very special", $55
+	db "opponents.", $51
+	db "To get started,", $4f
+	db "first speak with", $55
+	db "the administrator", $55
+	db "to rent your", $55
+	db "#MON team.", $51
+	db "Then, speak with", $4f
+	db "the receptionist", $55
+	db "to schedule all", $55
+	db "of your battles.", $51
+	db "Go get 'em,", $4f
+	db "champ!", $57
+
+_GuideNoText:
+	db $0, "Phew!", $51
+	db "Now I don't have", $4f
+	db "talk as much!", $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
