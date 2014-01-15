@@ -63052,9 +63052,37 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld hl, PickEnemyMonText
 	call PrintText
 	call SwapPokemonEnemy
+	jr nc, .swapPlayerMons
+	ld hl, SwapAreYouSureText
+	call PrintText
+	FuncCoord 0, 7 ; $c42c
+	ld hl,Coord
+	ld bc,$0801
+	ld a,$14
+	ld [$D125],a
+	call DisplayTextBoxID
+	ld a,[$CC26]
+	and a
+	jr nz, .yesSwapMons
+	jr .noSwap
+.swapPlayerMons
 	ld hl, PickPlayerMonText
 	call PrintText
 	call SwapPokemonPlayer
+	jr nc, .swapCompleted
+	ld hl, SwapAreYouSureText2
+	call PrintText
+	FuncCoord 0, 7 ; $c42c
+	ld hl,Coord
+	ld bc,$0801
+	ld a,$14
+	ld [$D125],a
+	call DisplayTextBoxID
+	ld a,[$CC26]
+	and a
+	jr z, .yesSwapMons
+	jr .swapPlayerMons
+.swapCompleted
 	ld hl, SwapCompleteText
 	call PrintText
 .noSwap
@@ -63078,6 +63106,14 @@ SwapCompleteText:
 
 BeatSevenTrainersText:
 	TX_FAR _BeatSevenTrainersText
+	db "@"
+
+SwapAreYouSureText:
+	TX_FAR _SwapAreYouSureText
+	db "@"
+
+SwapAreYouSureText2:
+	TX_FAR _SwapAreYouSureText2
 	db "@"
 
 SwapPokemonEnemy:
@@ -63129,7 +63165,7 @@ SwapPokemonEnemy:
 	ld a, $77
 	ld [wListMenuID], a
 	call DisplayListMenuIDLoop
-	jr c, SwapPokemonEnemy ; player tried to close menu
+	ret c ; player tried to close menu
 	ld a, [wCurrentMenuItem]
 	ld b, a
 	ld a, [wListScrollOffset]
@@ -63185,7 +63221,7 @@ SwapPokemonPlayer:
 	ld [wListScrollOffset], a
 	ld [wListMenuID], a
 	call DisplayListMenuIDLoop
-	jr c, SwapPokemonPlayer ; player tried to close menu
+	ret c ; player tried to close menu
 	ld a, [wCurrentMenuItem]
 	ld b, a
 	ld a, [wListScrollOffset]
@@ -138114,6 +138150,18 @@ _PickPlayerMonText:
 
 _SwapCompleteText:
 	db $0, "Swap completed!", $58
+
+_SwapAreYouSureText:
+	db $0, "Are you sure you", $4f
+	db "you don't want to", $55
+	db "swap #MON?", $57
+
+_SwapAreYouSureText2:
+	db $0, "Are you sure you", $4f
+	db "want to take a", $55
+	db "different #MON", $55
+	db "from your", $55
+	db "opponent?", $57
 
 _BeatSevenTrainersText:
 	db $0, "Congratulations!", $51
