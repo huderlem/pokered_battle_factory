@@ -3481,33 +3481,43 @@ UncompressMonSprite: ; 1627 (0:1627)
 ; $74 ≤ index < $99, bank $C
 ; $99 ≤ index,       bank $D
 	ld a,[$CF91] ; XXX name for this ram location
-	ld b,a
-	cp MEW
-	ld a,BANK(MewPicFront)
-	jr z,.GotBank
-	ld a,b
 	cp FOSSIL_KABUTOPS
+	jr z,.RecallBank
+	cp FOSSIL_AERODACTYL
+	jr z,.RecallBank
+	cp MON_GHOST
+	jr z,.RecallBank
+	ld a,[$D0D3]
+	jr .GotBank
+.RecallBank
 	ld a,BANK(FossilKabutopsPic)
-	jr z,.GotBank
-	ld a,b
-	cp TANGELA + 1
-	ld a,BANK(TangelaPicFront)
-	jr c,.GotBank
-	ld a,b
-	cp MOLTRES + 1
-	ld a,BANK(MoltresPicFront)
-	jr c,.GotBank
-	ld a,b
-	cp BEEDRILL + 2
-	ld a,BANK(BeedrillPicFront)
-	jr c,.GotBank
-	ld a,b
-	cp STARMIE + 1
-	ld a,BANK(StarmiePicFront)
-	jr c,.GotBank
-	ld a,BANK(VictreebelPicFront)
 .GotBank
 	jp UncompressSpriteData
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 ; de: destination location
 LoadMonFrontSprite: ; 1665 (0:1665)
@@ -3516,6 +3526,7 @@ LoadMonFrontSprite: ; 1665 (0:1665)
 	call UncompressMonSprite
 	ld hl, W_MONHSPRITEDIM
 	ld a, [hli]
+LoadUncompressedBackSprite:
 	ld c, a
 	pop de
 	; fall through
@@ -8031,12 +8042,12 @@ Func_310e: ; 310e (0:310e)
 .asm_3146
 	ld b, BANK(Func_1a3e0)
 	ld hl, Func_1a3e0
-	jp Bankswitch ; indirect jump to Func_1a3e0 (1a3e0 (6:63e0))
+	jp Bankswitch
 
 Func_314e: ; 314e (0:314e)
 	ld b, BANK(Func_1a41d)
 	ld hl, Func_1a41d
-	jp Bankswitch ; indirect jump to Func_1a41d (1a41d (6:641d))
+	jp Bankswitch
 
 Func_3156: ; 3156 (0:3156)
 	ret
@@ -8266,7 +8277,7 @@ ResetButtonPressedAndMapScript: ; 32c1 (0:32c1)
 TrainerWalkUpToPlayer_Bank0: ; 32cf (0:32cf)
 	ld b, BANK(TrainerWalkUpToPlayer)
 	ld hl, TrainerWalkUpToPlayer
-	jp Bankswitch ; indirect jump to TrainerWalkUpToPlayer (56881 (15:6881))
+	jp Bankswitch
 
 ; sets opponent type and mon set/lvl based on the engaging trainer data
 InitBattleEnemyParameters: ; 32d7 (0:32d7)
@@ -8392,7 +8403,7 @@ Func_3381: ; 3381 (0:3381)
 	push hl
 	ld b, BANK(SaveTrainerName)
 	ld hl, SaveTrainerName
-	call Bankswitch ; indirect jump to SaveTrainerName (27e4a (9:7e4a))
+	call Bankswitch
 	ld hl, UnnamedText_33cf
 	call PrintText
 	pop hl
@@ -8401,7 +8412,7 @@ Func_3381: ; 3381 (0:3381)
 	ld [$2000], a
 	ld b, BANK(Func_1a5e7)
 	ld hl, Func_1a5e7
-	call Bankswitch ; indirect jump to Func_1a5e7 (1a5e7 (6:65e7))
+	call Bankswitch
 	jp WaitForSoundToFinish
 
 Func_33b7: ; 33b7 (0:33b7)
@@ -8783,7 +8794,7 @@ Func_3566: ; 3566 (0:3566)
 Func_359e: ; 359e (0:359e)
 	ld b, BANK(Func_13a58)
 	ld hl, Func_13a58
-	jp Bankswitch ; indirect jump to Func_13a58 (13a58 (4:7a58))
+	jp Bankswitch
 
 ; tests if player's money are at least as much as [$ff9f]
 ; sets carry flag if not enough money
@@ -10412,7 +10423,7 @@ Func_3e08: ; 3e08 (0:3e08)
 	call DisableLCD
 	ld b, BANK(InitMapSprites)
 	ld hl, InitMapSprites
-	call Bankswitch ; indirect jump to InitMapSprites (1785b (5:785b))
+	call Bankswitch
 	call EnableLCD
 	pop hl
 	pop af
@@ -10513,7 +10524,7 @@ Load16BitRegisters: ; 3e94 (0:3e94)
 Func_3ead: ; 3ead (0:3ead)
 	ld b, BANK(Func_1eb0a)
 	ld hl, Func_1eb0a
-	jp Bankswitch ; indirect jump to Func_1eb0a (1eb0a (7:6b0a))
+	jp Bankswitch
 
 Func_3eb5: ; 3eb5 (0:3eb5)
 	ld a, [H_LOADEDROMBANK]
@@ -10539,7 +10550,7 @@ Func_3eb5: ; 3eb5 (0:3eb5)
 .asm_3edd
 	ld b, BANK(Func_fb50)
 	ld hl, Func_fb50
-	call Bankswitch ; indirect jump to Func_fb50 (fb50 (3:7b50))
+	call Bankswitch
 	ld a, [$FF00+$db]
 	and a
 	jr z, .asm_3eec
@@ -10751,10 +10762,7 @@ Func_40b0: ; 40b0 (1:40b0)
 	ld a, $7
 	jp Predef ; indirect jump to HealParty (f6a5 (3:76a5))
 
-MewPicFront: ; 4112 (1:4112)
-	INCBIN "pic/bmon/mew.pic"
-MewPicBack: ; 4205 (1:4205)
-	INCBIN "pic/monback/mewb.pic"
+	ds $149
 
 MewBaseStats: ; 425b (1:425b)
 	db DEX_MEW ; pokedex id
@@ -10790,7 +10798,8 @@ MewBaseStats: ; 425b (1:425b)
 	db %11111111
 	db %11111111
 	db %11111111
-	db %11111111 ; usually spacing
+	
+	db BANK(MewPicFront)
 
 Func_4277: ; 4277 (1:4277)
 	ld hl, $cce9
@@ -11051,7 +11060,7 @@ ENDC
 	jr c, .asm_4459
 	ld b, BANK(Func_372ac)
 	ld hl, Func_372ac
-	call Bankswitch ; indirect jump to Func_372ac (372ac (d:72ac))
+	call Bankswitch
 	call Func_4496
 	jr .asm_443b
 .asm_4459
@@ -11081,7 +11090,7 @@ ENDC
 Func_448e: ; 448e (1:448e)
 	ld b, BANK(Func_1c98a)
 	ld hl, Func_1c98a
-	jp Bankswitch ; indirect jump to Func_1c98a (1c98a (7:498a))
+	jp Bankswitch
 
 Func_4496: ; 4496 (1:4496)
 	ld a, $98
@@ -11277,7 +11286,7 @@ PrintGameVersionOnTitleScreen: ; 4598 (1:4598)
 	ld de, VersionOnTitleScreenText ; $45a1
 	jp PlaceString
 
-; these point to special tiles specifically loaded for that purpose ad are no usual text
+; these point to special tiles specifically loaded for that purpose and are not usual text
 VersionOnTitleScreenText: ; 45a1 (1:45a1)
 IF _RED
 	db $60,$61,$7F,$65,$66,$67,$68,$69,"@" ; "Red Version"
@@ -13539,7 +13548,7 @@ Func_577d: ; 577d (1:577d)
 	call LoadMapData
 	ld b, BANK(Func_c335)
 	ld hl, Func_c335
-	call Bankswitch ; indirect jump to Func_c335 (c335 (3:4335))
+	call Bankswitch
 	pop hl
 	pop af
 	ld [hl], a
@@ -14709,9 +14718,8 @@ OakSpeech: ; 6115 (1:6115)
 	call Func_62ce
 	xor a
 	ld [$FFD7],a
-	ld a,[$D732]
-	bit 1,a ; XXX when is bit 1 set?
-	jp nz,Func_61bc ; easter egg: skip the intro
+	ld a, PAL_OAK
+	call GotPaletteID
 	ld de,ProfOakPic
 	ld bc, (Bank(ProfOakPic) << 8) | $00
 	call IntroPredef3B   ; displays Oak pic?
@@ -14720,6 +14728,7 @@ OakSpeech: ; 6115 (1:6115)
 	call PrintText      ; prints text box
 	call GBFadeOut2
 	call ClearScreen
+	call GetNidoPalID
 	ld a,NIDORINO
 	ld [$D0B5],a    ; pic displayed is stored at this location
 	ld [$CF91],a
@@ -14731,7 +14740,7 @@ OakSpeech: ; 6115 (1:6115)
 	ld hl,OakSpeechText2
 	call PrintText      ; Prints text box
 	call GBFadeOut2
-	call ClearScreen
+	call GetRedPalID
 	ld de,RedPicFront
 	ld bc,(Bank(RedPicFront) << 8) | $00
 	call IntroPredef3B      ; displays player pic?
@@ -14740,7 +14749,7 @@ OakSpeech: ; 6115 (1:6115)
 	call PrintText
 	call Func_695d ; brings up NewName/Red/etc menu
 	call GBFadeOut2
-	call ClearScreen
+	call GetRivalPalID
 	ld de,Rival1Pic
 	ld bc,(Bank(Rival1Pic) << 8) | $00
 	call IntroPredef3B ; displays rival pic
@@ -14751,7 +14760,7 @@ OakSpeech: ; 6115 (1:6115)
 
 Func_61bc: ; 61bc (1:61bc)
 	call GBFadeOut2
-	call ClearScreen
+	call GetRedPalID
 	ld de,RedPicFront
 	ld bc,(Bank(RedPicFront) << 8) | $00
 	call IntroPredef3B
@@ -15284,7 +15293,7 @@ Func_6596: ; 6596 (1:6596)
 	call Func_675b
 	ld b, BANK(Func_7176c)
 	ld hl, Func_7176c
-	call Bankswitch ; indirect jump to Func_7176c (7176c (1c:576c))
+	call Bankswitch
 	FuncCoord 0, 4 ; $c3f0
 	ld hl, Coord
 	ld b, $9
@@ -15323,7 +15332,7 @@ Func_6596: ; 6596 (1:6596)
 	push af
 	ld b, BANK(Func_716f7)
 	ld hl, Func_716f7
-	call Bankswitch ; indirect jump to Func_716f7 (716f7 (1c:56f7))
+	call Bankswitch
 	pop af
 	ld [wCurrentMenuItem], a ; $cc26
 	call GetJoypadStateLowSensitivity
@@ -15368,7 +15377,7 @@ Func_6596: ; 6596 (1:6596)
 	jp z, LoadTextBoxTilePatterns
 	ld hl, Func_3ee5b
 	ld b, BANK(Func_3ee5b)
-	jp Bankswitch ; indirect jump to Func_3ee5b (3ee5b (f:6e5b))
+	jp Bankswitch
 
 .unknownPointerTable_665e: ; 665e (1:665e)
 	dw .asm_65fc
@@ -15714,7 +15723,7 @@ Func_68f8: ; 68f8 (1:68f8)
 	push af
 	ld b, BANK(Func_71882)
 	ld hl, Func_71882
-	call Bankswitch ; indirect jump to Func_71882 (71882 (1c:5882))
+	call Bankswitch
 	pop af
 	ld [$d11e], a
 	call GetMonName
@@ -15768,7 +15777,7 @@ Func_695d: ; 695d (1:695d)
 	ld a, [$cf4b]
 	cp $50
 	jr z, .asm_697a
-	call ClearScreen
+	call GetRedPalID
 	call Delay3
 	ld de, RedPicFront ; $6ede
 	ld b, $4
@@ -15801,7 +15810,7 @@ Func_69a4: ; 69a4 (1:69a4)
 	ld a, [$cf4b]
 	cp $50
 	jr z, .asm_69c1
-	call ClearScreen
+	call GetRivalPalID
 	call Delay3
 	ld de, Rival1Pic ; $6049
 	ld b, $13
@@ -16535,7 +16544,7 @@ Func_6f07: ; 6f07 (1:6f07)
 	call CopyData
 	ld hl, Func_39b87
 	ld b, BANK(Func_39b87)
-	call Bankswitch ; indirect jump to Func_39b87 (39b87 (e:5b87))
+	call Bankswitch
 	pop hl
 .asm_6f39
 	push hl
@@ -16898,7 +16907,7 @@ StartMenuPokemonText: ; 7197 (1:7197)
 	db "POKéMON@"
 
 StartMenuItemText: ; 719f (1:719f)
-	db "ITEM@"
+	db "PACK@"
 
 StartMenuSaveText: ; 71a4 (1:71a4)
 	db "SAVE@"
@@ -17329,7 +17338,7 @@ JapaneseMainMenuText: ; 7448 (1:7448)
 
 BattleMenuText: ; 7455 (1:7455)
 	db "FIGHT ",$E1,$E2,$4E
-	db "ITEM  RUN@"
+	db "PACK  RUN@"
 
 SafariZoneBattleMenuText: ; 7468 (1:7468)
 	db "BALL×       BAIT",$4E
@@ -17901,7 +17910,7 @@ Func_7861: ; 7861 (1:7861)
 	call Predef ; indirect jump to Func_3cdec (3cdec (f:4dec))
 	ld hl, ReadPlayerMonCurHPAndStatus
 	ld b, BANK(ReadPlayerMonCurHPAndStatus)
-	call Bankswitch ; indirect jump to ReadPlayerMonCurHPAndStatus (3cd43 (f:4d43))
+	call Bankswitch
 	ld hl, UnnamedText_78dc ; $78dc
 	ld a, [H_WHOSETURN] ; $FF00+$f3
 	and a
@@ -18345,7 +18354,23 @@ Func_7c18: ; 7c18 (1:7c18)
 	ld [$cc3c], a
 	ret
 
-SECTION "bank2",ROMX,Bank[$2]
+GetNidoPalID:
+	ld a, PAL_NIDORINO
+	jr GotPaletteID
+GetRedPalID:
+	call ClearScreen
+	ld a, PAL_HERO
+	jr GotPaletteID
+GetRivalPalID:
+	call ClearScreen
+	ld a, PAL_GARY1
+GotPaletteID:
+	push af
+	ld hl, SendIntroPal
+	ld b, BANK(SendIntroPal)
+	jp Bankswitch
+
+SECTION "bank2",ROMX,BANK[$2]
 
 INCLUDE "music/headers/sfxheaders02.asm"
 INCLUDE "music/headers/musicheaders02.asm"
@@ -21311,7 +21336,7 @@ Func_c49d: ; c49d (3:449d)
 	push bc
 	ld b, BANK(Func_1a609)
 	ld hl, Func_1a609
-	call Bankswitch ; indirect jump to Func_1a609 (1a609 (6:6609))
+	call Bankswitch
 	jr c, .asm_c4c8
 	ld a, [W_CURMAPTILESET] ; $d367
 	add a
@@ -29262,7 +29287,7 @@ Func_e7a4: ; e7a4 (3:67a4)
 	ld d, a
 	ld hl, CalcExperience
 	ld b, BANK(CalcExperience)
-	call Bankswitch ; indirect jump to CalcExperience (58f6a (16:4f6a))
+	call Bankswitch
 	pop de
 	ld a, [H_NUMTOPRINT] ; $FF00+$96 (aliases: H_MULTIPLICAND)
 	ld [de], a
@@ -29834,7 +29859,7 @@ asm_ef82: ; ef82 (3:6f82)
 	call Func_eedc
 	ld b, BANK(Func_79e96)
 	ld hl, Func_79e96
-	call Bankswitch ; indirect jump to Func_79e96 (79e96 (1e:5e96))
+	call Bankswitch
 	ld a, $1
 	ld [$cfcb], a
 	ld a, $ac
@@ -30332,7 +30357,7 @@ Func_f2b5: ; f2b5 (3:72b5)
 	ret nz
 	ld hl, Func_79f54
 	ld b, BANK(Func_79f54)
-	call Bankswitch ; indirect jump to Func_79f54 (79f54 (1e:5f54))
+	call Bankswitch
 	call DiscardButtonPresses
 	ld [wJoypadForbiddenButtonsMask], a
 	call Func_f2dd
@@ -30547,7 +30572,7 @@ _AddPokemonToParty: ; f2e5 (3:72e5)
 	ld d, a
 	ld hl, CalcExperience
 	ld b, BANK(CalcExperience)
-	call Bankswitch ; indirect jump to CalcExperience (58f6a (16:4f6a))
+	call Bankswitch
 	pop de
 	inc de
 	ld a, [H_MULTIPLICAND] ; write experience
@@ -30843,7 +30868,7 @@ Func_f51e: ; f51e (3:751e)
 	call LoadMonData
 	ld b, BANK(Func_58f43)
 	ld hl, Func_58f43
-	call Bankswitch ; indirect jump to Func_58f43 (58f43 (16:4f43))
+	call Bankswitch
 	ld a, d
 	ld [W_CURENEMYLVL], a ; $d127
 	pop hl
@@ -31775,7 +31800,7 @@ Func_fb50: ; fb50 (3:7b50)
 	ld [$FF00+$db], a
 	ld b, BANK(Func_52673)
 	ld hl, Func_52673
-	jp Bankswitch ; indirect jump to Func_52673 (52673 (14:6673))
+	jp Bankswitch
 
 ; format: db tileset id, bookshelf tile id, unknown
 BookshelfTileIDs: ; fb8b (3:7b8b)
@@ -32842,6 +32867,19 @@ Func_12ec7: ; 12ec7 (4:6ec7)
 
 RedPicFront: ; 12ede (4:6ede)
 	INCBIN "pic/trainer/red.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	
 ShrinkPic1: ; 12fe8 (4:6fe8)
 	INCBIN "pic/trainer/shrink1.pic"
 ShrinkPic2: ; 13042 (4:7042)
@@ -33859,7 +33897,7 @@ Func_137aa: ; 137aa (4:77aa)
 	call ClearScreen
 	ld hl, Func_372d6
 	ld b, BANK(Func_372d6)
-	call Bankswitch ; indirect jump to Func_372d6 (372d6 (d:72d6))
+	call Bankswitch
 	ld a, [$cf0b]
 	cp $1
 	ld de, YouWinText ; $7853
@@ -33949,7 +33987,7 @@ Func_13870: ; 13870 (4:7870)
 	ret nz
 	ld hl, Func_c49d
 	ld b, BANK(Func_c49d)
-	call Bankswitch ; indirect jump to Func_c49d (c49d (3:449d))
+	call Bankswitch
 	jr nc, .asm_13888
 .asm_13884
 	ld a, $1
@@ -33958,7 +33996,7 @@ Func_13870: ; 13870 (4:7870)
 .asm_13888
 	ld hl, Func_128d8
 	ld b, BANK(Func_128d8)
-	call Bankswitch ; indirect jump to Func_128d8 (128d8 (4:68d8))
+	call Bankswitch
 	jr z, .asm_13884
 	ld a, [$d0db]
 	and a
@@ -35452,7 +35490,7 @@ Func_17d7d: ; 17d7d (5:7d7d)
 	ld [W_ISLINKBATTLE], a ; $d12b
 	ld hl, Func_3ad0e
 	ld b, BANK(Func_3ad0e)
-	call Bankswitch ; indirect jump to Func_3ad0e (3ad0e (e:6d0e))
+	call Bankswitch
 	xor a
 	ld [W_ISLINKBATTLE], a ; $d12b
 	jp Func_2307
@@ -39835,7 +39873,7 @@ Func_1c98a: ; 1c98a (7:498a)
 	jp z, InitGame
 	ld b, BANK(Func_73b6a)
 	ld hl, Func_73b6a
-	call Bankswitch ; indirect jump to Func_73b6a (73b6a (1c:7b6a))
+	call Bankswitch
 	jp InitGame
 
 UnnamedText_1c9c1: ; 1c9c1 (7:49c1)
@@ -44946,7 +44984,7 @@ BillsPCMenu:
 	call PlaceString
 	ld a, $1
 	ld [H_AUTOBGTRANSFERENABLED], a ; $FF00+$ba
-	call Delay3
+	call PCBoxOWPal
 	call HandleMenuInput
 	bit 1, a
 	jp nz, Func_21588 ; b button
@@ -45097,7 +45135,7 @@ Func_21673: ; 21673 (8:5673)
 Func_216b3: ; 216b3 (8:56b3)
 	ld b, BANK(Func_738a1)
 	ld hl, Func_738a1
-	call Bankswitch ; indirect jump to Func_738a1 (738a1 (1c:78a1))
+	call Bankswitch
 	jp Func_214e8
 
 Func_216be: ; 216be (8:56be)
@@ -47095,124 +47133,281 @@ INCLUDE "music/defeatedtrainer.asm"
 INCLUDE "music/defeatedwildmon.asm"
 INCLUDE "music/defeatedgymleader.asm"
 
+PCBoxOWPal:
+	call Delay3
+	ld b, $09
+	jp GoPAL_SET
+
 SECTION "bank9",ROMX,BANK[$9]
 
-RhydonPicFront: ; 24000 (9:4000)
-	INCBIN "pic/bmon/rhydon.pic"
-RhydonPicBack: ; 24202 (9:4202)
-	INCBIN "pic/monback/rhydonb.pic"
-KangaskhanPicFront: ; 2429a (9:429a)
-	INCBIN "pic/bmon/kangaskhan.pic"
-KangaskhanPicBack: ; 244a6 (9:44a6)
-	INCBIN "pic/monback/kangaskhanb.pic"
-NidoranMPicFront: ; 2453c (9:453c)
-	INCBIN "pic/bmon/nidoranm.pic"
-NidoranMPicBack: ; 24623 (9:4623)
-	INCBIN "pic/monback/nidoranmb.pic"
-ClefairyPicFront: ; 24682 (9:4682)
-	INCBIN "pic/bmon/clefairy.pic"
-ClefairyPicBack: ; 24785 (9:4785)
-	INCBIN "pic/monback/clefairyb.pic"
-SpearowPicFront: ; 247df (9:47df)
-	INCBIN "pic/bmon/spearow.pic"
-SpearowPicBack: ; 248c2 (9:48c2)
-	INCBIN "pic/monback/spearowb.pic"
-VoltorbPicFront: ; 24911 (9:4911)
-	INCBIN "pic/bmon/voltorb.pic"
-VoltorbPicBack: ; 2499a (9:499a)
-	INCBIN "pic/monback/voltorbb.pic"
-NidokingPicFront: ; 249f8 (9:49f8)
-	INCBIN "pic/bmon/nidoking.pic"
-NidokingPicBack: ; 24c60 (9:4c60)
-	INCBIN "pic/monback/nidokingb.pic"
-SlowbroPicFront: ; 24d0a (9:4d0a)
-	INCBIN "pic/bmon/slowbro.pic"
-SlowbroPicBack: ; 24f87 (9:4f87)
-	INCBIN "pic/monback/slowbrob.pic"
-IvysaurPicFront: ; 2502b (9:502b)
+BulbasaurPicFront:
+	INCBIN "pic/bmon/bulbasaur.pic"
+BulbasaurPicBack:
+	INCBIN "pic/monback/bulbasaurb.pic"
+IvysaurPicFront:
 	INCBIN "pic/bmon/ivysaur.pic"
-IvysaurPicBack: ; 25157 (9:5157)
+IvysaurPicBack:
 	INCBIN "pic/monback/ivysaurb.pic"
-ExeggutorPicFront: ; 251d6 (9:51d6)
-	INCBIN "pic/bmon/exeggutor.pic"
-ExeggutorPicBack: ; 253f8 (9:53f8)
-	INCBIN "pic/monback/exeggutorb.pic"
-LickitungPicFront: ; 254a7 (9:54a7)
-	INCBIN "pic/bmon/lickitung.pic"
-LickitungPicBack: ; 2563e (9:563e)
-	INCBIN "pic/monback/lickitungb.pic"
-ExeggcutePicFront: ; 256d7 (9:56d7)
-	INCBIN "pic/bmon/exeggcute.pic"
-ExeggcutePicBack: ; 258f0 (9:58f0)
-	INCBIN "pic/monback/exeggcuteb.pic"
-GrimerPicFront: ; 25973 (9:5973)
-	INCBIN "pic/bmon/grimer.pic"
-GrimerPicBack: ; 25ab0 (9:5ab0)
-	INCBIN "pic/monback/grimerb.pic"
-GengarPicFront: ; 25b76 (9:5b76)
-	INCBIN "pic/bmon/gengar.pic"
-GengarPicBack: ; 25cc6 (9:5cc6)
-	INCBIN "pic/monback/gengarb.pic"
-NidoranFPicFront: ; 25d28 (9:5d28)
-	INCBIN "pic/bmon/nidoranf.pic"
-NidoranFPicBack: ; 25dc2 (9:5dc2)
-	INCBIN "pic/monback/nidoranfb.pic"
-NidoqueenPicFront: ; 25e09 (9:5e09)
-	INCBIN "pic/bmon/nidoqueen.pic"
-NidoqueenPicBack: ; 25fef (9:5fef)
-	INCBIN "pic/monback/nidoqueenb.pic"
-CubonePicFront: ; 260a8 (9:60a8)
-	INCBIN "pic/bmon/cubone.pic"
-CubonePicBack: ; 26196 (9:6196)
-	INCBIN "pic/monback/cuboneb.pic"
-RhyhornPicFront: ; 26208 (9:6208)
-	INCBIN "pic/bmon/rhyhorn.pic"
-RhyhornPicBack: ; 2640f (9:640f)
-	INCBIN "pic/monback/rhyhornb.pic"
-LaprasPicFront: ; 264c1 (9:64c1)
-	INCBIN "pic/bmon/lapras.pic"
-LaprasPicBack: ; 2667c (9:667c)
-	INCBIN "pic/monback/laprasb.pic"
-ArcaninePicFront: ; 266ff (9:66ff)
-	INCBIN "pic/bmon/arcanine.pic"
-ArcaninePicBack: ; 2693d (9:693d)
-	INCBIN "pic/monback/arcanineb.pic"
-GyaradosPicFront: ; 269d4 (9:69d4)
-	INCBIN "pic/bmon/gyarados.pic"
-GyaradosPicBack: ; 26c25 (9:6c25)
-	INCBIN "pic/monback/gyaradosb.pic"
-ShellderPicFront: ; 26cb6 (9:6cb6)
-	INCBIN "pic/bmon/shellder.pic"
-ShellderPicBack: ; 26dc3 (9:6dc3)
-	INCBIN "pic/monback/shellderb.pic"
-TentacoolPicFront: ; 26e2a (9:6e2a)
-	INCBIN "pic/bmon/tentacool.pic"
-TentacoolPicBack: ; 26f1c (9:6f1c)
-	INCBIN "pic/monback/tentacoolb.pic"
-GastlyPicFront: ; 26f77 (9:6f77)
-	INCBIN "pic/bmon/gastly.pic"
-GastlyPicBack: ; 27190 (9:7190)
-	INCBIN "pic/monback/gastlyb.pic"
-ScytherPicFront: ; 2721c (9:721c)
-	INCBIN "pic/bmon/scyther.pic"
-ScytherPicBack: ; 2743c (9:743c)
-	INCBIN "pic/monback/scytherb.pic"
-StaryuPicFront: ; 274e0 (9:74e0)
-	INCBIN "pic/bmon/staryu.pic"
-StaryuPicBack: ; 275ec (9:75ec)
-	INCBIN "pic/monback/staryub.pic"
-BlastoisePicFront: ; 27637 (9:7637)
+VenusaurPicFront:
+	INCBIN "pic/bmon/venusaur.pic"
+VenusaurPicBack:
+	INCBIN "pic/monback/venusaurb.pic"
+CharmanderPicFront:
+	INCBIN "pic/bmon/charmander.pic"
+CharmanderPicBack:
+	INCBIN "pic/monback/charmanderb.pic"
+CharmeleonPicFront:
+	INCBIN "pic/bmon/charmeleon.pic"
+CharmeleonPicBack:
+	INCBIN "pic/monback/charmeleonb.pic"
+CharizardPicFront:
+	INCBIN "pic/bmon/charizard.pic"
+CharizardPicBack:
+	INCBIN "pic/monback/charizardb.pic"
+SquirtlePicFront:
+	INCBIN "pic/bmon/squirtle.pic"
+SquirtlePicBack:
+	INCBIN "pic/monback/squirtleb.pic"
+WartortlePicFront:
+	INCBIN "pic/bmon/wartortle.pic"
+WartortlePicBack:
+	INCBIN "pic/monback/wartortleb.pic"
+BlastoisePicFront:
 	INCBIN "pic/bmon/blastoise.pic"
-BlastoisePicBack: ; 27851 (9:7851)
+BlastoisePicBack:
 	INCBIN "pic/monback/blastoiseb.pic"
-PinsirPicFront: ; 278da (9:78da)
-	INCBIN "pic/bmon/pinsir.pic"
-PinsirPicBack: ; 27aaa (9:7aaa)
-	INCBIN "pic/monback/pinsirb.pic"
-TangelaPicFront: ; 27b39 (9:7b39)
-	INCBIN "pic/bmon/tangela.pic"
-TangelaPicBack: ; 27ce7 (9:7ce7)
-	INCBIN "pic/monback/tangelab.pic"
+CaterpiePicFront:
+	INCBIN "pic/bmon/caterpie.pic"
+CaterpiePicBack: 
+	INCBIN "pic/monback/caterpieb.pic"
+MetapodPicFront:
+	INCBIN "pic/bmon/metapod.pic"
+MetapodPicBack:
+	INCBIN "pic/monback/metapodb.pic"
+ButterfreePicFront:
+	INCBIN "pic/bmon/butterfree.pic"
+ButterfreePicBack:
+	INCBIN "pic/monback/butterfreeb.pic"
+WeedlePicFront:
+	INCBIN "pic/bmon/weedle.pic"
+WeedlePicBack:
+	INCBIN "pic/monback/weedleb.pic"
+KakunaPicFront:
+	INCBIN "pic/bmon/kakuna.pic"
+KakunaPicBack:
+	INCBIN "pic/monback/kakunab.pic"
+BeedrillPicFront:
+	INCBIN "pic/bmon/beedrill.pic"
+BeedrillPicBack:
+	INCBIN "pic/monback/beedrillb.pic"
+PidgeyPicFront:
+	INCBIN "pic/bmon/pidgey.pic"
+PidgeyPicBack:
+	INCBIN "pic/monback/pidgeyb.pic"
+PidgeottoPicFront:
+	INCBIN "pic/bmon/pidgeotto.pic"
+PidgeottoPicBack:
+	INCBIN "pic/monback/pidgeottob.pic"
+PidgeotPicFront:
+	INCBIN "pic/bmon/pidgeot.pic"
+PidgeotPicBack:
+	INCBIN "pic/monback/pidgeotb.pic"
+RattataPicFront:
+	INCBIN "pic/bmon/rattata.pic"
+RattataPicBack:
+	INCBIN "pic/monback/rattatab.pic"
+RaticatePicFront:
+	INCBIN "pic/bmon/raticate.pic"
+RaticatePicBack:
+	INCBIN "pic/monback/raticateb.pic"
+SpearowPicFront:
+	INCBIN "pic/bmon/spearow.pic"
+SpearowPicBack:
+	INCBIN "pic/monback/spearowb.pic"
+FearowPicFront:
+	INCBIN "pic/bmon/fearow.pic"
+FearowPicBack:
+	INCBIN "pic/monback/fearowb.pic"
+EkansPicFront:
+	INCBIN "pic/bmon/ekans.pic"
+EkansPicBack:
+	INCBIN "pic/monback/ekansb.pic"
+ArbokPicFront:
+	INCBIN "pic/bmon/arbok.pic"
+ArbokPicBack:
+	INCBIN "pic/monback/arbokb.pic"
+PikachuPicFront:
+	INCBIN "pic/bmon/pikachu.pic"
+PikachuPicBack:
+	INCBIN "pic/monback/pikachub.pic"
+RaichuPicFront:
+	INCBIN "pic/bmon/raichu.pic"
+RaichuPicBack:
+	INCBIN "pic/monback/raichub.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 Func_27d6b: ; 27d6b (9:7d6b)
 	call Load16BitRegisters
@@ -47444,7 +47639,7 @@ Func_27f86: ; 27f86 (9:7f86)
 	set 2, [hl]
 	ld hl, Func_3fba8
 	ld b, BANK(Func_3fba8)
-	call Bankswitch ; indirect jump to Func_3fba8 (3fba8 (f:7ba8))
+	call Bankswitch
 	ld hl, UnnamedText_27fb3 ; $7fb2
 	jp PrintText
 .asm_27fa5
@@ -47452,7 +47647,7 @@ Func_27f86: ; 27f86 (9:7f86)
 	call DelayFrames
 	ld hl, Func_3fb53
 	ld b, BANK(Func_3fb53)
-	jp Bankswitch ; indirect jump to Func_3fb53 (3fb53 (f:7b53))
+	jp Bankswitch
 
 UnnamedText_27fb3: ; 27fb3 (9:7fb3)
 	db $0a
@@ -47460,139 +47655,676 @@ UnnamedText_27fb3: ; 27fb3 (9:7fb3)
 	db "@"
 
 SECTION "bankA",ROMX,BANK[$A]
-GrowlithePicFront: ; 28000 (a:4000)
-	INCBIN "pic/bmon/growlithe.pic"
-GrowlithePicBack: ; 28101 (a:4101)
-	INCBIN "pic/monback/growlitheb.pic"
-OnixPicFront: ; 28164 (a:4164)
-	INCBIN "pic/bmon/onix.pic"
-OnixPicBack: ; 28300 (a:4300)
-	INCBIN "pic/monback/onixb.pic"
-FearowPicFront: ; 28383 (a:4383)
-	INCBIN "pic/bmon/fearow.pic"
-FearowPicBack: ; 28529 (a:4529)
-	INCBIN "pic/monback/fearowb.pic"
-PidgeyPicFront: ; 285a7 (a:45a7)
-	INCBIN "pic/bmon/pidgey.pic"
-PidgeyPicBack: ; 2865b (a:465b)
-	INCBIN "pic/monback/pidgeyb.pic"
-SlowpokePicFront: ; 286a0 (a:46a0)
-	INCBIN "pic/bmon/slowpoke.pic"
-SlowpokePicBack: ; 287c2 (a:47c2)
-	INCBIN "pic/monback/slowpokeb.pic"
-KadabraPicFront: ; 28830 (a:4830)
-	INCBIN "pic/bmon/kadabra.pic"
-KadabraPicBack: ; 289b9 (a:49b9)
-	INCBIN "pic/monback/kadabrab.pic"
-GravelerPicFront: ; 28a4c (a:4a4c)
-	INCBIN "pic/bmon/graveler.pic"
-GravelerPicBack: ; 28c00 (a:4c00)
-	INCBIN "pic/monback/gravelerb.pic"
-ChanseyPicFront: ; 28cae (a:4cae)
-	INCBIN "pic/bmon/chansey.pic"
-ChanseyPicBack: ; 28e21 (a:4e21)
-	INCBIN "pic/monback/chanseyb.pic"
-MachokePicFront: ; 28e85 (a:4e85)
-	INCBIN "pic/bmon/machoke.pic"
-MachokePicBack: ; 29063 (a:5063)
-	INCBIN "pic/monback/machokeb.pic"
-MrMimePicFront: ; 290f3 (a:50f3)
-	INCBIN "pic/bmon/mr.mime.pic"
-MrMimePicBack: ; 29247 (a:5247)
-	INCBIN "pic/monback/mr.mimeb.pic"
-HitmonleePicFront: ; 292bf (a:52bf)
-	INCBIN "pic/bmon/hitmonlee.pic"
-HitmonleePicBack: ; 2945e (a:545e)
-	INCBIN "pic/monback/hitmonleeb.pic"
-HitmonchanPicFront: ; 294bc (a:54bc)
-	INCBIN "pic/bmon/hitmonchan.pic"
-HitmonchanPicBack: ; 29643 (a:5643)
-	INCBIN "pic/monback/hitmonchanb.pic"
-ArbokPicFront: ; 296b4 (a:56b4)
-	INCBIN "pic/bmon/arbok.pic"
-ArbokPicBack: ; 29911 (a:5911)
-	INCBIN "pic/monback/arbokb.pic"
-ParasectPicFront: ; 299a8 (a:59a8)
+
+SandshrewPicFront:
+	INCBIN "pic/bmon/sandshrew.pic"
+SandshrewPicBack:
+	INCBIN "pic/monback/sandshrewb.pic"
+SandslashPicFront:
+	INCBIN "pic/bmon/sandslash.pic"
+SandslashPicBack:
+	INCBIN "pic/monback/sandslashb.pic"
+NidoranFPicFront:
+	INCBIN "pic/bmon/nidoranf.pic"
+NidoranFPicBack:
+	INCBIN "pic/monback/nidoranfb.pic"
+NidorinaPicFront:
+	INCBIN "pic/bmon/nidorina.pic"
+NidorinaPicBack:
+	INCBIN "pic/monback/nidorinab.pic"
+NidoqueenPicFront:
+	INCBIN "pic/bmon/nidoqueen.pic"
+NidoqueenPicBack:
+	INCBIN "pic/monback/nidoqueenb.pic"
+NidoranMPicFront:
+	INCBIN "pic/bmon/nidoranm.pic"
+NidoranMPicBack:
+	INCBIN "pic/monback/nidoranmb.pic"
+NidorinoPicFront:
+	INCBIN "pic/bmon/nidorino.pic"
+NidorinoPicBack:
+	INCBIN "pic/monback/nidorinob.pic"
+NidokingPicFront:
+	INCBIN "pic/bmon/nidoking.pic"
+NidokingPicBack:
+	INCBIN "pic/monback/nidokingb.pic"
+ClefairyPicFront:
+	INCBIN "pic/bmon/clefairy.pic"
+ClefairyPicBack:
+	INCBIN "pic/monback/clefairyb.pic"
+ClefablePicFront:
+	INCBIN "pic/bmon/clefable.pic"
+ClefablePicBack:
+	INCBIN "pic/monback/clefableb.pic"
+VulpixPicFront:
+	INCBIN "pic/bmon/vulpix.pic"
+VulpixPicBack:
+	INCBIN "pic/monback/vulpixb.pic"
+NinetalesPicFront:
+	INCBIN "pic/bmon/ninetales.pic"
+NinetalesPicBack:
+	INCBIN "pic/monback/ninetalesb.pic"
+JigglypuffPicFront:
+	INCBIN "pic/bmon/jigglypuff.pic"
+JigglypuffPicBack:
+	INCBIN "pic/monback/jigglypuffb.pic"
+WigglytuffPicFront:
+	INCBIN "pic/bmon/wigglytuff.pic"
+WigglytuffPicBack:
+	INCBIN "pic/monback/wigglytuffb.pic"
+ZubatPicFront:
+	INCBIN "pic/bmon/zubat.pic"
+ZubatPicBack:
+	INCBIN "pic/monback/zubatb.pic"
+GolbatPicFront:
+	INCBIN "pic/bmon/golbat.pic"
+GolbatPicBack:
+	INCBIN "pic/monback/golbatb.pic"
+OddishPicFront:
+	INCBIN "pic/bmon/oddish.pic"
+OddishPicBack:
+	INCBIN "pic/monback/oddishb.pic"
+GloomPicFront:
+	INCBIN "pic/bmon/gloom.pic"
+GloomPicBack:
+	INCBIN "pic/monback/gloomb.pic"
+VileplumePicFront:
+	INCBIN "pic/bmon/vileplume.pic"
+VileplumePicBack:
+	INCBIN "pic/monback/vileplumeb.pic"
+ParasPicFront:
+	INCBIN "pic/bmon/paras.pic"
+ParasPicBack:
+	INCBIN "pic/monback/parasb.pic"
+ParasectPicFront:
 	INCBIN "pic/bmon/parasect.pic"
-ParasectPicBack: ; 29b8c (a:5b8c)
+ParasectPicBack:
 	INCBIN "pic/monback/parasectb.pic"
-PsyduckPicFront: ; 29c0a (a:5c0a)
-	INCBIN "pic/bmon/psyduck.pic"
-PsyduckPicBack: ; 29d3e (a:5d3e)
-	INCBIN "pic/monback/psyduckb.pic"
-DrowzeePicFront: ; 29da9 (a:5da9)
-	INCBIN "pic/bmon/drowzee.pic"
-DrowzeePicBack: ; 29f05 (a:5f05)
-	INCBIN "pic/monback/drowzeeb.pic"
-GolemPicFront: ; 29f74 (a:5f74)
-	INCBIN "pic/bmon/golem.pic"
-GolemPicBack: ; 2a0f2 (a:60f2)
-	INCBIN "pic/monback/golemb.pic"
-MagmarPicFront: ; 2a161 (a:6161)
-	INCBIN "pic/bmon/magmar.pic"
-MagmarPicBack: ; 2a2bf (a:62bf)
-	INCBIN "pic/monback/magmarb.pic"
-ElectabuzzPicFront: ; 2a367 (a:6367)
-	INCBIN "pic/bmon/electabuzz.pic"
-ElectabuzzPicBack: ; 2a4ef (a:64ef)
-	INCBIN "pic/monback/electabuzzb.pic"
-MagnetonPicFront: ; 2a588 (a:6588)
-	INCBIN "pic/bmon/magneton.pic"
-MagnetonPicBack: ; 2a723 (a:6723)
-	INCBIN "pic/monback/magnetonb.pic"
-KoffingPicFront: ; 2a7a6 (a:67a6)
-	INCBIN "pic/bmon/koffing.pic"
-KoffingPicBack: ; 2a974 (a:6974)
-	INCBIN "pic/monback/koffingb.pic"
-MankeyPicFront: ; 2aa11 (a:6a11)
-	INCBIN "pic/bmon/mankey.pic"
-MankeyPicBack: ; 2ab16 (a:6b16)
-	INCBIN "pic/monback/mankeyb.pic"
-SeelPicFront: ; 2ab84 (a:6b84)
-	INCBIN "pic/bmon/seel.pic"
-SeelPicBack: ; 2ace8 (a:6ce8)
-	INCBIN "pic/monback/seelb.pic"
-DiglettPicFront: ; 2ad33 (a:6d33)
-	INCBIN "pic/bmon/diglett.pic"
-DiglettPicBack: ; 2ae10 (a:6e10)
-	INCBIN "pic/monback/diglettb.pic"
-TaurosPicFront: ; 2ae7e (a:6e7e)
-	INCBIN "pic/bmon/tauros.pic"
-TaurosPicBack: ; 2b054 (a:7054)
-	INCBIN "pic/monback/taurosb.pic"
-FarfetchdPicFront: ; 2b0e9 (a:70e9)
-	INCBIN "pic/bmon/farfetchd.pic"
-FarfetchdPicBack: ; 2b2c6 (a:72c6)
-	INCBIN "pic/monback/farfetchdb.pic"
-VenonatPicFront: ; 2b357 (a:7357)
+VenonatPicFront:
 	INCBIN "pic/bmon/venonat.pic"
-VenonatPicBack: ; 2b45c (a:745c)
+VenonatPicBack:
 	INCBIN "pic/monback/venonatb.pic"
-DragonitePicFront: ; 2b4aa (a:74aa)
-	INCBIN "pic/bmon/dragonite.pic"
-DragonitePicBack: ; 2b67f (a:767f)
-	INCBIN "pic/monback/dragoniteb.pic"
-DoduoPicFront: ; 2b72c (a:772c)
-	INCBIN "pic/bmon/doduo.pic"
-DoduoPicBack: ; 2b80d (a:780d)
-	INCBIN "pic/monback/doduob.pic"
-PoliwagPicFront: ; 2b875 (a:7875)
-	INCBIN "pic/bmon/poliwag.pic"
-PoliwagPicBack: ; 2b947 (a:7947)
-	INCBIN "pic/monback/poliwagb.pic"
-JynxPicFront: ; 2b98e (a:798e)
-	INCBIN "pic/bmon/jynx.pic"
-JynxPicBack: ; 2bb42 (a:7b42)
-	INCBIN "pic/monback/jynxb.pic"
-MoltresPicFront: ; 2bbac (a:7bac)
-	INCBIN "pic/bmon/moltres.pic"
-MoltresPicBack: ; 2be02 (a:7e02)
-	INCBIN "pic/monback/moltresb.pic"
+VenomothPicFront:
+	INCBIN "pic/bmon/venomoth.pic"
+VenomothPicBack:
+	INCBIN "pic/monback/venomothb.pic"
+DiglettPicFront:
+	INCBIN "pic/bmon/diglett.pic"
+DiglettPicBack:
+	INCBIN "pic/monback/diglettb.pic"
+DugtrioPicFront:
+	INCBIN "pic/bmon/dugtrio.pic"
+DugtrioPicBack:
+	INCBIN "pic/monback/dugtriob.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 Func_2bea9: ; 2bea9 (a:7ea9)
 	ld hl, MoveHitTest
 	ld b, BANK(MoveHitTest)
-	call Bankswitch ; indirect jump to MoveHitTest (3e56b (f:656b))
+	call Bankswitch
 	ld a, [W_MOVEMISSED] ; $d05f
 	and a
 	jr nz, .asm_2bee7
@@ -47616,7 +48348,7 @@ Func_2bea9: ; 2bea9 (a:7ea9)
 	set 7, [hl]
 	ld hl, Func_3fba8
 	ld b, BANK(Func_3fba8)
-	call Bankswitch ; indirect jump to Func_3fba8 (3fba8 (f:7ba8))
+	call Bankswitch
 	ld hl, UnnamedText_2bef2 ; $7ef2
 	jp PrintText
 .asm_2bee7
@@ -47634,144 +48366,144 @@ UnnamedText_2bef7: ; 2bef7 (a:7ef7)
 	db "@"
 
 SECTION "bankB",ROMX,BANK[$B]
-ArticunoPicFront: ; 2c000 (b:4000)
-	INCBIN "pic/bmon/articuno.pic"
-ArticunoPicBack: ; 2c238 (b:4238)
-	INCBIN "pic/monback/articunob.pic"
-ZapdosPicFront: ; 2c29d (b:429d)
-	INCBIN "pic/bmon/zapdos.pic"
-ZapdosPicBack: ; 2c484 (b:4484)
-	INCBIN "pic/monback/zapdosb.pic"
-DittoPicFront: ; 2c514 (b:4514)
-	INCBIN "pic/bmon/ditto.pic"
-DittoPicBack: ; 2c5bd (b:45bd)
-	INCBIN "pic/monback/dittob.pic"
-MeowthPicFront: ; 2c609 (b:4609)
+
+MeowthPicFront:
 	INCBIN "pic/bmon/meowth.pic"
-MeowthPicBack: ; 2c71f (b:471f)
+MeowthPicBack:
 	INCBIN "pic/monback/meowthb.pic"
-KrabbyPicFront: ; 2c777 (b:4777)
-	INCBIN "pic/bmon/krabby.pic"
-KrabbyPicBack: ; 2c8b0 (b:48b0)
-	INCBIN "pic/monback/krabbyb.pic"
-VulpixPicFront: ; 2c924 (b:4924)
-	INCBIN "pic/bmon/vulpix.pic"
-VulpixPicBack: ; 2ca9a (b:4a9a)
-	INCBIN "pic/monback/vulpixb.pic"
-NinetalesPicFront: ; 2caff (b:4aff)
-	INCBIN "pic/bmon/ninetales.pic"
-NinetalesPicBack: ; 2ccfb (b:4cfb)
-	INCBIN "pic/monback/ninetalesb.pic"
-PikachuPicFront: ; 2cd7d (b:4d7d)
-	INCBIN "pic/bmon/pikachu.pic"
-PikachuPicBack: ; 2ce8b (b:4e8b)
-	INCBIN "pic/monback/pikachub.pic"
-RaichuPicFront: ; 2cf03 (b:4f03)
-	INCBIN "pic/bmon/raichu.pic"
-RaichuPicBack: ; 2d0c3 (b:50c3)
-	INCBIN "pic/monback/raichub.pic"
-DratiniPicFront: ; 2d151 (b:5151)
-	INCBIN "pic/bmon/dratini.pic"
-DratiniPicBack: ; 2d234 (b:5234)
-	INCBIN "pic/monback/dratinib.pic"
-DragonairPicFront: ; 2d297 (b:5297)
-	INCBIN "pic/bmon/dragonair.pic"
-DragonairPicBack: ; 2d3d9 (b:53d9)
-	INCBIN "pic/monback/dragonairb.pic"
-KabutoPicFront: ; 2d464 (b:5464)
-	INCBIN "pic/bmon/kabuto.pic"
-KabutoPicBack: ; 2d529 (b:5529)
-	INCBIN "pic/monback/kabutob.pic"
-KabutopsPicFront: ; 2d583 (b:5583)
-	INCBIN "pic/bmon/kabutops.pic"
-KabutopsPicBack: ; 2d73c (b:573c)
-	INCBIN "pic/monback/kabutopsb.pic"
-HorseaPicFront: ; 2d7c1 (b:57c1)
-	INCBIN "pic/bmon/horsea.pic"
-HorseaPicBack: ; 2d873 (b:5873)
-	INCBIN "pic/monback/horseab.pic"
-SeadraPicFront: ; 2d8c4 (b:58c4)
-	INCBIN "pic/bmon/seadra.pic"
-SeadraPicBack: ; 2da2b (b:5a2b)
-	INCBIN "pic/monback/seadrab.pic"
-SandshrewPicFront: ; 2dac9 (b:5ac9)
-	INCBIN "pic/bmon/sandshrew.pic"
-SandshrewPicBack: ; 2dbe7 (b:5be7)
-	INCBIN "pic/monback/sandshrewb.pic"
-SandslashPicFront: ; 2dc6b (b:5c6b)
-	INCBIN "pic/bmon/sandslash.pic"
-SandslashPicBack: ; 2de04 (b:5e04)
-	INCBIN "pic/monback/sandslashb.pic"
-OmanytePicFront: ; 2de9d (b:5e9d)
-	INCBIN "pic/bmon/omanyte.pic"
-OmanytePicBack: ; 2df76 (b:5f76)
-	INCBIN "pic/monback/omanyteb.pic"
-OmastarPicFront: ; 2dfd3 (b:5fd3)
-	INCBIN "pic/bmon/omastar.pic"
-OmastarPicBack: ; 2e18b (b:618b)
-	INCBIN "pic/monback/omastarb.pic"
-JigglypuffPicFront: ; 2e22f (b:622f)
-	INCBIN "pic/bmon/jigglypuff.pic"
-JigglypuffPicBack: ; 2e30f (b:630f)
-	INCBIN "pic/monback/jigglypuffb.pic"
-WigglytuffPicFront: ; 2e348 (b:6348)
-	INCBIN "pic/bmon/wigglytuff.pic"
-WigglytuffPicBack: ; 2e4bf (b:64bf)
-	INCBIN "pic/monback/wigglytuffb.pic"
-EeveePicFront: ; 2e531 (b:6531)
-	INCBIN "pic/bmon/eevee.pic"
-EeveePicBack: ; 2e625 (b:6625)
-	INCBIN "pic/monback/eeveeb.pic"
-FlareonPicFront: ; 2e68d (b:668d)
-	INCBIN "pic/bmon/flareon.pic"
-FlareonPicBack: ; 2e806 (b:6806)
-	INCBIN "pic/monback/flareonb.pic"
-JolteonPicFront: ; 2e88f (b:688f)
-	INCBIN "pic/bmon/jolteon.pic"
-JolteonPicBack: ; 2ea0a (b:6a0a)
-	INCBIN "pic/monback/jolteonb.pic"
-VaporeonPicFront: ; 2eaae (b:6aae)
-	INCBIN "pic/bmon/vaporeon.pic"
-VaporeonPicBack: ; 2ec02 (b:6c02)
-	INCBIN "pic/monback/vaporeonb.pic"
-MachopPicFront: ; 2ec9f (b:6c9f)
-	INCBIN "pic/bmon/machop.pic"
-MachopPicBack: ; 2eda2 (b:6da2)
-	INCBIN "pic/monback/machopb.pic"
-ZubatPicFront: ; 2ee0c (b:6e0c)
-	INCBIN "pic/bmon/zubat.pic"
-ZubatPicBack: ; 2ef17 (b:6f17)
-	INCBIN "pic/monback/zubatb.pic"
-EkansPicFront: ; 2ef6b (b:6f6b)
-	INCBIN "pic/bmon/ekans.pic"
-EkansPicBack: ; 2f06d (b:706d)
-	INCBIN "pic/monback/ekansb.pic"
-ParasPicFront: ; 2f0b4 (b:70b4)
-	INCBIN "pic/bmon/paras.pic"
-ParasPicBack: ; 2f177 (b:7177)
-	INCBIN "pic/monback/parasb.pic"
-PoliwhirlPicFront: ; 2f1ed (b:71ed)
+PersianPicFront:
+	INCBIN "pic/bmon/persian.pic"
+PersianPicBack:
+	INCBIN "pic/monback/persianb.pic"
+PsyduckPicFront:
+	INCBIN "pic/bmon/psyduck.pic"
+PsyduckPicBack:
+	INCBIN "pic/monback/psyduckb.pic"
+GolduckPicFront:
+	INCBIN "pic/bmon/golduck.pic"
+GolduckPicBack:
+	INCBIN "pic/monback/golduckb.pic"
+MankeyPicFront:
+	INCBIN "pic/bmon/mankey.pic"
+MankeyPicBack:
+	INCBIN "pic/monback/mankeyb.pic"
+PrimeapePicFront:
+	INCBIN "pic/bmon/primeape.pic"
+PrimeapePicBack:
+	INCBIN "pic/monback/primeapeb.pic"
+GrowlithePicFront:
+	INCBIN "pic/bmon/growlithe.pic"
+GrowlithePicBack:
+	INCBIN "pic/monback/growlitheb.pic"
+ArcaninePicFront:
+	INCBIN "pic/bmon/arcanine.pic"
+ArcaninePicBack:
+	INCBIN "pic/monback/arcanineb.pic"
+PoliwagPicFront:
+	INCBIN "pic/bmon/poliwag.pic"
+PoliwagPicBack:
+	INCBIN "pic/monback/poliwagb.pic"
+PoliwhirlPicFront:
 	INCBIN "pic/bmon/poliwhirl.pic"
-PoliwhirlPicBack: ; 2f35e (b:735e)
+PoliwhirlPicBack:
 	INCBIN "pic/monback/poliwhirlb.pic"
-PoliwrathPicFront: ; 2f3c1 (b:73c1)
+PoliwrathPicFront:
 	INCBIN "pic/bmon/poliwrath.pic"
-PoliwrathPicBack: ; 2f52c (b:752c)
+PoliwrathPicBack:
 	INCBIN "pic/monback/poliwrathb.pic"
-WeedlePicFront: ; 2f57d (b:757d)
-	INCBIN "pic/bmon/weedle.pic"
-WeedlePicBack: ; 2f624 (b:7624)
-	INCBIN "pic/monback/weedleb.pic"
-KakunaPicFront: ; 2f677 (b:7677)
-	INCBIN "pic/bmon/kakuna.pic"
-KakunaPicBack: ; 2f736 (b:7736)
-	INCBIN "pic/monback/kakunab.pic"
-BeedrillPicFront: ; 2f788 (b:7788)
-	INCBIN "pic/bmon/beedrill.pic"
-BeedrillPicBack: ; 2f980 (b:7980)
-	INCBIN "pic/monback/beedrillb.pic"
-FossilKabutopsPic: ; 2f9e8 (b:79e8)
-	INCBIN "pic/bmon/fossilkabutops.pic"
+AbraPicFront:
+	INCBIN "pic/bmon/abra.pic"
+AbraPicBack:
+	INCBIN "pic/monback/abrab.pic"
+KadabraPicFront:
+	INCBIN "pic/bmon/kadabra.pic"
+KadabraPicBack:
+	INCBIN "pic/monback/kadabrab.pic"
+AlakazamPicFront:
+	INCBIN "pic/bmon/alakazam.pic"
+AlakazamPicBack:
+	INCBIN "pic/monback/alakazamb.pic"
+MachopPicFront:
+	INCBIN "pic/bmon/machop.pic"
+MachopPicBack:
+	INCBIN "pic/monback/machopb.pic"
+MachokePicFront:
+	INCBIN "pic/bmon/machoke.pic"
+MachokePicBack:
+	INCBIN "pic/monback/machokeb.pic"
+MachampPicFront:
+	INCBIN "pic/bmon/machamp.pic"
+MachampPicBack:
+	INCBIN "pic/monback/machampb.pic"
+BellsproutPicFront:
+	INCBIN "pic/bmon/bellsprout.pic"
+BellsproutPicBack:
+	INCBIN "pic/monback/bellsproutb.pic"
+WeepinbellPicFront:
+	INCBIN "pic/bmon/weepinbell.pic"
+WeepinbellPicBack:
+	INCBIN "pic/monback/weepinbellb.pic"
+VictreebelPicFront:
+	INCBIN "pic/bmon/victreebel.pic"
+VictreebelPicBack:
+	INCBIN "pic/monback/victreebelb.pic"
+TentacoolPicFront:
+	INCBIN "pic/bmon/tentacool.pic"
+TentacoolPicBack:
+	INCBIN "pic/monback/tentacoolb.pic"
+TentacruelPicFront:
+	INCBIN "pic/bmon/tentacruel.pic"
+TentacruelPicBack:
+	INCBIN "pic/monback/tentacruelb.pic"
+GeodudePicFront:
+	INCBIN "pic/bmon/geodude.pic"
+GeodudePicBack:
+	INCBIN "pic/monback/geodudeb.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 DisplayEffectiveness: ; 2fb7b (b:7b7b)
 	ld a, [$D05B]
@@ -47995,125 +48727,521 @@ GameCornerNoCoinsText: ; 2ff37 (b:7f37)
 	db "@"
 
 SECTION "bankC",ROMX,BANK[$C]
-DodrioPicFront: ; 30000 (c:4000)
+
+GravelerPicFront:
+	INCBIN "pic/bmon/graveler.pic"
+GravelerPicBack:
+	INCBIN "pic/monback/gravelerb.pic"
+GolemPicFront:
+	INCBIN "pic/bmon/golem.pic"
+GolemPicBack:
+	INCBIN "pic/monback/golemb.pic"
+PonytaPicFront:
+	INCBIN "pic/bmon/ponyta.pic"
+PonytaPicBack:
+	INCBIN "pic/monback/ponytab.pic"
+RapidashPicFront:
+	INCBIN "pic/bmon/rapidash.pic"
+RapidashPicBack:
+	INCBIN "pic/monback/rapidashb.pic"
+SlowpokePicFront:
+	INCBIN "pic/bmon/slowpoke.pic"
+SlowpokePicBack:
+	INCBIN "pic/monback/slowpokeb.pic"
+SlowbroPicFront:
+	INCBIN "pic/bmon/slowbro.pic"
+SlowbroPicBack:
+	INCBIN "pic/monback/slowbrob.pic"
+MagnemitePicFront:
+	INCBIN "pic/bmon/magnemite.pic"
+MagnemitePicBack:
+	INCBIN "pic/monback/magnemiteb.pic"
+MagnetonPicFront:
+	INCBIN "pic/bmon/magneton.pic"
+MagnetonPicBack:
+	INCBIN "pic/monback/magnetonb.pic"
+FarfetchdPicFront:
+	INCBIN "pic/bmon/farfetchd.pic"
+FarfetchdPicBack:
+	INCBIN "pic/monback/farfetchdb.pic"
+DoduoPicFront:
+	INCBIN "pic/bmon/doduo.pic"
+DoduoPicBack:
+	INCBIN "pic/monback/doduob.pic"
+DodrioPicFront:
 	INCBIN "pic/bmon/dodrio.pic"
-DodrioPicBack: ; 301a2 (c:41a2)
+DodrioPicBack:
 	INCBIN "pic/monback/dodriob.pic"
-PrimeapePicFront: ; 30247 (c:4247)
-	INCBIN "pic/bmon/primeape.pic"
-PrimeapePicBack: ; 30408 (c:4408)
-	INCBIN "pic/monback/primeapeb.pic"
-DugtrioPicFront: ; 30480 (c:4480)
-	INCBIN "pic/bmon/dugtrio.pic"
-DugtrioPicBack: ; 3062a (c:462a)
-	INCBIN "pic/monback/dugtriob.pic"
-VenomothPicFront: ; 306a9 (c:46a9)
-	INCBIN "pic/bmon/venomoth.pic"
-VenomothPicBack: ; 30841 (c:4841)
-	INCBIN "pic/monback/venomothb.pic"
-DewgongPicFront: ; 30899 (c:4899)
+SeelPicFront:
+	INCBIN "pic/bmon/seel.pic"
+SeelPicBack:
+	INCBIN "pic/monback/seelb.pic"
+DewgongPicFront:
 	INCBIN "pic/bmon/dewgong.pic"
-DewgongPicBack: ; 309e2 (c:49e2)
+DewgongPicBack:
 	INCBIN "pic/monback/dewgongb.pic"
-CaterpiePicFront: ; 30a49 (c:4a49)
-	INCBIN "pic/bmon/caterpie.pic"
-CaterpiePicBack: ; 30ae1 (c:4ae1)
-	INCBIN "pic/monback/caterpieb.pic"
-MetapodPicFront: ; 30b3a (c:4b3a)
-	INCBIN "pic/bmon/metapod.pic"
-MetapodPicBack: ; 30bc8 (c:4bc8)
-	INCBIN "pic/monback/metapodb.pic"
-ButterfreePicFront: ; 30c37 (c:4c37)
-	INCBIN "pic/bmon/butterfree.pic"
-ButterfreePicBack: ; 30e0e (c:4e0e)
-	INCBIN "pic/monback/butterfreeb.pic"
-MachampPicFront: ; 30e93 (c:4e93)
-	INCBIN "pic/bmon/machamp.pic"
-MachampPicBack: ; 3108c (c:508c)
-	INCBIN "pic/monback/machampb.pic"
-GolduckPicFront: ; 31108 (c:5108)
-	INCBIN "pic/bmon/golduck.pic"
-GolduckPicBack: ; 312c2 (c:52c2)
-	INCBIN "pic/monback/golduckb.pic"
-HypnoPicFront: ; 3135d (c:535d)
-	INCBIN "pic/bmon/hypno.pic"
-HypnoPicBack: ; 31552 (c:5552)
-	INCBIN "pic/monback/hypnob.pic"
-GolbatPicFront: ; 315e0 (c:55e0)
-	INCBIN "pic/bmon/golbat.pic"
-GolbatPicBack: ; 3180a (c:580a)
-	INCBIN "pic/monback/golbatb.pic"
-MewtwoPicFront: ; 3187f (c:587f)
-	INCBIN "pic/bmon/mewtwo.pic"
-MewtwoPicBack: ; 31a85 (c:5a85)
-	INCBIN "pic/monback/mewtwob.pic"
-SnorlaxPicFront: ; 31b19 (c:5b19)
-	INCBIN "pic/bmon/snorlax.pic"
-SnorlaxPicBack: ; 31ce5 (c:5ce5)
-	INCBIN "pic/monback/snorlaxb.pic"
-MagikarpPicFront: ; 31d31 (c:5d31)
-	INCBIN "pic/bmon/magikarp.pic"
-MagikarpPicBack: ; 31ec3 (c:5ec3)
-	INCBIN "pic/monback/magikarpb.pic"
-MukPicFront: ; 31f56 (c:5f56)
+GrimerPicFront:
+	INCBIN "pic/bmon/grimer.pic"
+GrimerPicBack:
+	INCBIN "pic/monback/grimerb.pic"
+MukPicFront:
 	INCBIN "pic/bmon/muk.pic"
-MukPicBack: ; 3215f (c:615f)
+MukPicBack:
 	INCBIN "pic/monback/mukb.pic"
-KinglerPicFront: ; 321ec (c:61ec)
-	INCBIN "pic/bmon/kingler.pic"
-KinglerPicBack: ; 323de (c:63de)
-	INCBIN "pic/monback/kinglerb.pic"
-CloysterPicFront: ; 3247f (c:647f)
+ShellderPicFront:
+	INCBIN "pic/bmon/shellder.pic"
+ShellderPicBack:
+	INCBIN "pic/monback/shellderb.pic"
+CloysterPicFront:
 	INCBIN "pic/bmon/cloyster.pic"
-CloysterPicBack: ; 326ab (c:66ab)
+CloysterPicBack:
 	INCBIN "pic/monback/cloysterb.pic"
-ElectrodePicFront: ; 32760 (c:6760)
-	INCBIN "pic/bmon/electrode.pic"
-ElectrodePicBack: ; 32827 (c:6827)
-	INCBIN "pic/monback/electrodeb.pic"
-ClefablePicFront: ; 3288c (c:688c)
-	INCBIN "pic/bmon/clefable.pic"
-ClefablePicBack: ; 329b8 (c:69b8)
-	INCBIN "pic/monback/clefableb.pic"
-WeezingPicFront: ; 32a44 (c:6a44)
-	INCBIN "pic/bmon/weezing.pic"
-WeezingPicBack: ; 32c76 (c:6c76)
-	INCBIN "pic/monback/weezingb.pic"
-PersianPicFront: ; 32d1e (c:6d1e)
-	INCBIN "pic/bmon/persian.pic"
-PersianPicBack: ; 32f04 (c:6f04)
-	INCBIN "pic/monback/persianb.pic"
-MarowakPicFront: ; 32f8f (c:6f8f)
-	INCBIN "pic/bmon/marowak.pic"
-MarowakPicBack: ; 33101 (c:7101)
-	INCBIN "pic/monback/marowakb.pic"
-HaunterPicFront: ; 3318a (c:718a)
+GastlyPicFront:
+	INCBIN "pic/bmon/gastly.pic"
+GastlyPicBack:
+	INCBIN "pic/monback/gastlyb.pic"
+HaunterPicFront:
 	INCBIN "pic/bmon/haunter.pic"
-HaunterPicBack: ; 33345 (c:7345)
+HaunterPicBack:
 	INCBIN "pic/monback/haunterb.pic"
-AbraPicFront: ; 333cc (c:73cc)
-	INCBIN "pic/bmon/abra.pic"
-AbraPicBack: ; 334cf (c:74cf)
-	INCBIN "pic/monback/abrab.pic"
-AlakazamPicFront: ; 3355a (c:755a)
-	INCBIN "pic/bmon/alakazam.pic"
-AlakazamPicBack: ; 33779 (c:7779)
-	INCBIN "pic/monback/alakazamb.pic"
-PidgeottoPicFront: ; 3380a (c:780a)
-	INCBIN "pic/bmon/pidgeotto.pic"
-PidgeottoPicBack: ; 3395b (c:795b)
-	INCBIN "pic/monback/pidgeottob.pic"
-PidgeotPicFront: ; 339c2 (c:79c2)
-	INCBIN "pic/bmon/pidgeot.pic"
-PidgeotPicBack: ; 33b79 (c:7b79)
-	INCBIN "pic/monback/pidgeotb.pic"
-StarmiePicFront: ; 33c1c (c:7c1c)
-	INCBIN "pic/bmon/starmie.pic"
-StarmiePicBack: ; 33dac (c:7dac)
-	INCBIN "pic/monback/starmieb.pic"
-RedPicBack: ; 33e0a (c:7e0a)
+GengarPicFront:
+	INCBIN "pic/bmon/gengar.pic"
+GengarPicBack:
+	INCBIN "pic/monback/gengarb.pic"
+OnixPicFront:
+	INCBIN "pic/bmon/onix.pic"
+OnixPicBack:
+	INCBIN "pic/monback/onixb.pic"
+DrowzeePicFront:
+	INCBIN "pic/bmon/drowzee.pic"
+DrowzeePicBack:
+	INCBIN "pic/monback/drowzeeb.pic"
+HypnoPicFront:
+	INCBIN "pic/bmon/hypno.pic"
+HypnoPicBack:
+	INCBIN "pic/monback/hypnob.pic"
+KrabbyPicFront:
+	INCBIN "pic/bmon/krabby.pic"
+KrabbyPicBack:
+	INCBIN "pic/monback/krabbyb.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	
+RedPicBack:
 	INCBIN "pic/trainer/redb.pic"
-OldManPic: ; 33e9a (c:7e9a)
+OldManPic:
 	INCBIN "pic/trainer/oldman.pic"
 
 Func_33f2b: ; 33f2b (c:7f2b)
@@ -48178,114 +49306,152 @@ Func_33f57: ; 33f57 (c:7f57)
 	ret
 
 SECTION "bankD",ROMX,BANK[$D]
-BulbasaurPicFront: ; 34000 (d:4000)
-	INCBIN "pic/bmon/bulbasaur.pic"
-BulbasaurPicBack: ; 340e5 (d:40e5)
-	INCBIN "pic/monback/bulbasaurb.pic"
-VenusaurPicFront: ; 34162 (d:4162)
-	INCBIN "pic/bmon/venusaur.pic"
-VenusaurPicBack: ; 34397 (d:4397)
-	INCBIN "pic/monback/venusaurb.pic"
-TentacruelPicFront: ; 34455 (d:4455)
-	INCBIN "pic/bmon/tentacruel.pic"
-TentacruelPicBack: ; 345c3 (d:45c3)
-	INCBIN "pic/monback/tentacruelb.pic"
-GoldeenPicFront: ; 3466f (d:466f)
-	INCBIN "pic/bmon/goldeen.pic"
-GoldeenPicBack: ; 34796 (d:4796)
-	INCBIN "pic/monback/goldeenb.pic"
-SeakingPicFront: ; 34803 (d:4803)
-	INCBIN "pic/bmon/seaking.pic"
-SeakingPicBack: ; 34a03 (d:4a03)
-	INCBIN "pic/monback/seakingb.pic"
-PonytaPicFront: ; 34ab1 (d:4ab1)
-	INCBIN "pic/bmon/ponyta.pic"
-RapidashPicFront: ; 34c10 (d:4c10)
-	INCBIN "pic/bmon/rapidash.pic"
-PonytaPicBack: ; 34e32 (d:4e32)
-	INCBIN "pic/monback/ponytab.pic"
-RapidashPicBack: ; 34eba (d:4eba)
-	INCBIN "pic/monback/rapidashb.pic"
-RattataPicFront: ; 34f6a (d:4f6a)
-	INCBIN "pic/bmon/rattata.pic"
-RattataPicBack: ; 35041 (d:5041)
-	INCBIN "pic/monback/rattatab.pic"
-RaticatePicFront: ; 3507a (d:507a)
-	INCBIN "pic/bmon/raticate.pic"
-RaticatePicBack: ; 3520d (d:520d)
-	INCBIN "pic/monback/raticateb.pic"
-NidorinoPicFront: ; 35282 (d:5282)
-	INCBIN "pic/bmon/nidorino.pic"
-NidorinoPicBack: ; 353f0 (d:53f0)
-	INCBIN "pic/monback/nidorinob.pic"
-NidorinaPicFront: ; 3548b (d:548b)
-	INCBIN "pic/bmon/nidorina.pic"
-NidorinaPicBack: ; 355c8 (d:55c8)
-	INCBIN "pic/monback/nidorinab.pic"
-GeodudePicFront: ; 3564f (d:564f)
-	INCBIN "pic/bmon/geodude.pic"
-GeodudePicBack: ; 35729 (d:5729)
-	INCBIN "pic/monback/geodudeb.pic"
-PorygonPicFront: ; 35784 (d:5784)
-	INCBIN "pic/bmon/porygon.pic"
-PorygonPicBack: ; 358d1 (d:58d1)
-	INCBIN "pic/monback/porygonb.pic"
-AerodactylPicFront: ; 35931 (d:5931)
-	INCBIN "pic/bmon/aerodactyl.pic"
-AerodactylPicBack: ; 35aec (d:5aec)
-	INCBIN "pic/monback/aerodactylb.pic"
-MagnemitePicFront: ; 35b87 (d:5b87)
-	INCBIN "pic/bmon/magnemite.pic"
-MagnemitePicBack: ; 35c0d (d:5c0d)
-	INCBIN "pic/monback/magnemiteb.pic"
-CharmanderPicFront: ; 35c5c (d:5c5c)
-	INCBIN "pic/bmon/charmander.pic"
-CharmanderPicBack: ; 35d5c (d:5d5c)
-	INCBIN "pic/monback/charmanderb.pic"
-SquirtlePicFront: ; 35db8 (d:5db8)
-	INCBIN "pic/bmon/squirtle.pic"
-SquirtlePicBack: ; 35e8f (d:5e8f)
-	INCBIN "pic/monback/squirtleb.pic"
-CharmeleonPicFront: ; 35f0c (d:5f0c)
-	INCBIN "pic/bmon/charmeleon.pic"
-CharmeleonPicBack: ; 36048 (d:6048)
-	INCBIN "pic/monback/charmeleonb.pic"
-WartortlePicFront: ; 360b1 (d:60b1)
-	INCBIN "pic/bmon/wartortle.pic"
-WartortlePicBack: ; 361f1 (d:61f1)
-	INCBIN "pic/monback/wartortleb.pic"
-CharizardPicFront: ; 36286 (d:6286)
-	INCBIN "pic/bmon/charizard.pic"
-CharizardPicBack: ; 36495 (d:6495)
-	INCBIN "pic/monback/charizardb.pic"
-FossilAerodactylPic: ; 36536 (d:6536)
+
+KinglerPicFront:
+	INCBIN "pic/bmon/kingler.pic"
+KinglerPicBack:
+	INCBIN "pic/monback/kinglerb.pic"
+VoltorbPicFront:
+	INCBIN "pic/bmon/voltorb.pic"
+VoltorbPicBack:
+	INCBIN "pic/monback/voltorbb.pic"
+ElectrodePicFront:
+	INCBIN "pic/bmon/electrode.pic"
+ElectrodePicBack:
+	INCBIN "pic/monback/electrodeb.pic"
+ExeggcutePicFront:
+	INCBIN "pic/bmon/exeggcute.pic"
+ExeggcutePicBack:
+	INCBIN "pic/monback/exeggcuteb.pic"
+ExeggutorPicFront:
+	INCBIN "pic/bmon/exeggutor.pic"
+ExeggutorPicBack:
+	INCBIN "pic/monback/exeggutorb.pic"
+CubonePicFront:
+	INCBIN "pic/bmon/cubone.pic"
+CubonePicBack:
+	INCBIN "pic/monback/cuboneb.pic"
+MarowakPicFront:
+	INCBIN "pic/bmon/marowak.pic"
+MarowakPicBack:
+	INCBIN "pic/monback/marowakb.pic"
+HitmonleePicFront:
+	INCBIN "pic/bmon/hitmonlee.pic"
+HitmonleePicBack:
+	INCBIN "pic/monback/hitmonleeb.pic"
+HitmonchanPicFront:
+	INCBIN "pic/bmon/hitmonchan.pic"
+HitmonchanPicBack:
+	INCBIN "pic/monback/hitmonchanb.pic"
+LickitungPicFront:
+	INCBIN "pic/bmon/lickitung.pic"
+LickitungPicBack:
+	INCBIN "pic/monback/lickitungb.pic"
+KoffingPicFront:
+	INCBIN "pic/bmon/koffing.pic"
+KoffingPicBack:
+	INCBIN "pic/monback/koffingb.pic"
+WeezingPicFront:
+	INCBIN "pic/bmon/weezing.pic"
+WeezingPicBack:
+	INCBIN "pic/monback/weezingb.pic"
+RhyhornPicFront:
+	INCBIN "pic/bmon/rhyhorn.pic"
+RhyhornPicBack:
+	INCBIN "pic/monback/rhyhornb.pic"
+RhydonPicFront:
+	INCBIN "pic/bmon/rhydon.pic"
+RhydonPicBack:
+	INCBIN "pic/monback/rhydonb.pic"
+ChanseyPicFront:
+	INCBIN "pic/bmon/chansey.pic"
+ChanseyPicBack:
+	INCBIN "pic/monback/chanseyb.pic"
+TangelaPicFront:
+	INCBIN "pic/bmon/tangela.pic"
+TangelaPicBack:
+	INCBIN "pic/monback/tangelab.pic"
+KangaskhanPicFront:
+	INCBIN "pic/bmon/kangaskhan.pic"
+KangaskhanPicBack:
+	INCBIN "pic/monback/kangaskhanb.pic"
+HorseaPicFront:
+	INCBIN "pic/bmon/horsea.pic"
+HorseaPicBack:
+	INCBIN "pic/monback/horseab.pic"
+FossilKabutopsPic:
+	INCBIN "pic/bmon/fossilkabutops.pic"
+FossilAerodactylPic:
 	INCBIN "pic/bmon/fossilaerodactyl.pic"
-GhostPic: ; 366b5 (d:66b5)
+GhostPic:
 	INCBIN "pic/other/ghost.pic"
-OddishPicFront: ; 3680b (d:680b)
-	INCBIN "pic/bmon/oddish.pic"
-OddishPicBack: ; 368a9 (d:68a9)
-	INCBIN "pic/monback/oddishb.pic"
-GloomPicFront: ; 36941 (d:6941)
-	INCBIN "pic/bmon/gloom.pic"
-GloomPicBack: ; 36a78 (d:6a78)
-	INCBIN "pic/monback/gloomb.pic"
-VileplumePicFront: ; 36b21 (d:6b21)
-	INCBIN "pic/bmon/vileplume.pic"
-VileplumePicBack: ; 36c82 (d:6c82)
-	INCBIN "pic/monback/vileplumeb.pic"
-BellsproutPicFront: ; 36d00 (d:6d00)
-	INCBIN "pic/bmon/bellsprout.pic"
-BellsproutPicBack: ; 36dba (d:6dba)
-	INCBIN "pic/monback/bellsproutb.pic"
-WeepinbellPicFront: ; 36e30 (d:6e30)
-	INCBIN "pic/bmon/weepinbell.pic"
-WeepinbellPicBack: ; 36f6f (d:6f6f)
-	INCBIN "pic/monback/weepinbellb.pic"
-VictreebelPicFront: ; 36fea (d:6fea)
-	INCBIN "pic/bmon/victreebel.pic"
-VictreebelPicBack: ; 371b2 (d:71b2)
-	INCBIN "pic/monback/victreebelb.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 
 TitleScroll_WaitBall: ; 37244 (d:7244)
@@ -48433,7 +49599,7 @@ Func_372d6: ; 372d6 (d:72d6)
 	ld [$cfcb], a
 	ld hl, Func_3a948
 	ld b, BANK(Func_3a948)
-	call Bankswitch ; indirect jump to Func_3a948 (3a948 (e:6948))
+	call Bankswitch
 	ld c, $96
 	jp DelayFrames
 
@@ -49666,6 +50832,8 @@ GameCornerSomeonesKeysText: ; 37e83 (d:7e83)
 	TX_FAR _GameCornerSomeonesKeysText
 	db "@"
 
+	nop
+
 SECTION "bankE",ROMX,BANK[$E]
 
 Moves: ; 38000 (e:4000)
@@ -49872,7 +51040,7 @@ BulbasaurBaseStats: ; 383de (e:43de)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(BulbasaurPicFront)
 
 IvysaurBaseStats: ; 383fa (e:43fa)
 	db DEX_IVYSAUR ; pokedex id
@@ -49909,7 +51077,7 @@ IvysaurBaseStats: ; 383fa (e:43fa)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(IvysaurPicFront)
 
 VenusaurBaseStats: ; 38416 (e:4416)
 	db DEX_VENUSAUR ; pokedex id
@@ -49946,7 +51114,7 @@ VenusaurBaseStats: ; 38416 (e:4416)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(VenusaurPicFront)
 
 CharmanderBaseStats: ; 38432 (e:4432)
 	db DEX_CHARMANDER ; pokedex id
@@ -49983,7 +51151,7 @@ CharmanderBaseStats: ; 38432 (e:4432)
 	db %00001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(CharmanderPicFront)
 
 CharmeleonBaseStats: ; 3844e (e:444e)
 	db DEX_CHARMELEON ; pokedex id
@@ -50020,7 +51188,7 @@ CharmeleonBaseStats: ; 3844e (e:444e)
 	db %00001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(CharmeleonPicFront)
 
 CharizardBaseStats: ; 3846a (e:446a)
 	db DEX_CHARIZARD ; pokedex id
@@ -50057,7 +51225,7 @@ CharizardBaseStats: ; 3846a (e:446a)
 	db %00001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(CharizardPicFront)
 
 SquirtleBaseStats: ; 38486 (e:4486)
 	db DEX_SQUIRTLE ; pokedex id
@@ -50094,7 +51262,7 @@ SquirtleBaseStats: ; 38486 (e:4486)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(SquirtlePicFront)
 
 WartortleBaseStats: ; 384a2 (e:44a2)
 	db DEX_WARTORTLE ; pokedex id
@@ -50131,7 +51299,7 @@ WartortleBaseStats: ; 384a2 (e:44a2)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(WartortlePicFront)
 
 BlastoiseBaseStats: ; 384be (e:44be)
 	db DEX_BLASTOISE ; pokedex id
@@ -50168,7 +51336,7 @@ BlastoiseBaseStats: ; 384be (e:44be)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(BlastoisePicFront)
 
 CaterpieBaseStats: ; 384da (e:44da)
 	db DEX_CATERPIE ; pokedex id
@@ -50204,8 +51372,8 @@ CaterpieBaseStats: ; 384da (e:44da)
 	db %00000000
 	db %00000000
 	db %00000000
-
-	db 0 ; padding
+	
+	db BANK(CaterpiePicFront)
 
 MetapodBaseStats: ; 384f6 (e:44f6)
 	db DEX_METAPOD ; pokedex id
@@ -50242,7 +51410,7 @@ MetapodBaseStats: ; 384f6 (e:44f6)
 	db %00000000
 	db %00000000
 
-	db 0 ; padding
+	db BANK(MetapodPicFront)
 
 ButterfreeBaseStats: ; 38512 (e:4512)
 	db DEX_BUTTERFREE ; pokedex id
@@ -50279,7 +51447,7 @@ ButterfreeBaseStats: ; 38512 (e:4512)
 	db %00101000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(ButterfreePicFront)
 
 WeedleBaseStats: ; 3852e (e:452e)
 	db DEX_WEEDLE ; pokedex id
@@ -50316,7 +51484,7 @@ WeedleBaseStats: ; 3852e (e:452e)
 	db %00000000
 	db %00000000
 
-	db 0 ; padding
+	db BANK(WeedlePicFront)
 
 KakunaBaseStats: ; 3854a (e:454a)
 	db DEX_KAKUNA ; pokedex id
@@ -50353,7 +51521,7 @@ KakunaBaseStats: ; 3854a (e:454a)
 	db %00000000
 	db %00000000
 
-	db 0 ; padding
+	db BANK(KakunaPicFront)
 
 BeedrillBaseStats: ; 38566 (e:4566)
 	db DEX_BEEDRILL ; pokedex id
@@ -50390,7 +51558,7 @@ BeedrillBaseStats: ; 38566 (e:4566)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(BeedrillPicFront)
 
 PidgeyBaseStats: ; 38582 (e:4582)
 	db DEX_PIDGEY ; pokedex id
@@ -50427,7 +51595,7 @@ PidgeyBaseStats: ; 38582 (e:4582)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(PidgeyPicFront)
 
 PidgeottoBaseStats: ; 3859e (e:459e)
 	db DEX_PIDGEOTTO ; pokedex id
@@ -50464,7 +51632,7 @@ PidgeottoBaseStats: ; 3859e (e:459e)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(PidgeottoPicFront)
 
 PidgeotBaseStats: ; 385ba (e:45ba)
 	db DEX_PIDGEOT ; pokedex id
@@ -50501,7 +51669,7 @@ PidgeotBaseStats: ; 385ba (e:45ba)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(PidgeotPicFront)
 
 RattataBaseStats: ; 385d6 (e:45d6)
 	db DEX_RATTATA ; pokedex id
@@ -50538,7 +51706,7 @@ RattataBaseStats: ; 385d6 (e:45d6)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(RattataPicFront)
 
 RaticateBaseStats: ; 385f2 (e:45f2)
 	db DEX_RATICATE ; pokedex id
@@ -50575,7 +51743,7 @@ RaticateBaseStats: ; 385f2 (e:45f2)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(RaticatePicFront)
 
 SpearowBaseStats: ; 3860e (e:460e)
 	db DEX_SPEAROW ; pokedex id
@@ -50612,7 +51780,7 @@ SpearowBaseStats: ; 3860e (e:460e)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(SpearowPicFront)
 
 FearowBaseStats: ; 3862a (e:462a)
 	db DEX_FEAROW ; pokedex id
@@ -50649,7 +51817,7 @@ FearowBaseStats: ; 3862a (e:462a)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(FearowPicFront)
 
 EkansBaseStats: ; 38646 (e:4646)
 	db DEX_EKANS ; pokedex id
@@ -50686,7 +51854,7 @@ EkansBaseStats: ; 38646 (e:4646)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(EkansPicFront)
 
 ArbokBaseStats: ; 38662 (e:4662)
 	db DEX_ARBOK ; pokedex id
@@ -50723,7 +51891,7 @@ ArbokBaseStats: ; 38662 (e:4662)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(ArbokPicFront)
 
 PikachuBaseStats: ; 3867e (e:467e)
 	db DEX_PIKACHU ; pokedex id
@@ -50760,7 +51928,7 @@ PikachuBaseStats: ; 3867e (e:467e)
 	db %00011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(PikachuPicFront)
 
 RaichuBaseStats: ; 3869a (e:469a)
 	db DEX_RAICHU ; pokedex id
@@ -50797,7 +51965,7 @@ RaichuBaseStats: ; 3869a (e:469a)
 	db %00011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(RaichuPicFront)
 
 SandshrewBaseStats: ; 386b6 (e:46b6)
 	db DEX_SANDSHREW ; pokedex id
@@ -50834,7 +52002,7 @@ SandshrewBaseStats: ; 386b6 (e:46b6)
 	db %10001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(SandshrewPicFront)
 
 SandslashBaseStats: ; 386d2 (e:46d2)
 	db DEX_SANDSLASH ; pokedex id
@@ -50871,7 +52039,7 @@ SandslashBaseStats: ; 386d2 (e:46d2)
 	db %10001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(SandslashPicFront)
 
 NidoranFBaseStats: ; 386ee (e:46ee)
 	db DEX_NIDORAN_F ; pokedex id
@@ -50908,7 +52076,7 @@ NidoranFBaseStats: ; 386ee (e:46ee)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(NidoranFPicFront)
 
 NidorinaBaseStats: ; 3870a (e:470a)
 	db DEX_NIDORINA ; pokedex id
@@ -50945,7 +52113,7 @@ NidorinaBaseStats: ; 3870a (e:470a)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(NidorinaPicFront)
 
 NidoqueenBaseStats: ; 38726 (e:4726)
 	db DEX_NIDOQUEEN ; pokedex id
@@ -50982,7 +52150,7 @@ NidoqueenBaseStats: ; 38726 (e:4726)
 	db %10001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(NidoqueenPicFront)
 
 NidoranMBaseStats: ; 38742 (e:4742)
 	db DEX_NIDORAN_M ; pokedex id
@@ -51019,7 +52187,7 @@ NidoranMBaseStats: ; 38742 (e:4742)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(NidoranMPicFront)
 
 NidorinoBaseStats: ; 3875e (e:475e)
 	db DEX_NIDORINO ; pokedex id
@@ -51056,7 +52224,7 @@ NidorinoBaseStats: ; 3875e (e:475e)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(NidorinoPicFront)
 
 NidokingBaseStats: ; 3877a (e:477a)
 	db DEX_NIDOKING ; pokedex id
@@ -51093,7 +52261,7 @@ NidokingBaseStats: ; 3877a (e:477a)
 	db %10001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(NidokingPicFront)
 
 ClefairyBaseStats: ; 38796 (e:4796)
 	db DEX_CLEFAIRY ; pokedex id
@@ -51130,7 +52298,7 @@ ClefairyBaseStats: ; 38796 (e:4796)
 	db %00111000
 	db %01100011
 
-	db 0 ; padding
+	db BANK(ClefairyPicFront)
 
 ClefableBaseStats: ; 387b2 (e:47b2)
 	db DEX_CLEFABLE ; pokedex id
@@ -51167,7 +52335,7 @@ ClefableBaseStats: ; 387b2 (e:47b2)
 	db %00111000
 	db %01100011
 
-	db 0 ; padding
+	db BANK(ClefablePicFront)
 
 VulpixBaseStats: ; 387ce (e:47ce)
 	db DEX_VULPIX ; pokedex id
@@ -51204,7 +52372,7 @@ VulpixBaseStats: ; 387ce (e:47ce)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(VulpixPicFront)
 
 NinetalesBaseStats: ; 387ea (e:47ea)
 	db DEX_NINETALES ; pokedex id
@@ -51241,7 +52409,7 @@ NinetalesBaseStats: ; 387ea (e:47ea)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(NinetalesPicFront)
 
 JigglypuffBaseStats: ; 38806 (e:4806)
 	db DEX_JIGGLYPUFF ; pokedex id
@@ -51278,7 +52446,7 @@ JigglypuffBaseStats: ; 38806 (e:4806)
 	db %00111000
 	db %01100011
 
-	db 0 ; padding
+	db BANK(JigglypuffPicFront)
 
 WigglytuffBaseStats: ; 38822 (e:4822)
 	db DEX_WIGGLYTUFF ; pokedex id
@@ -51315,7 +52483,7 @@ WigglytuffBaseStats: ; 38822 (e:4822)
 	db %00111000
 	db %01100011
 
-	db 0 ; padding
+	db BANK(WigglytuffPicFront)
 
 ZubatBaseStats: ; 3883e (e:483e)
 	db DEX_ZUBAT ; pokedex id
@@ -51352,7 +52520,7 @@ ZubatBaseStats: ; 3883e (e:483e)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(ZubatPicFront)
 
 GolbatBaseStats: ; 3885a (e:485a)
 	db DEX_GOLBAT ; pokedex id
@@ -51389,7 +52557,7 @@ GolbatBaseStats: ; 3885a (e:485a)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(GolbatPicFront)
 
 OddishBaseStats: ; 38876 (e:4876)
 	db DEX_ODDISH ; pokedex id
@@ -51426,7 +52594,7 @@ OddishBaseStats: ; 38876 (e:4876)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(OddishPicFront)
 
 GloomBaseStats: ; 38892 (e:4892)
 	db DEX_GLOOM ; pokedex id
@@ -51463,7 +52631,7 @@ GloomBaseStats: ; 38892 (e:4892)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(GloomPicFront)
 
 VileplumeBaseStats: ; 388ae (e:48ae)
 	db DEX_VILEPLUME ; pokedex id
@@ -51500,7 +52668,7 @@ VileplumeBaseStats: ; 388ae (e:48ae)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(VileplumePicFront)
 
 ParasBaseStats: ; 388ca (e:48ca)
 	db DEX_PARAS ; pokedex id
@@ -51537,7 +52705,7 @@ ParasBaseStats: ; 388ca (e:48ca)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(ParasPicFront)
 
 ParasectBaseStats: ; 388e6 (e:48e6)
 	db DEX_PARASECT ; pokedex id
@@ -51574,7 +52742,7 @@ ParasectBaseStats: ; 388e6 (e:48e6)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(ParasectPicFront)
 
 VenonatBaseStats: ; 38902 (e:4902)
 	db DEX_VENONAT ; pokedex id
@@ -51611,7 +52779,7 @@ VenonatBaseStats: ; 38902 (e:4902)
 	db %00101000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(VenonatPicFront)
 
 VenomothBaseStats: ; 3891e (e:491e)
 	db DEX_VENOMOTH ; pokedex id
@@ -51648,7 +52816,7 @@ VenomothBaseStats: ; 3891e (e:491e)
 	db %00101000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(VenomothPicFront)
 
 DiglettBaseStats: ; 3893a (e:493a)
 	db DEX_DIGLETT ; pokedex id
@@ -51685,7 +52853,7 @@ DiglettBaseStats: ; 3893a (e:493a)
 	db %10001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(DiglettPicFront)
 
 DugtrioBaseStats: ; 38956 (e:4956)
 	db DEX_DUGTRIO ; pokedex id
@@ -51700,7 +52868,7 @@ DugtrioBaseStats: ; 38956 (e:4956)
 
 	db 50 ; catch rate
 	db 153 ; base exp yield
-	db $66 ; sprite dimensions
+	db $77 ; sprite dimensions
 
 	dw DugtrioPicFront
 	dw DugtrioPicBack
@@ -51722,7 +52890,7 @@ DugtrioBaseStats: ; 38956 (e:4956)
 	db %10001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(DugtrioPicFront)
 
 MeowthBaseStats: ; 38972 (e:4972)
 	db DEX_MEOWTH ; pokedex id
@@ -51759,7 +52927,7 @@ MeowthBaseStats: ; 38972 (e:4972)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(MeowthPicFront)
 
 PersianBaseStats: ; 3898e (e:498e)
 	db DEX_PERSIAN ; pokedex id
@@ -51796,7 +52964,7 @@ PersianBaseStats: ; 3898e (e:498e)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(PersianPicFront)
 
 PsyduckBaseStats: ; 389aa (e:49aa)
 	db DEX_PSYDUCK ; pokedex id
@@ -51833,7 +53001,7 @@ PsyduckBaseStats: ; 389aa (e:49aa)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(PsyduckPicFront)
 
 GolduckBaseStats: ; 389c6 (e:49c6)
 	db DEX_GOLDUCK ; pokedex id
@@ -51870,7 +53038,7 @@ GolduckBaseStats: ; 389c6 (e:49c6)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(GolduckPicFront)
 
 MankeyBaseStats: ; 389e2 (e:49e2)
 	db DEX_MANKEY ; pokedex id
@@ -51907,7 +53075,7 @@ MankeyBaseStats: ; 389e2 (e:49e2)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MankeyPicFront)
 
 PrimeapeBaseStats: ; 389fe (e:49fe)
 	db DEX_PRIMEAPE ; pokedex id
@@ -51944,7 +53112,7 @@ PrimeapeBaseStats: ; 389fe (e:49fe)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(PrimeapePicFront)
 
 GrowlitheBaseStats: ; 38a1a (e:4a1a)
 	db DEX_GROWLITHE ; pokedex id
@@ -51981,7 +53149,7 @@ GrowlitheBaseStats: ; 38a1a (e:4a1a)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(GrowlithePicFront)
 
 ArcanineBaseStats: ; 38a36 (e:4a36)
 	db DEX_ARCANINE ; pokedex id
@@ -52018,7 +53186,7 @@ ArcanineBaseStats: ; 38a36 (e:4a36)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(ArcaninePicFront)
 
 PoliwagBaseStats: ; 38a52 (e:4a52)
 	db DEX_POLIWAG ; pokedex id
@@ -52055,7 +53223,7 @@ PoliwagBaseStats: ; 38a52 (e:4a52)
 	db %00101000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(PoliwagPicFront)
 
 PoliwhirlBaseStats: ; 38a6e (e:4a6e)
 	db DEX_POLIWHIRL ; pokedex id
@@ -52092,7 +53260,7 @@ PoliwhirlBaseStats: ; 38a6e (e:4a6e)
 	db %00101000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(PoliwhirlPicFront)
 
 PoliwrathBaseStats: ; 38a8a (e:4a8a)
 	db DEX_POLIWRATH ; pokedex id
@@ -52129,7 +53297,7 @@ PoliwrathBaseStats: ; 38a8a (e:4a8a)
 	db %00101000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(PoliwrathPicFront)
 
 AbraBaseStats: ; 38aa6 (e:4aa6)
 	db DEX_ABRA ; pokedex id
@@ -52166,7 +53334,7 @@ AbraBaseStats: ; 38aa6 (e:4aa6)
 	db %00111000
 	db %01000011
 
-	db 0 ; padding
+	db BANK(AbraPicFront)
 
 KadabraBaseStats: ; 38ac2 (e:4ac2)
 	db DEX_KADABRA ; pokedex id
@@ -52203,7 +53371,7 @@ KadabraBaseStats: ; 38ac2 (e:4ac2)
 	db %00111000
 	db %01000011
 
-	db 0 ; padding
+	db BANK(KadabraPicFront)
 
 AlakazamBaseStats: ; 38ade (e:4ade)
 	db DEX_ALAKAZAM ; pokedex id
@@ -52240,7 +53408,7 @@ AlakazamBaseStats: ; 38ade (e:4ade)
 	db %00111000
 	db %01000011
 
-	db 0 ; padding
+	db BANK(AlakazamPicFront)
 
 MachopBaseStats: ; 38afa (e:4afa)
 	db DEX_MACHOP ; pokedex id
@@ -52277,7 +53445,7 @@ MachopBaseStats: ; 38afa (e:4afa)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MachopPicFront)
 
 MachokeBaseStats: ; 38b16 (e:4b16)
 	db DEX_MACHOKE ; pokedex id
@@ -52314,7 +53482,7 @@ MachokeBaseStats: ; 38b16 (e:4b16)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MachokePicFront)
 
 MachampBaseStats: ; 38b32 (e:4b32)
 	db DEX_MACHAMP ; pokedex id
@@ -52351,7 +53519,7 @@ MachampBaseStats: ; 38b32 (e:4b32)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MachampPicFront)
 
 BellsproutBaseStats: ; 38b4e (e:4b4e)
 	db DEX_BELLSPROUT ; pokedex id
@@ -52388,7 +53556,7 @@ BellsproutBaseStats: ; 38b4e (e:4b4e)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(BellsproutPicFront)
 
 WeepinbellBaseStats: ; 38b6a (e:4b6a)
 	db DEX_WEEPINBELL ; pokedex id
@@ -52425,7 +53593,7 @@ WeepinbellBaseStats: ; 38b6a (e:4b6a)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(WeepinbellPicFront)
 
 VictreebelBaseStats: ; 38b86 (e:4b86)
 	db DEX_VICTREEBEL ; pokedex id
@@ -52462,7 +53630,7 @@ VictreebelBaseStats: ; 38b86 (e:4b86)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(VictreebelPicFront)
 
 TentacoolBaseStats: ; 38ba2 (e:4ba2)
 	db DEX_TENTACOOL ; pokedex id
@@ -52499,7 +53667,7 @@ TentacoolBaseStats: ; 38ba2 (e:4ba2)
 	db %00001000
 	db %00010110
 
-	db 0 ; padding
+	db BANK(TentacoolPicFront)
 
 TentacruelBaseStats: ; 38bbe (e:4bbe)
 	db DEX_TENTACRUEL ; pokedex id
@@ -52536,7 +53704,7 @@ TentacruelBaseStats: ; 38bbe (e:4bbe)
 	db %00001000
 	db %00010110
 
-	db 0 ; padding
+	db BANK(TentacruelPicFront)
 
 GeodudeBaseStats: ; 38bda (e:4bda)
 	db DEX_GEODUDE ; pokedex id
@@ -52573,7 +53741,7 @@ GeodudeBaseStats: ; 38bda (e:4bda)
 	db %11001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(GeodudePicFront)
 
 GravelerBaseStats: ; 38bf6 (e:4bf6)
 	db DEX_GRAVELER ; pokedex id
@@ -52610,7 +53778,7 @@ GravelerBaseStats: ; 38bf6 (e:4bf6)
 	db %11001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(GravelerPicFront)
 
 GolemBaseStats: ; 38c12 (e:4c12)
 	db DEX_GOLEM ; pokedex id
@@ -52647,7 +53815,7 @@ GolemBaseStats: ; 38c12 (e:4c12)
 	db %11001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(GolemPicFront)
 
 PonytaBaseStats: ; 38c2e (e:4c2e)
 	db DEX_PONYTA ; pokedex id
@@ -52684,7 +53852,7 @@ PonytaBaseStats: ; 38c2e (e:4c2e)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(PonytaPicFront)
 
 RapidashBaseStats: ; 38c4a (e:4c4a)
 	db DEX_RAPIDASH ; pokedex id
@@ -52721,7 +53889,7 @@ RapidashBaseStats: ; 38c4a (e:4c4a)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(RapidashPicFront)
 
 SlowpokeBaseStats: ; 38c66 (e:4c66)
 	db DEX_SLOWPOKE ; pokedex id
@@ -52758,7 +53926,7 @@ SlowpokeBaseStats: ; 38c66 (e:4c66)
 	db %00111000
 	db %01110011
 
-	db 0 ; padding
+	db BANK(SlowpokePicFront)
 
 SlowbroBaseStats: ; 38c82 (e:4c82)
 	db DEX_SLOWBRO ; pokedex id
@@ -52795,7 +53963,7 @@ SlowbroBaseStats: ; 38c82 (e:4c82)
 	db %00111000
 	db %01110011
 
-	db 0 ; padding
+	db BANK(SlowbroPicFront)
 
 MagnemiteBaseStats: ; 38c9e (e:4c9e)
 	db DEX_MAGNEMITE ; pokedex id
@@ -52832,7 +54000,7 @@ MagnemiteBaseStats: ; 38c9e (e:4c9e)
 	db %00011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(MagnemitePicFront)
 
 MagnetonBaseStats: ; 38cba (e:4cba)
 	db DEX_MAGNETON ; pokedex id
@@ -52869,7 +54037,7 @@ MagnetonBaseStats: ; 38cba (e:4cba)
 	db %00011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(MagnetonPicFront)
 
 FarfetchdBaseStats: ; 38cd6 (e:4cd6)
 	db DEX_FARFETCH_D ; pokedex id
@@ -52906,7 +54074,7 @@ FarfetchdBaseStats: ; 38cd6 (e:4cd6)
 	db %00001000
 	db %00001110
 
-	db 0 ; padding
+	db BANK(FarfetchdPicFront)
 
 DoduoBaseStats: ; 38cf2 (e:4cf2)
 	db DEX_DODUO ; pokedex id
@@ -52943,7 +54111,7 @@ DoduoBaseStats: ; 38cf2 (e:4cf2)
 	db %00001100
 	db %00001011
 
-	db 0 ; padding
+	db BANK(DoduoPicFront)
 
 DodrioBaseStats: ; 38d0e (e:4d0e)
 	db DEX_DODRIO ; pokedex id
@@ -52980,7 +54148,7 @@ DodrioBaseStats: ; 38d0e (e:4d0e)
 	db %00001100
 	db %00001011
 
-	db 0 ; padding
+	db BANK(DodrioPicFront)
 
 SeelBaseStats: ; 38d2a (e:4d2a)
 	db DEX_SEEL ; pokedex id
@@ -53017,7 +54185,7 @@ SeelBaseStats: ; 38d2a (e:4d2a)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(SeelPicFront)
 
 DewgongBaseStats: ; 38d46 (e:4d46)
 	db DEX_DEWGONG ; pokedex id
@@ -53032,7 +54200,7 @@ DewgongBaseStats: ; 38d46 (e:4d46)
 
 	db 75 ; catch rate
 	db 176 ; base exp yield
-	db $66 ; sprite dimensions
+	db $77 ; sprite dimensions
 
 	dw DewgongPicFront
 	dw DewgongPicBack
@@ -53054,7 +54222,7 @@ DewgongBaseStats: ; 38d46 (e:4d46)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(DewgongPicFront)
 
 GrimerBaseStats: ; 38d62 (e:4d62)
 	db DEX_GRIMER ; pokedex id
@@ -53091,7 +54259,7 @@ GrimerBaseStats: ; 38d62 (e:4d62)
 	db %01001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(GrimerPicFront)
 
 MukBaseStats: ; 38d7e (e:4d7e)
 	db DEX_MUK ; pokedex id
@@ -53128,7 +54296,7 @@ MukBaseStats: ; 38d7e (e:4d7e)
 	db %01001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(MukPicFront)
 
 ShellderBaseStats: ; 38d9a (e:4d9a)
 	db DEX_SHELLDER ; pokedex id
@@ -53165,7 +54333,7 @@ ShellderBaseStats: ; 38d9a (e:4d9a)
 	db %01001000
 	db %00010011
 
-	db 0 ; padding
+	db BANK(ShellderPicFront)
 
 CloysterBaseStats: ; 38db6 (e:4db6)
 	db DEX_CLOYSTER ; pokedex id
@@ -53202,7 +54370,7 @@ CloysterBaseStats: ; 38db6 (e:4db6)
 	db %01001000
 	db %00010011
 
-	db 0 ; padding
+	db BANK(CloysterPicFront)
 
 GastlyBaseStats: ; 38dd2 (e:4dd2)
 	db DEX_GASTLY ; pokedex id
@@ -53217,7 +54385,7 @@ GastlyBaseStats: ; 38dd2 (e:4dd2)
 
 	db 190 ; catch rate
 	db 95 ; base exp yield
-	db $77 ; sprite dimensions
+	db $66 ; sprite dimensions
 
 	dw GastlyPicFront
 	dw GastlyPicBack
@@ -53239,7 +54407,7 @@ GastlyBaseStats: ; 38dd2 (e:4dd2)
 	db %01101010
 	db %00000010
 
-	db 0 ; padding
+	db BANK(GastlyPicFront)
 
 HaunterBaseStats: ; 38dee (e:4dee)
 	db DEX_HAUNTER ; pokedex id
@@ -53276,7 +54444,7 @@ HaunterBaseStats: ; 38dee (e:4dee)
 	db %01101010
 	db %00000010
 
-	db 0 ; padding
+	db BANK(HaunterPicFront)
 
 GengarBaseStats: ; 38e0a (e:4e0a)
 	db DEX_GENGAR ; pokedex id
@@ -53313,7 +54481,7 @@ GengarBaseStats: ; 38e0a (e:4e0a)
 	db %01101010
 	db %00100010
 
-	db 0 ; padding
+	db BANK(GengarPicFront)
 
 OnixBaseStats: ; 38e26 (e:4e26)
 	db DEX_ONIX ; pokedex id
@@ -53350,7 +54518,7 @@ OnixBaseStats: ; 38e26 (e:4e26)
 	db %11001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(OnixPicFront)
 
 DrowzeeBaseStats: ; 38e42 (e:4e42)
 	db DEX_DROWZEE ; pokedex id
@@ -53387,7 +54555,7 @@ DrowzeeBaseStats: ; 38e42 (e:4e42)
 	db %00111010
 	db %01000011
 
-	db 0 ; padding
+	db BANK(DrowzeePicFront)
 
 HypnoBaseStats: ; 38e5e (e:4e5e)
 	db DEX_HYPNO ; pokedex id
@@ -53424,7 +54592,7 @@ HypnoBaseStats: ; 38e5e (e:4e5e)
 	db %00111010
 	db %01000011
 
-	db 0 ; padding
+	db BANK(HypnoPicFront)
 
 KrabbyBaseStats: ; 38e7a (e:4e7a)
 	db DEX_KRABBY ; pokedex id
@@ -53461,7 +54629,7 @@ KrabbyBaseStats: ; 38e7a (e:4e7a)
 	db %00001000
 	db %00110110
 
-	db 0 ; padding
+	db BANK(KrabbyPicFront)
 
 KinglerBaseStats: ; 38e96 (e:4e96)
 	db DEX_KINGLER ; pokedex id
@@ -53498,7 +54666,7 @@ KinglerBaseStats: ; 38e96 (e:4e96)
 	db %00001000
 	db %00110110
 
-	db 0 ; padding
+	db BANK(KinglerPicFront)
 
 VoltorbBaseStats: ; 38eb2 (e:4eb2)
 	db DEX_VOLTORB ; pokedex id
@@ -53535,7 +54703,7 @@ VoltorbBaseStats: ; 38eb2 (e:4eb2)
 	db %01011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(VoltorbPicFront)
 
 ElectrodeBaseStats: ; 38ece (e:4ece)
 	db DEX_ELECTRODE ; pokedex id
@@ -53572,7 +54740,7 @@ ElectrodeBaseStats: ; 38ece (e:4ece)
 	db %01011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(ElectrodePicFront)
 
 ExeggcuteBaseStats: ; 38eea (e:4eea)
 	db DEX_EXEGGCUTE ; pokedex id
@@ -53609,7 +54777,7 @@ ExeggcuteBaseStats: ; 38eea (e:4eea)
 	db %01101000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(ExeggcutePicFront)
 
 ExeggutorBaseStats: ; 38f06 (e:4f06)
 	db DEX_EXEGGUTOR ; pokedex id
@@ -53646,7 +54814,7 @@ ExeggutorBaseStats: ; 38f06 (e:4f06)
 	db %01101000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(ExeggutorPicFront)
 
 CuboneBaseStats: ; 38f22 (e:4f22)
 	db DEX_CUBONE ; pokedex id
@@ -53683,7 +54851,7 @@ CuboneBaseStats: ; 38f22 (e:4f22)
 	db %00001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(CubonePicFront)
 
 MarowakBaseStats: ; 38f3e (e:4f3e)
 	db DEX_MAROWAK ; pokedex id
@@ -53720,7 +54888,7 @@ MarowakBaseStats: ; 38f3e (e:4f3e)
 	db %00001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MarowakPicFront)
 
 HitmonleeBaseStats: ; 38f5a (e:4f5a)
 	db DEX_HITMONLEE ; pokedex id
@@ -53757,7 +54925,7 @@ HitmonleeBaseStats: ; 38f5a (e:4f5a)
 	db %00001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(HitmonleePicFront)
 
 HitmonchanBaseStats: ; 38f76 (e:4f76)
 	db DEX_HITMONCHAN ; pokedex id
@@ -53794,7 +54962,7 @@ HitmonchanBaseStats: ; 38f76 (e:4f76)
 	db %00001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(HitmonchanPicFront)
 
 LickitungBaseStats: ; 38f92 (e:4f92)
 	db DEX_LICKITUNG ; pokedex id
@@ -53831,7 +54999,7 @@ LickitungBaseStats: ; 38f92 (e:4f92)
 	db %00001000
 	db %00110110
 
-	db 0 ; padding
+	db BANK(LickitungPicFront)
 
 KoffingBaseStats: ; 38fae (e:4fae)
 	db DEX_KOFFING ; pokedex id
@@ -53868,7 +55036,7 @@ KoffingBaseStats: ; 38fae (e:4fae)
 	db %01001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(KoffingPicFront)
 
 WeezingBaseStats: ; 38fca (e:4fca)
 	db DEX_WEEZING ; pokedex id
@@ -53905,7 +55073,7 @@ WeezingBaseStats: ; 38fca (e:4fca)
 	db %01001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(WeezingPicFront)
 
 RhyhornBaseStats: ; 38fe6 (e:4fe6)
 	db DEX_RHYHORN ; pokedex id
@@ -53942,7 +55110,7 @@ RhyhornBaseStats: ; 38fe6 (e:4fe6)
 	db %10001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(RhyhornPicFront)
 
 RhydonBaseStats: ; 39002 (e:5002)
 	db DEX_RHYDON ; pokedex id
@@ -53979,7 +55147,7 @@ RhydonBaseStats: ; 39002 (e:5002)
 	db %10001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(RhydonPicFront)
 
 ChanseyBaseStats: ; 3901e (e:501e)
 	db DEX_CHANSEY ; pokedex id
@@ -54016,7 +55184,7 @@ ChanseyBaseStats: ; 3901e (e:501e)
 	db %00111001
 	db %01100011
 
-	db 0 ; padding
+	db BANK(ChanseyPicFront)
 
 TangelaBaseStats: ; 3903a (e:503a)
 	db DEX_TANGELA ; pokedex id
@@ -54053,7 +55221,7 @@ TangelaBaseStats: ; 3903a (e:503a)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(TangelaPicFront)
 
 KangaskhanBaseStats: ; 39056 (e:5056)
 	db DEX_KANGASKHAN ; pokedex id
@@ -54090,7 +55258,7 @@ KangaskhanBaseStats: ; 39056 (e:5056)
 	db %10001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(KangaskhanPicFront)
 
 HorseaBaseStats: ; 39072 (e:5072)
 	db DEX_HORSEA ; pokedex id
@@ -54127,7 +55295,7 @@ HorseaBaseStats: ; 39072 (e:5072)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(HorseaPicFront)
 
 SeadraBaseStats: ; 3908e (e:508e)
 	db DEX_SEADRA ; pokedex id
@@ -54164,7 +55332,7 @@ SeadraBaseStats: ; 3908e (e:508e)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(SeadraPicFront)
 
 GoldeenBaseStats: ; 390aa (e:50aa)
 	db DEX_GOLDEEN ; pokedex id
@@ -54201,7 +55369,7 @@ GoldeenBaseStats: ; 390aa (e:50aa)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(GoldeenPicFront)
 
 SeakingBaseStats: ; 390c6 (e:50c6)
 	db DEX_SEAKING ; pokedex id
@@ -54238,7 +55406,7 @@ SeakingBaseStats: ; 390c6 (e:50c6)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(SeakingPicFront)
 
 StaryuBaseStats: ; 390e2 (e:50e2)
 	db DEX_STARYU ; pokedex id
@@ -54275,7 +55443,7 @@ StaryuBaseStats: ; 390e2 (e:50e2)
 	db %00111000
 	db %01010011
 
-	db 0 ; padding
+	db BANK(StaryuPicFront)
 
 StarmieBaseStats: ; 390fe (e:50fe)
 	db DEX_STARMIE ; pokedex id
@@ -54312,7 +55480,7 @@ StarmieBaseStats: ; 390fe (e:50fe)
 	db %00111000
 	db %01010011
 
-	db 0 ; padding
+	db BANK(StarmiePicFront)
 
 MrMimeBaseStats: ; 3911a (e:511a)
 	db DEX_MR_MIME ; pokedex id
@@ -54349,7 +55517,7 @@ MrMimeBaseStats: ; 3911a (e:511a)
 	db %00111000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(MrMimePicFront)
 
 ScytherBaseStats: ; 39136 (e:5136)
 	db DEX_SCYTHER ; pokedex id
@@ -54386,7 +55554,7 @@ ScytherBaseStats: ; 39136 (e:5136)
 	db %00001000
 	db %00000110
 
-	db 0 ; padding
+	db BANK(ScytherPicFront)
 
 JynxBaseStats: ; 39152 (e:5152)
 	db DEX_JYNX ; pokedex id
@@ -54423,7 +55591,7 @@ JynxBaseStats: ; 39152 (e:5152)
 	db %00101000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(JynxPicFront)
 
 ElectabuzzBaseStats: ; 3916e (e:516e)
 	db DEX_ELECTABUZZ ; pokedex id
@@ -54460,7 +55628,7 @@ ElectabuzzBaseStats: ; 3916e (e:516e)
 	db %00111000
 	db %01100010
 
-	db 0 ; padding
+	db BANK(ElectabuzzPicFront)
 
 MagmarBaseStats: ; 3918a (e:518a)
 	db DEX_MAGMAR ; pokedex id
@@ -54497,7 +55665,7 @@ MagmarBaseStats: ; 3918a (e:518a)
 	db %00101000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(MagmarPicFront)
 
 PinsirBaseStats: ; 391a6 (e:51a6)
 	db DEX_PINSIR ; pokedex id
@@ -54534,7 +55702,7 @@ PinsirBaseStats: ; 391a6 (e:51a6)
 	db %00001000
 	db %00100110
 
-	db 0 ; padding
+	db BANK(PinsirPicFront)
 
 TaurosBaseStats: ; 391c2 (e:51c2)
 	db DEX_TAUROS ; pokedex id
@@ -54571,7 +55739,7 @@ TaurosBaseStats: ; 391c2 (e:51c2)
 	db %00001000
 	db %00100010
 
-	db 0 ; padding
+	db BANK(TaurosPicFront)
 
 MagikarpBaseStats: ; 391de (e:51de)
 	db DEX_MAGIKARP ; pokedex id
@@ -54608,7 +55776,7 @@ MagikarpBaseStats: ; 391de (e:51de)
 	db %00000000
 	db %00000000
 
-	db 0 ; padding
+	db BANK(MagikarpPicFront)
 
 GyaradosBaseStats: ; 391fa (e:51fa)
 	db DEX_GYARADOS ; pokedex id
@@ -54645,7 +55813,7 @@ GyaradosBaseStats: ; 391fa (e:51fa)
 	db %00001000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(GyaradosPicFront)
 
 LaprasBaseStats: ; 39216 (e:5216)
 	db DEX_LAPRAS ; pokedex id
@@ -54682,7 +55850,7 @@ LaprasBaseStats: ; 39216 (e:5216)
 	db %00101000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(LaprasPicFront)
 
 DittoBaseStats: ; 39232 (e:5232)
 	db DEX_DITTO ; pokedex id
@@ -54719,7 +55887,7 @@ DittoBaseStats: ; 39232 (e:5232)
 	db %00000000
 	db %00000000
 
-	db 0 ; padding
+	db BANK(DittoPicFront)
 
 EeveeBaseStats: ; 3924e (e:524e)
 	db DEX_EEVEE ; pokedex id
@@ -54756,7 +55924,7 @@ EeveeBaseStats: ; 3924e (e:524e)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(EeveePicFront)
 
 VaporeonBaseStats: ; 3926a (e:526a)
 	db DEX_VAPOREON ; pokedex id
@@ -54793,7 +55961,7 @@ VaporeonBaseStats: ; 3926a (e:526a)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(VaporeonPicFront)
 
 JolteonBaseStats: ; 39286 (e:5286)
 	db DEX_JOLTEON ; pokedex id
@@ -54830,7 +55998,7 @@ JolteonBaseStats: ; 39286 (e:5286)
 	db %00011000
 	db %01000010
 
-	db 0 ; padding
+	db BANK(JolteonPicFront)
 
 FlareonBaseStats: ; 392a2 (e:52a2)
 	db DEX_FLAREON ; pokedex id
@@ -54867,7 +56035,7 @@ FlareonBaseStats: ; 392a2 (e:52a2)
 	db %00001000
 	db %00000010
 
-	db 0 ; padding
+	db BANK(FlareonPicFront)
 
 PorygonBaseStats: ; 392be (e:52be)
 	db DEX_PORYGON ; pokedex id
@@ -54904,7 +56072,7 @@ PorygonBaseStats: ; 392be (e:52be)
 	db %00111000
 	db %01000011
 
-	db 0 ; padding
+	db BANK(PorygonPicFront)
 
 OmanyteBaseStats: ; 392da (e:52da)
 	db DEX_OMANYTE ; pokedex id
@@ -54941,7 +56109,7 @@ OmanyteBaseStats: ; 392da (e:52da)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(OmanytePicFront)
 
 OmastarBaseStats: ; 392f6 (e:52f6)
 	db DEX_OMASTAR ; pokedex id
@@ -54978,7 +56146,7 @@ OmastarBaseStats: ; 392f6 (e:52f6)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(OmastarPicFront)
 
 KabutoBaseStats: ; 39312 (e:5312)
 	db DEX_KABUTO ; pokedex id
@@ -55015,7 +56183,7 @@ KabutoBaseStats: ; 39312 (e:5312)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(KabutoPicFront)
 
 KabutopsBaseStats: ; 3932e (e:532e)
 	db DEX_KABUTOPS ; pokedex id
@@ -55052,7 +56220,7 @@ KabutopsBaseStats: ; 3932e (e:532e)
 	db %00001000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(KabutopsPicFront)
 
 AerodactylBaseStats: ; 3934a (e:534a)
 	db DEX_AERODACTYL ; pokedex id
@@ -55089,7 +56257,7 @@ AerodactylBaseStats: ; 3934a (e:534a)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(AerodactylPicFront)
 
 SnorlaxBaseStats: ; 39366 (e:5366)
 	db DEX_SNORLAX ; pokedex id
@@ -55126,7 +56294,7 @@ SnorlaxBaseStats: ; 39366 (e:5366)
 	db %10101000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(SnorlaxPicFront)
 
 ArticunoBaseStats: ; 39382 (e:5382)
 	db DEX_ARTICUNO ; pokedex id
@@ -55163,7 +56331,7 @@ ArticunoBaseStats: ; 39382 (e:5382)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(ArticunoPicFront)
 
 ZapdosBaseStats: ; 3939e (e:539e)
 	db DEX_ZAPDOS ; pokedex id
@@ -55200,7 +56368,7 @@ ZapdosBaseStats: ; 3939e (e:539e)
 	db %00011100
 	db %01001010
 
-	db 0 ; padding
+	db BANK(ZapdosPicFront)
 
 MoltresBaseStats: ; 393ba (e:53ba)
 	db DEX_MOLTRES ; pokedex id
@@ -55237,7 +56405,7 @@ MoltresBaseStats: ; 393ba (e:53ba)
 	db %00001100
 	db %00001010
 
-	db 0 ; padding
+	db BANK(MoltresPicFront)
 
 DratiniBaseStats: ; 393d6 (e:53d6)
 	db DEX_DRATINI ; pokedex id
@@ -55274,7 +56442,7 @@ DratiniBaseStats: ; 393d6 (e:53d6)
 	db %00011000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(DratiniPicFront)
 
 DragonairBaseStats: ; 393f2 (e:53f2)
 	db DEX_DRAGONAIR ; pokedex id
@@ -55311,7 +56479,7 @@ DragonairBaseStats: ; 393f2 (e:53f2)
 	db %00011000
 	db %00010010
 
-	db 0 ; padding
+	db BANK(DragonairPicFront)
 
 DragoniteBaseStats: ; 3940e (e:540e)
 	db DEX_DRAGONITE ; pokedex id
@@ -55348,7 +56516,7 @@ DragoniteBaseStats: ; 3940e (e:540e)
 	db %00011000
 	db %00110010
 
-	db 0 ; padding
+	db BANK(DragonitePicFront)
 
 MewtwoBaseStats: ; 3942a (e:542a)
 	db DEX_MEWTWO ; pokedex id
@@ -55385,7 +56553,7 @@ MewtwoBaseStats: ; 3942a (e:542a)
 	db %00111000
 	db %01100011
 
-	db 0 ; padding
+	db BANK(MewtwoPicFront)
 
 CryData: ; 39446 (e:5446)
 	;$BaseCry, $Pitch, $Length
@@ -55648,7 +56816,7 @@ Func_396d3: ; 396d3 (e:56d3)
 	call GoPAL_SET
 	ld hl, Func_3f04b
 	ld b, BANK(Func_3f04b)
-	call Bankswitch ; indirect jump to Func_3f04b (3f04b (f:704b))
+	call Bankswitch
 	FuncCoord 19, 0 ; $c3b3
 	ld hl, Coord
 	ld c, $0
@@ -56346,7 +57514,7 @@ ReadTrainer: ; 39c53 (e:5c53)
 	ld [hl],a
 
 ; read the three pokemon ids from memory for battlefactory
-	ld a, 2
+	ld a, 50
 	ld [W_CURENEMYLVL],a
 	ld hl, W_MON1
 	ld b, 3
@@ -57697,7 +58865,7 @@ LoadPartyPokeballGfx: ; 3a85d (e:685d)
 	jp CopyVideoData
 
 SetupOwnPartyPokeballs: ; 3a869 (e:6869)
-	call Func_3a902
+	call PlayerPartyUpdated
 	ld hl, W_PARTYMON1DATA
 	ld de, W_NUMINPARTY ; $d163
 	call SetupPokeballs
@@ -57798,6 +58966,7 @@ Func_3a8e1: ; 3a8e1 (e:68e1)
 
 Func_3a902: ; 3a902 (e:6902)
 	ld hl, PlayerBattleHUDGraphicsTiles ; $6916
+PartyUpdateDone:
 	ld de, $cd3f
 	ld bc, $3
 	call CopyData
@@ -57819,7 +58988,7 @@ Func_3a919: ; 3a919 (e:6919)
 	call CopyData
 	FuncCoord 1, 2 ; $c3c9
 	ld hl, Coord
-	ld de, $1
+	jp EnemyHealthBarUpdated
 	jr Func_3a930
 
 EnemyBattleHUDGraphicsTiles: ; 3a92d (e:692d)
@@ -57830,6 +58999,7 @@ EnemyBattleHUDGraphicsTiles: ; 3a92d (e:692d)
 
 Func_3a930: ; 3a930 (e:6930)
 	ld [hl], $73
+HealthBarUpdateDone:
 	ld bc, $14
 	add hl, bc
 	ld a, [$cd40]
@@ -58008,7 +59178,7 @@ Func_3ad71: ; 3ad71 (e:6d71)
 	call CleanLCD_OAM
 	ld hl, Func_7bde9
 	ld b, BANK(Func_7bde9)
-	call Bankswitch ; indirect jump to Func_7bde9 (7bde9 (1e:7de9))
+	call Bankswitch
 	jp c, Func_3af2e
 	ld hl, UnnamedText_3af3e ; $6f3e
 	call PrintText
@@ -60854,6 +62024,43 @@ BankswitchEtoF: ; 3bbe1 (e:7be1)
 	ld b, $f
 	jp Bankswitch
 
+PlayerPartyUpdated:
+	ld hl, PartyTileMap
+	jp PartyUpdateDone
+	
+PartyTileMap:
+	db $73, $75, $6F
+
+EnemyHealthBarUpdated:
+	ld [hl], $72
+	ld a, [W_ISINBATTLE]
+	dec a
+	jr  nz, .noBattle
+	push hl
+	ld a, [$CFE5]
+	ld [$D11E], a
+	ld hl, IndexToPokedex
+	ld b, BANK(IndexToPokedex)
+	call Bankswitch
+	ld a, [$D11E]
+	dec a
+	ld c, a
+	ld a, $10
+	ld b, $2
+	ld hl, wPokedexOwned
+	call Predef
+	ld a, c
+	and a
+	jr z, .notOwned
+	FuncCoord 1, 1
+	ld hl, Coord
+	ld [hl], $E9
+.notOwned
+	pop hl
+.noBattle
+	ld de, $0001
+	jp HealthBarUpdateDone
+
 SECTION "bankF",ROMX,BANK[$F]
 
 ; These are move effects (second value from the Moves table in bank $E).
@@ -60970,7 +62177,7 @@ Func_3c04c: ; 3c04c (f:404c)
 	call ResetLCD_OAM
 	ld hl, Func_58d99
 	ld b, BANK(Func_58d99)
-	jp Bankswitch ; indirect jump to Func_58d99 (58d99 (16:4d99))
+	jp Bankswitch
 
 Func_3c0ff: ; 3c0ff (f:40ff)
 	push bc
@@ -61048,7 +62255,7 @@ Func_3c11e: ; 3c11e (f:411e)
 .asm_3c17a
 	ld hl, Func_4277
 	ld b, BANK(Func_4277)
-	call Bankswitch ; indirect jump to Func_4277 (4277 (1:4277))
+	call Bankswitch
 	ld a, [$cffb]
 	add a
 	ld b, a
@@ -61133,7 +62340,7 @@ asm_3c202: ; 3c202 (f:4202)
 	ld [H_WHOSETURN], a ; $FF00+$f3
 	ld hl, AnimationSlideEnemyMonOut
 	ld b, BANK(AnimationSlideEnemyMonOut)
-	jp Bankswitch ; indirect jump to AnimationSlideEnemyMonOut (792b9 (1e:52b9))
+	jp Bankswitch
 
 UnnamedText_3c229: ; 3c229 (f:4229)
 	TX_FAR _UnnamedText_3c229
@@ -61688,7 +62895,7 @@ FaintEnemyPokemon ; 0x3c567
 	ld [$cc5b], a
 	ld hl, Func_5524f
 	ld b, BANK(Func_5524f)
-	call Bankswitch ; indirect jump to Func_5524f (5524f (15:524f))
+	call Bankswitch
 	pop af
 	ret z
 	ld a, $1
@@ -61704,7 +62911,7 @@ FaintEnemyPokemon ; 0x3c567
 	ld [W_PLAYERMONSALIVEFLAGS], a
 	ld hl, Func_5524f
 	ld b, BANK(Func_5524f)
-	jp Bankswitch ; indirect jump to Func_5524f (5524f (15:524f))
+	jp Bankswitch
 
 EnemyMonFainted: ; 0x3c63e
 	TX_FAR _EnemyMonFainted
@@ -61737,11 +62944,11 @@ Func_3c64f: ; 3c64f (f:464f)
 
 Func_3c664: ; 3c664 (f:4664)
 	ld hl, $cf1e
-	ld e, $30
+	ld e, $00
 	call Func_3ce90
 	ld hl, DrawEnemyPokeballs
 	ld b, BANK(DrawEnemyPokeballs)
-	call Bankswitch ; indirect jump to Func_3a857 (3a857 (e:6857))
+	call Bankswitch
 	ld a, [W_ISLINKBATTLE] ; $d12b
 	cp $4
 	jr nz, .asm_3c687
@@ -62772,7 +63979,7 @@ Func_3cc13: ; 3cc13 (f:4c13)
 Func_3cc91: ; 3cc91 (f:4c91)
 	ld hl, Func_58e59
 	ld b, BANK(Func_58e59)
-	call Bankswitch ; indirect jump to Func_58e59 (58e59 (16:4e59))
+	call Bankswitch
 	ld hl, W_ENEMYMONCURHP ; $cfe6
 	ld a, [hli]
 	or [hl]
@@ -62882,14 +64089,16 @@ Func_3cd60: ; 3cd60 (f:4d60)
 	call ClearScreenArea
 	ld hl, Func_3a902
 	ld b, BANK(Func_3a902)
-	call Bankswitch ; indirect jump to Func_3a902 (3a902 (e:6902))
+	call Bankswitch
 	FuncCoord 18, 9 ; $c466
 	ld hl, Coord
 	ld [hl], $73
 	ld de, W_PLAYERMONNAME
 	FuncCoord 10, 7 ; $c436
 	ld hl, Coord
-	call Func_3ce9c
+	nop
+	nop
+	nop
 	call PlaceString
 	ld hl, W_PLAYERMONID
 	ld de, $cf98
@@ -62950,13 +64159,13 @@ Func_3cdec: ; 3cdec (f:4dec)
 	call ClearScreenArea
 	ld hl, Func_3a919
 	ld b, BANK(Func_3a919)
-	call Bankswitch ; indirect jump to Func_3a919 (3a919 (e:6919))
+	call Bankswitch
 	ld de, W_ENEMYMONNAME
 	FuncCoord 1, 0 ; $c3a1
 	ld hl, Coord
 	call Func_3ce9c
 	call PlaceString
-	FuncCoord 4, 1 ; $c3b8
+	FuncCoord 6, 1 ; $c3b8
 	ld hl, Coord
 	push hl
 	inc hl
@@ -63458,7 +64667,7 @@ Func_3d119: ; 3d119 (f:5119)
 Func_3d1ba: ; 3d1ba (f:51ba)
 	ld hl, Func_58ed1
 	ld b, BANK(Func_58ed1)
-	call Bankswitch ; indirect jump to Func_58ed1 (58ed1 (16:4ed1))
+	call Bankswitch
 	ld c, $32
 	call DelayFrames
 	call Func_3ccfa
@@ -63515,7 +64724,7 @@ MoveSelectionMenu: ; 3d219 (f:5219)
 	call CopyData
 	ld hl, Func_39b87
 	ld b, BANK(Func_39b87)
-	call Bankswitch ; indirect jump to Func_39b87 (39b87 (e:5b87))
+	call Bankswitch
 	ret
 
 .writemoves
@@ -63921,7 +65130,7 @@ Func_3d4b6: ; 3d4b6 (f:54b6)
 	ld [$cc49], a
 	ld hl, GetMaxPP
 	ld b, BANK(GetMaxPP)
-	call Bankswitch ; indirect jump to GetMaxPP (e677 (3:6677))
+	call Bankswitch
 	ld hl, wCurrentMenuItem ; $cc26
 	ld c, [hl]
 	inc [hl]
@@ -64088,7 +65297,7 @@ Func_3d605: ; 3d605 (f:5605)
 	ld [$cc42], a
 	ld hl, Func_4c05
 	ld b, BANK(Func_4c05)
-	call Bankswitch ; indirect jump to Func_4c05 (4c05 (1:4c05))
+	call Bankswitch
 .asm_3d63b
 	call Func_22c3
 	call DelayFrame
@@ -66809,7 +68018,7 @@ asm_3e7ef: ; 3e7ef (f:67ef)
 	call Func_3dc5c
 	ld hl, DisplayEffectiveness
 	ld b, BANK(DisplayEffectiveness)
-	call Bankswitch ; indirect jump to DisplayEffectiveness (2fb7b (b:7b7b))
+	call Bankswitch
 	ld a, $1
 	ld [$ccf4], a
 .asm_3e83e
@@ -67350,7 +68559,7 @@ Func_3ec32: ; 3ec32 (f:6c32)
 	ld [wMenuJoypadPollCount], a ; $cc34
 	ld hl, Func_372d6
 	ld b, BANK(Func_372d6)
-	call Bankswitch ; indirect jump to Func_372d6 (372d6 (d:72d6))
+	call Bankswitch
 	ld a, $1
 	ld [$cfcb], a
 	call ClearScreen
@@ -67360,7 +68569,7 @@ Func_3ec32: ; 3ec32 (f:6c32)
 	call Predef ; indirect jump to Func_7096d (7096d (1c:496d))
 	ld hl, Func_3ee58
 	ld b, BANK(Func_3ee58)
-	call Bankswitch ; indirect jump to Func_3ee58 (3ee58 (f:6e58))
+	call Bankswitch
 	ld a, $1
 	ld [H_AUTOBGTRANSFERENABLED], a ; $FF00+$ba
 	ld a, $ff
@@ -67401,8 +68610,9 @@ Func_3ec92: ; 3ec92 (f:6c92)
 .asm_3ec9e
 	ld a, BANK(RedPicBack)
 	call UncompressSpriteFromDE
-	ld a, $3
-	call Predef ; indirect jump to ScaleSpriteByTwo (2fe40 (b:7e40))
+	call LoadBackSpriteUnzoomed
+	nop
+	nop
 	ld hl, wOAMBuffer
 	xor a
 	ld [H_DOWNARROWBLINKCNT1], a ; $FF00+$8b
@@ -67434,8 +68644,12 @@ Func_3ec92: ; 3ec92 (f:6c92)
 	ld e, a
 	dec b
 	jr nz, .asm_3ecb2
-	ld de, $9310
-	call InterlaceMergeSpriteBuffers
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 	ld a, $a
 	ld [$0], a
 	xor a
@@ -67458,15 +68672,15 @@ Func_3ec92: ; 3ec92 (f:6c92)
 Func_3ed02: ; 3ed02 (f:6d02)
 	ld hl, Func_39680
 	ld b, BANK(Func_39680)
-	call Bankswitch ; indirect jump to Func_39680 (39680 (e:5680))
+	call Bankswitch
 	ld hl, Func_396a7
 	ld b, BANK(Func_396a7)
-	jp Bankswitch ; indirect jump to Func_396a7 (396a7 (e:56a7))
+	jp Bankswitch
 
 Func_3ed12: ; 3ed12 (f:6d12)
 	ld hl, Func_396d3
 	ld b, BANK(Func_396d3)
-	jp Bankswitch ; indirect jump to Func_396d3 (396d3 (e:56d3))
+	jp Bankswitch
 
 Func_3ed1a: ; 3ed1a (f:6d1a)
 	ld a, $1
@@ -67827,7 +69041,7 @@ asm_3ef23: ; 3ef23 (f:6f23)
 	ret nz
 	ld hl, Func_13870
 	ld b, BANK(Func_13870)
-	call Bankswitch ; indirect jump to Func_13870 (13870 (4:7870))
+	call Bankswitch
 	ret nz
 asm_3ef3d: ; 3ef3d (f:6f3d)
 	ld a, [$d35d]
@@ -67838,7 +69052,7 @@ asm_3ef3d: ; 3ef3d (f:6f3d)
 	res 1, [hl]
 	ld hl, Func_525af
 	ld b, BANK(Func_525af)
-	call Bankswitch ; indirect jump to Func_525af (525af (14:65af))
+	call Bankswitch
 	ld a, [W_ENEMYMONID]
 	sub $c8
 	jp c, Func_3ef8b
@@ -67948,7 +69162,7 @@ Func_3efeb: ; 3efeb (f:6feb)
 	call Func_3c11e
 	ld hl, Func_137aa
 	ld b, BANK(Func_137aa)
-	call Bankswitch ; indirect jump to Func_137aa (137aa (4:77aa))
+	call Bankswitch
 	pop af
 	ld [$d358], a
 	pop af
@@ -68090,16 +69304,21 @@ LoadMonBackSprite: ; 3f103 (f:7103)
 	call ClearScreenArea
 	ld hl,  W_MONHBACKSPRITE - W_MONHEADER
 	call UncompressMonSprite
-	ld a, $3
-	call Predef ; indirect jump to ScaleSpriteByTwo (2fe40 (b:7e40))
-	ld de, $9310
-	call InterlaceMergeSpriteBuffers ; combine the two buffers to a single 2bpp sprite
+	call LoadBackSpriteUnzoomed
 	ld hl, $8000
 	ld de, $9310
 	ld c, (2*SPRITEBUFFERSIZE)/16 ; count of 16-byte chunks to be copied
 	ld a, [H_LOADEDROMBANK]
 	ld b, a
 	jp CopyVideoData
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 Func_3f132: ; 3f132 (f:7132)
 	call JumpMoveEffect
@@ -68359,7 +69578,7 @@ UnnamedText_3f2e4: ; 3f2e4 (f:72e4)
 Func_3f2e9: ; 3f2e9 (f:72e9)
 	ld hl, Func_783f
 	ld b, BANK(Func_783f)
-	jp Bankswitch ; indirect jump to Func_783f (783f (1:783f))
+	jp Bankswitch
 
 Func_3f2f1: ; 3f2f1 (f:72f1)
 	ld hl, W_PLAYERMONCURHP ; $d015
@@ -69182,7 +70401,7 @@ Func_3f85b: ; 3f85b (f:785b)
 Func_3f884: ; 3f884 (f:7884)
 	ld hl, Func_33f57
 	ld b, BANK(Func_33f57)
-	jp Bankswitch ; indirect jump to Func_33f57 (33f57 (c:7f57))
+	jp Bankswitch
 
 Func_3f88c: ; 3f88c (f:788c)
 	ld hl, W_PLAYERBATTSTATUS1 ; $d062
@@ -69359,7 +70578,7 @@ Func_3f9a6: ; 3f9a6 (f:79a6)
 Func_3f9b1: ; 3f9b1 (f:79b1)
 	ld hl, Func_52601
 	ld b, BANK(Func_52601)
-	jp Bankswitch ; indirect jump to Func_52601 (52601 (14:6601))
+	jp Bankswitch
 
 Func_3f9b9: ; 3f9b9 (f:79b9)
 	ld hl, SubstituteEffectHandler
@@ -69477,7 +70696,7 @@ UnnamedText_3fa77: ; 3fa77 (f:7a77)
 Func_3fa7c: ; 3fa7c (f:7a7c)
 	ld hl, Func_2bea9
 	ld b, BANK(Func_2bea9)
-	jp Bankswitch ; indirect jump to Func_2bea9 (2bea9 (a:7ea9))
+	jp Bankswitch
 
 Func_3fa84: ; 3fa84 (f:7a84)
 	call Func_3fba8
@@ -69701,6 +70920,12 @@ Func_3fbbc: ; 3fbbc (f:7bbc)
 	pop hl
 	ret
 
+LoadBackSpriteUnzoomed:
+	ld a, $66
+	ld de, $9310
+	push de
+	jp LoadUncompressedBackSprite
+
 SECTION "bank10",ROMX,BANK[$10]
 
 DisplayPokedexMenu_: ; 40000 (10:4000)
@@ -69717,8 +70942,8 @@ DisplayPokedexMenu_: ; 40000 (10:4000)
 	ld [$d11e],a
 	ld [$ffb7],a
 .setUpGraphics
-	ld b,$08
-	call GoPAL_SET
+	ld b,$1C
+	call DexPalBankswitch
 	ld hl,LoadPokedexTilePatterns
 	ld b,BANK(LoadPokedexTilePatterns)
 	call Bankswitch
@@ -71982,7 +73207,7 @@ Func_4120b: ; 4120b (10:520b)
 	ld [rOBP1], a ; $FF00+$49
 	ld b, BANK(Func_7176c)
 	ld hl, Func_7176c
-	jp Bankswitch ; indirect jump to Func_7176c (7176c (1c:576c))
+	jp Bankswitch
 
 Func_41217: ; 41217 (10:5217)
 	ld hl, W_PLAYERNAME
@@ -72383,7 +73608,7 @@ Func_414e8: ; 414e8 (10:54e8)
 Func_41505: ; 41505 (10:5505)
 	ld b, BANK(Func_71882)
 	ld hl, Func_71882
-	call Bankswitch ; indirect jump to Func_71882 (71882 (1c:5882))
+	call Bankswitch
 	call Func_41558
 
 Func_41510: ; 41510 (10:5510)
@@ -72876,9 +74101,9 @@ Func_41842: ; 41842 (10:5842)
 
 Func_41849: ; 41849 (10:5849)
 	ld a, $33
-	call Predef
+	call Predef ; indirect jump to Func_79869
 	ld a, b
-	jp PlaySound ; indirect jump to Func_79869
+	jp PlaySound
 
 Func_41852: ; 41852 (10:5852)
 	ld hl, FightIntroBackMon ; $5a99
@@ -72907,7 +74132,7 @@ Func_4188a: ; 4188a (10:588a)
 	call GoPAL_SET
 	ld b, BANK(Func_4538)
 	ld hl, Func_4538
-	call Bankswitch ; indirect jump to Func_4538 (4538 (1:4538))
+	call Bankswitch
 	ld a, $e4
 	ld [rBGP], a ; $FF00+$47
 	ld c, $b4
@@ -72926,7 +74151,7 @@ Func_4188a: ; 4188a (10:588a)
 	call DelayFrames
 	ld b, BANK(Func_70044)
 	ld hl, Func_70044
-	call Bankswitch ; indirect jump to Func_70044 (70044 (1c:4044))
+	call Bankswitch
 	push af
 	pop af
 	jr c, .asm_418d0
@@ -73112,6 +74337,10 @@ OTString67E5: ; 427e5 (10:67e5)
 	db $4E
 	db "OT/",$4E
 	db $73,"№",$F2,"@"
+	
+DexPalBankswitch:
+	ld hl, SendDexPal
+	jp Bankswitch
 
 SECTION "bank11",ROMX,BANK[$11]
 
@@ -75721,7 +76950,7 @@ Func_45827: ; 45827 (11:5827)
 	call Delay3
 	ld b, BANK(Func_7bf15)
 	ld hl, Func_7bf15
-	call Bankswitch ; indirect jump to Func_7bf15 (7bf15 (1e:7f15))
+	call Bankswitch
 	ret
 
 SilphCoElevatorTextPointers: ; 45833 (11:5833)
@@ -78588,7 +79817,7 @@ CeladonMartRoofScript_4840c: ; 4840c (12:440c)
 RemoveItemByIDBank12: ; 484e6 (12:44e6)
 	ld b, BANK(RemoveItemByID)
 	ld hl, RemoveItemByID
-	jp Bankswitch ; indirect jump to RemoveItemByID (17f37 (5:7f37))
+	jp Bankswitch
 
 UnnamedText_484ee: ; 484ee (12:44ee)
 	TX_FAR _UnnamedText_484ee
@@ -82304,6 +83533,8 @@ BurglarPic: ; 4cc91 (13:4c91)
 	INCBIN "pic/trainer/burglar.pic"
 EngineerPic: ; 4ce0a (13:4e0a)
 	INCBIN "pic/trainer/engineer.pic"
+JugglerPic: ; 4d97d (13:597d)
+	INCBIN "pic/trainer/juggler.pic"
 FisherPic: ; 4cf87 (13:4f87)
 	INCBIN "pic/trainer/fisher.pic"
 SwimmerPic: ; 4d133 (13:5133)
@@ -82318,8 +83549,6 @@ PsychicPic: ; 4d728 (13:5728)
 	INCBIN "pic/trainer/psychic.pic"
 RockerPic: ; 4d843 (13:5843)
 	INCBIN "pic/trainer/rocker.pic"
-JugglerPic: ; 4d97d (13:597d)
-	INCBIN "pic/trainer/juggler.pic"
 TamerPic: ; 4db4e (13:5b4e)
 	INCBIN "pic/trainer/tamer.pic"
 BirdKeeperPic: ; 4dcdb (13:5cdb)
@@ -82371,6 +83600,860 @@ AgathaPic: ; 4fa71 (13:7a71)
 	INCBIN "pic/trainer/agatha.pic"
 LancePic: ; 4fba2 (13:7ba2)
 	INCBIN "pic/trainer/lance.pic"
+	
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 BattleCenterM_h: ; 0x4fd04 to 0x4fd10 (12 bytes) (id=239)
 	db $15 ; tileset
@@ -82477,11 +84560,11 @@ Func_4fda5: ; 4fda5 (13:7da5)
 	ld [W_ENEMYMONID], a
 	ld hl, Func_3eb01
 	ld b, BANK(Func_3eb01)
-	call Bankswitch ; indirect jump to Func_3eb01 (3eb01 (f:6b01))
+	call Bankswitch
 	call Func_4fe11
 	ld hl, Func_e7a4
 	ld b, BANK(Func_e7a4)
-	call Bankswitch ; indirect jump to Func_e7a4 (e7a4 (3:67a4))
+	call Bankswitch
 	ld hl, $cf4b
 	ld a, [$d5a0]
 	and $7f
@@ -83712,7 +85795,7 @@ Func_5104e: ; 5104e (14:504e)
 	call PlaySound
 	ld b, BANK(Music_RivalAlternateTempo)
 	ld hl, Music_RivalAlternateTempo
-	call Bankswitch ; indirect jump to Music_RivalAlternateTempo (9b65 (2:5b65))
+	call Bankswitch
 	ld a, $2
 	ld [H_DOWNARROWBLINKCNT2], a ; $FF00+$8c
 	call Func_50ee6
@@ -83796,7 +85879,7 @@ Route22Script5: ; 510df (14:50df)
 	call PlaySound
 	ld b, BANK(Music_RivalAlternateStartAndTempo)
 	ld hl, Music_RivalAlternateStartAndTempo
-	call Bankswitch ; indirect jump to Music_RivalAlternateStartAndTempo (9b75 (2:5b75))
+	call Bankswitch
 	ld a, [$cf0d]
 	cp $1
 	jr nz, .asm_51134
@@ -85373,7 +87456,7 @@ SilphCo7Script4: ; 51cc8 (14:5cc8)
 	call PlaySound
 	ld b, BANK(Music_RivalAlternateStart)
 	ld hl, Music_RivalAlternateStart
-	call Bankswitch ; indirect jump to Music_RivalAlternateStart (9b47 (2:5b47))
+	call Bankswitch
 	ld de, MovementData_51d1d
 	ld a, [$cf0d]
 	cp $1
@@ -86257,9 +88340,8 @@ Func_525af: ; 525af (14:65af)
 	ld [wPlayerMonNumber], a ; $cc2f
 	ld [$d078], a
 	ld [$d35d], a
-	ld hl, $cf1d
-	ld [hli], a
-	ld [hl], a
+	call HealthBarPal
+	ld a, $00
 	ld hl, $ccd3
 	ld b, $3c
 .asm_525e1
@@ -86278,7 +88360,7 @@ Func_525af: ; 525af (14:65af)
 .asm_525f9
 	ld hl, PlayBattleMusic
 	ld b, BANK(PlayBattleMusic)
-	jp Bankswitch ; indirect jump to PlayBattleMusic (90c6 (2:50c6))
+	jp Bankswitch
 
 Func_52601: ; 52601 (14:6601)
 	ld hl, W_ENEMYMONSTATUS ; $cfe9
@@ -86310,7 +88392,7 @@ Func_52613: ; 52613 (14:6613)
 	push hl
 	ld hl, MoveHitTest
 	ld b, BANK(MoveHitTest)
-	call Bankswitch ; indirect jump to MoveHitTest (3e56b (f:656b))
+	call Bankswitch
 	pop hl
 	ld a, [W_MOVEMISSED] ; $d05f
 	and a
@@ -86318,27 +88400,27 @@ Func_52613: ; 52613 (14:6613)
 	set 6, [hl]
 	ld hl, Func_3ed27
 	ld b, BANK(Func_3ed27)
-	call Bankswitch ; indirect jump to Func_3ed27 (3ed27 (f:6d27))
+	call Bankswitch
 	ld c, $1e
 	call DelayFrames
 	ld hl, Func_3fba8
 	ld b, BANK(Func_3fba8)
-	call Bankswitch ; indirect jump to Func_3fba8 (3fba8 (f:7ba8))
+	call Bankswitch
 	ld hl, Func_3fb6e
 	ld b, BANK(Func_3fb6e)
-	jp Bankswitch ; indirect jump to Func_3fb6e (3fb6e (f:7b6e))
+	jp Bankswitch
 .asm_52659
 	ld c, $32
 	call DelayFrames
 	ld hl, Func_3fb5e
 	ld b, BANK(Func_3fb5e)
-	jp Bankswitch ; indirect jump to Func_3fb5e (3fb5e (f:7b5e))
+	jp Bankswitch
 .asm_52666
 	ld c, $32
 	call DelayFrames
 	ld hl, Func_3dc51
 	ld b, BANK(Func_3dc51)
-	jp Bankswitch ; indirect jump to Func_3dc51 (3dc51 (f:5c51))
+	jp Bankswitch
 
 Func_52673: ; 52673 (14:6673)
 	ld hl, SilphCoMapList
@@ -86956,6 +89038,13 @@ Func_52a2f: ; 52a2f (14:6a2f)
 IndigoPlateauHQText: ; 52a3d (14:6a3d)
 	TX_FAR _IndigoPlateauHQText
 	db "@"
+; 0x52a3d + 5 bytes
+HealthBarPal:
+	ld a, $02
+	ld hl, $CF1D
+	ld [hli], a
+	ld [hl], a
+	ret
 
 SECTION "bank15",ROMX,BANK[$15]
 
@@ -87430,7 +89519,7 @@ Func_5525f: ; 5525f (15:525f)
 	ld d, $64
 	ld hl, CalcExperience
 	ld b, BANK(CalcExperience)
-	call Bankswitch ; indirect jump to CalcExperience (58f6a (16:4f6a))
+	call Bankswitch
 	ld a, [H_NUMTOPRINT] ; $FF00+$96 (aliases: H_MULTIPLICAND)
 	ld b, a
 	ld a, [$FF00+$97]
@@ -87468,7 +89557,7 @@ Func_5525f: ; 5525f (15:525f)
 	push hl
 	ld b, BANK(Func_58f43)
 	ld hl, Func_58f43
-	call Bankswitch ; indirect jump to Func_58f43 (58f43 (16:4f43))
+	call Bankswitch
 	pop hl
 	ld a, [hl]
 	cp d
@@ -87543,19 +89632,19 @@ Func_5525f: ; 5525f (15:525f)
 	ld [$d11e], a
 	ld hl, Func_3ed99
 	ld b, BANK(Func_3ed99)
-	call Bankswitch ; indirect jump to Func_3ed99 (3ed99 (f:6d99))
+	call Bankswitch
 	ld hl, Func_3ed1a
 	ld b, BANK(Func_3ed1a)
-	call Bankswitch ; indirect jump to Func_3ed1a (3ed1a (f:6d1a))
+	call Bankswitch
 	ld hl, Func_3ee19
 	ld b, BANK(Func_3ee19)
-	call Bankswitch ; indirect jump to Func_3ee19 (3ee19 (f:6e19))
+	call Bankswitch
 	ld hl, Func_3cd60
 	ld b, BANK(Func_3cd60)
-	call Bankswitch ; indirect jump to Func_3cd60 (3cd60 (f:4d60))
+	call Bankswitch
 	ld hl, Func_3ee94
 	ld b, BANK(Func_3ee94)
-	call Bankswitch ; indirect jump to Func_3ee94 (3ee94 (f:6e94))
+	call Bankswitch
 	call SaveScreenTilesToBuffer1
 .asm_553f7
 	ld hl, UnnamedText_554dd ; $54dd
@@ -87566,7 +89655,7 @@ Func_5525f: ; 5525f (15:525f)
 	ld d, $1
 	ld hl, PrintStatsBox
 	ld b, BANK(PrintStatsBox)
-	call Bankswitch ; indirect jump to PrintStatsBox (12ae4 (4:6ae4))
+	call Bankswitch
 	call WaitForTextScrollButtonPress
 	call LoadScreenTilesFromBuffer1
 	xor a
@@ -91498,7 +93587,7 @@ Func_58d99: ; 58d99 (16:4d99)
 	push hl
 	ld hl, Func_3a849
 	ld b, BANK(Func_3a849)
-	call Bankswitch ; indirect jump to Func_3a849 (3a849 (e:6849))
+	call Bankswitch
 	pop hl
 	call PrintText
 	jr asm_58e3a
@@ -91514,7 +93603,7 @@ Func_58d99: ; 58d99 (16:4d99)
 	jr z, .asm_58df5
 	ld hl, Func_3eb01
 	ld b, BANK(Func_3eb01)
-	call Bankswitch ; indirect jump to Func_3eb01 (3eb01 (f:6b01))
+	call Bankswitch
 	jr .asm_58daa
 .asm_58df5
 	ld hl, UnnamedText_58e45 ; $4e45
@@ -91532,10 +93621,10 @@ Func_58d99: ; 58d99 (16:4d99)
 	call PrintText
 	ld hl, Func_3eb01
 	ld b, BANK(Func_3eb01)
-	call Bankswitch ; indirect jump to Func_3eb01 (3eb01 (f:6b01))
+	call Bankswitch
 	ld hl, Func_708ca
 	ld b, BANK(Func_708ca)
-	call Bankswitch ; indirect jump to Func_708ca (708ca (1c:48ca))
+	call Bankswitch
 	ld hl, UnnamedText_58e3b ; $4e3b
 	call PrintText
 
@@ -95080,7 +97169,7 @@ RemoveGuardDrink: ; 5a59f (16:659f)
 	jr z, .drinkLoop
 	ld b, BANK(RemoveItemByID)
 	ld hl, RemoveItemByID
-	jp Bankswitch ; indirect jump to RemoveItemByID (17f37 (5:7f37))
+	jp Bankswitch
 
 GuardDrinksList: ; 5a5b7 (16:65b7)
 	db FRESH_WATER, SODA_POP, LEMONADE, $00
@@ -100961,7 +103050,7 @@ GiveFossilToCinnabarLab: ; 61006 (18:5006)
 	ld [$FF00+$db], a
 	ld b, BANK(RemoveItemByID)
 	ld hl, RemoveItemByID
-	call Bankswitch ; indirect jump to RemoveItemByID (17f37 (5:7f37))
+	call Bankswitch
 	ld hl, UnnamedText_610b8
 	call PrintText
 	ld hl, $d7a3
@@ -103886,10 +105975,11 @@ Func_7033e: ; 7033e (1c:433e)
 	ld de, RedPicBack ; $7e0a
 	ld a, BANK(RedPicBack)
 	call UncompressSpriteFromDE
-	ld a, $3
-	call Predef ; indirect jump to ScaleSpriteByTwo (2fe40 (b:7e40))
+	call LoadHoFPlayerBackSprite
 	ld de, $9310
-	call InterlaceMergeSpriteBuffers
+	push de
+	jp LoadUncompressedBackSprite
+	nop
 	ld c, $1
 
 Func_7036d: ; 7036d (1c:436d)
@@ -104631,7 +106721,7 @@ Func_708ca: ; 708ca (1c:48ca)
 	ld [H_WHOSETURN], a ; $FF00+$f3
 	ld hl, Func_79793
 	ld b, BANK(Func_79793)
-	call Bankswitch ; indirect jump to Func_79793 (79793 (1e:5793))
+	call Bankswitch
 	ld d, $80
 	call Func_704f3
 .asm_708f6
@@ -105953,7 +108043,7 @@ Func_711c4: ; 711c4 (1c:51c4)
 Func_711ef: ; 711ef (1c:51ef)
 	ld b, BANK(Func_e9cb)
 	ld hl, Func_e9cb
-	call Bankswitch ; indirect jump to Func_e9cb (e9cb (3:69cb))
+	call Bankswitch
 	call Func_712d9
 	ld hl, wOAMBuffer
 	ld de, $cee9
@@ -107046,7 +109136,7 @@ Func_71ca2: ; 71ca2 (1c:5ca2)
 	call DelayFrames
 	ld b, BANK(LoadWildData)
 	ld hl, LoadWildData
-	jp Bankswitch ; indirect jump to LoadWildData (ceb8 (3:4eb8))
+	jp Bankswitch
 
 Func_71cc1: ; 71cc1 (1c:5cc1)
 	ld hl, wWhichTrade ; $cd3d
@@ -107245,11 +109335,11 @@ Func_71e06: ; 71e06 (1c:5e06)
 	call CopyData
 	ld a, [W_PLAYERBATTSTATUS3]
 	ld hl, W_PLAYERMONID
-	call DeterminePaletteID
+	call DeterminePaletteIDBack
 	ld b, a
 	ld a, [W_ENEMYBATTSTATUS3]
 	ld hl, W_ENEMYMONID
-	call DeterminePaletteID
+	call DeterminePaletteIDFront
 	ld c, a
 	ld hl, $cf2e
 	ld a, [$cf1d]
@@ -107286,7 +109376,7 @@ Func_71e4f: ; 71e4f (1c:5e4f)
 	jr c, .pokemon
 	ld a, $1 ; not pokemon
 .pokemon
-	call DeterminePaletteIDOoutOfBattle
+	call Func_72696
 	push af
 	ld hl, $cf2e
 	ld a, [$cf25]
@@ -107310,7 +109400,7 @@ Func_71e82: ; 71e82 (1c:5e82)
 	ld bc, $10
 	call CopyData
 	ld a, [$cf91]
-	call DeterminePaletteIDOoutOfBattle
+	call Func_72696
 	ld hl, $cf30
 	ld [hl], a
 	ld hl, $cf2d
@@ -107401,7 +109491,7 @@ Func_71f17: ; 71f17 (1c:5f17)
 	ld a, $1e
 	jr nz, .asm_71f31
 	ld a, [$cf1d]
-	call DeterminePaletteIDOoutOfBattle
+	call Func_72696
 .asm_71f31
 	ld [$cf2e], a
 	ld hl, $cf2d
@@ -107466,27 +109556,7 @@ PointerTable_71f73: ; 71f73 (1c:5f73)
 LoopCounts_71f8f: ; 71f8f (1c:5f8f)
 	db $06,$06,$06,$12,$06,$06,$06,$06
 
-DeterminePaletteID: ; 71f97 (1c:5f97)
-	bit 3, a                 ; bit 3 of battle status 3, set if current Pokemon is transformed
-	ld a, PAL_GREYMON        ; if yes, use Ditto's palette
-	ret nz
-	ld a, [hl]
-DeterminePaletteIDOoutOfBattle: ; 71f9d (1c:5f9d)
-	ld [$D11E], a
-	and a
-	jr z, .idZero
-	push bc
-	ld a, $3A
-	call Predef               ; turn Pokemon ID number into Pokedex number
-	pop bc
-	ld a, [$D11E]
-.idZero
-	ld e, a
-	ld d, $00
-	ld hl, MonsterPalettes   ; not just for Pokemon, Trainers use it too
-	add hl, de
-	ld a, [hl]
-	ret
+	ds $1F
 
 Func_71fb6: ; 71fb6 (1c:5fb6)
 	ld hl, BlkPacket_722f4 ; $62f4
@@ -107713,9 +109783,9 @@ Func_7210b: ; 7210b (1c:610b)
 	ld [rBGP], a ; $FF00+$47
 	ld de, $8800
 	ld a, [$cf2d]
-	and a
-	jr z, .asm_72122
-	call Func_72188
+	dec a
+	jr c, .asm_72122
+	call CopyPalTable
 	jr .asm_72128
 .asm_72122
 	ld bc, $1000
@@ -107964,332 +110034,284 @@ PalPacket_725b8: ; 725b8 (1c:65b8)
 
 MonsterPalettes: ; 725c8 (1c:65c8)
 	db PAL_MEWMON    ; MISSINGNO
-	db PAL_GREENMON  ; BULBASAUR
-	db PAL_GREENMON  ; IVYSAUR
-	db PAL_GREENMON  ; VENUSAUR
-	db PAL_REDMON    ; CHARMANDER
-	db PAL_REDMON    ; CHARMELEON
-	db PAL_REDMON    ; CHARIZARD
-	db PAL_CYANMON   ; SQUIRTLE
-	db PAL_CYANMON   ; WARTORTLE
-	db PAL_CYANMON   ; BLASTOISE
-	db PAL_GREENMON  ; CATERPIE
-	db PAL_GREENMON  ; METAPOD
-	db PAL_CYANMON   ; BUTTERFREE
-	db PAL_YELLOWMON ; WEEDLE
-	db PAL_YELLOWMON ; KAKUNA
-	db PAL_YELLOWMON ; BEEDRILL
-	db PAL_BROWNMON  ; PIDGEY
-	db PAL_BROWNMON  ; PIDGEOTTO
-	db PAL_BROWNMON  ; PIDGEOT
-	db PAL_GREYMON   ; RATTATA
-	db PAL_GREYMON   ; RATICATE
-	db PAL_BROWNMON  ; SPEAROW
-	db PAL_BROWNMON  ; FEAROW
-	db PAL_PURPLEMON ; EKANS
-	db PAL_PURPLEMON ; ARBOK
-	db PAL_YELLOWMON ; PIKACHU
-	db PAL_YELLOWMON ; RAICHU
-	db PAL_BROWNMON  ; SANDSHREW
-	db PAL_BROWNMON  ; SANDSLASH
-	db PAL_BLUEMON   ; NIDORAN_F
-	db PAL_BLUEMON   ; NIDORINA
-	db PAL_BLUEMON   ; NIDOQUEEN
-	db PAL_PURPLEMON ; NIDORAN_M
-	db PAL_PURPLEMON ; NIDORINO
-	db PAL_PURPLEMON ; NIDOKING
-	db PAL_PINKMON   ; CLEFAIRY
-	db PAL_PINKMON   ; CLEFABLE
-	db PAL_REDMON    ; VULPIX
-	db PAL_YELLOWMON ; NINETALES
-	db PAL_PINKMON   ; JIGGLYPUFF
-	db PAL_PINKMON   ; WIGGLYTUFF
-	db PAL_BLUEMON   ; ZUBAT
-	db PAL_BLUEMON   ; GOLBAT
-	db PAL_GREENMON  ; ODDISH
-	db PAL_REDMON    ; GLOOM
-	db PAL_REDMON    ; VILEPLUME
-	db PAL_REDMON    ; PARAS
-	db PAL_REDMON    ; PARASECT
-	db PAL_PURPLEMON ; VENONAT
-	db PAL_PURPLEMON ; VENOMOTH
-	db PAL_BROWNMON  ; DIGLETT
-	db PAL_BROWNMON  ; DUGTRIO
-	db PAL_YELLOWMON ; MEOWTH
-	db PAL_YELLOWMON ; PERSIAN
-	db PAL_YELLOWMON ; PSYDUCK
-	db PAL_CYANMON   ; GOLDUCK
-	db PAL_BROWNMON  ; MANKEY
-	db PAL_BROWNMON  ; PRIMEAPE
-	db PAL_BROWNMON  ; GROWLITHE
-	db PAL_REDMON    ; ARCANINE
-	db PAL_BLUEMON   ; POLIWAG
-	db PAL_BLUEMON   ; POLIWHIRL
-	db PAL_BLUEMON   ; POLIWRATH
-	db PAL_YELLOWMON ; ABRA
-	db PAL_YELLOWMON ; KADABRA
-	db PAL_YELLOWMON ; ALAKAZAM
-	db PAL_GREYMON   ; MACHOP
-	db PAL_GREYMON   ; MACHOKE
-	db PAL_GREYMON   ; MACHAMP
-	db PAL_GREENMON  ; BELLSPROUT
-	db PAL_GREENMON  ; WEEPINBELL
-	db PAL_GREENMON  ; VICTREEBEL
-	db PAL_CYANMON   ; TENTACOOL
-	db PAL_CYANMON   ; TENTACRUEL
-	db PAL_GREYMON   ; GEODUDE
-	db PAL_GREYMON   ; GRAVELER
-	db PAL_GREYMON   ; GOLEM
-	db PAL_REDMON    ; PONYTA
-	db PAL_REDMON    ; RAPIDASH
-	db PAL_PINKMON   ; SLOWPOKE
-	db PAL_PINKMON   ; SLOWBRO
-	db PAL_GREYMON   ; MAGNEMITE
-	db PAL_GREYMON   ; MAGNETON
-	db PAL_BROWNMON  ; FARFETCH_D
-	db PAL_BROWNMON  ; DODUO
-	db PAL_BROWNMON  ; DODRIO
-	db PAL_BLUEMON   ; SEEL
-	db PAL_BLUEMON   ; DEWGONG
-	db PAL_PURPLEMON ; GRIMER
-	db PAL_PURPLEMON ; MUK
-	db PAL_GREYMON   ; SHELLDER
-	db PAL_GREYMON   ; CLOYSTER
-	db PAL_PURPLEMON ; GASTLY
-	db PAL_PURPLEMON ; HAUNTER
-	db PAL_PURPLEMON ; GENGAR
-	db PAL_GREYMON   ; ONIX
-	db PAL_YELLOWMON ; DROWZEE
-	db PAL_YELLOWMON ; HYPNO
-	db PAL_REDMON    ; KRABBY
-	db PAL_REDMON    ; KINGLER
-	db PAL_YELLOWMON ; VOLTORB
-	db PAL_YELLOWMON ; ELECTRODE
-	db PAL_PINKMON   ; EXEGGCUTE
-	db PAL_GREENMON  ; EXEGGUTOR
-	db PAL_GREYMON   ; CUBONE
-	db PAL_GREYMON   ; MAROWAK
-	db PAL_BROWNMON  ; HITMONLEE
-	db PAL_BROWNMON  ; HITMONCHAN
-	db PAL_PINKMON   ; LICKITUNG
-	db PAL_PURPLEMON ; KOFFING
-	db PAL_PURPLEMON ; WEEZING
-	db PAL_GREYMON   ; RHYHORN
-	db PAL_GREYMON   ; RHYDON
-	db PAL_PINKMON   ; CHANSEY
-	db PAL_BLUEMON   ; TANGELA
-	db PAL_BROWNMON  ; KANGASKHAN
-	db PAL_CYANMON   ; HORSEA
-	db PAL_CYANMON   ; SEADRA
-	db PAL_REDMON    ; GOLDEEN
-	db PAL_REDMON    ; SEAKING
-	db PAL_REDMON    ; STARYU
-	db PAL_GREYMON   ; STARMIE
-	db PAL_PINKMON   ; MR_MIME
-	db PAL_GREENMON  ; SCYTHER
-	db PAL_MEWMON    ; JYNX
-	db PAL_YELLOWMON ; ELECTABUZZ
-	db PAL_REDMON    ; MAGMAR
-	db PAL_BROWNMON  ; PINSIR
-	db PAL_GREYMON   ; TAUROS
-	db PAL_REDMON    ; MAGIKARP
-	db PAL_BLUEMON   ; GYARADOS
-	db PAL_CYANMON   ; LAPRAS
-	db PAL_GREYMON   ; DITTO
-	db PAL_GREYMON   ; EEVEE
-	db PAL_CYANMON   ; VAPOREON
-	db PAL_YELLOWMON ; JOLTEON
-	db PAL_REDMON    ; FLAREON
-	db PAL_GREYMON   ; PORYGON
-	db PAL_BLUEMON   ; OMANYTE
-	db PAL_BLUEMON   ; OMASTAR
-	db PAL_BROWNMON  ; KABUTO
-	db PAL_BROWNMON  ; KABUTOPS
-	db PAL_GREYMON   ; AERODACTYL
-	db PAL_PINKMON   ; SNORLAX
-	db PAL_BLUEMON   ; ARTICUNO
-	db PAL_YELLOWMON ; ZAPDOS
-	db PAL_REDMON    ; MOLTRES
-	db PAL_GREYMON   ; DRATINI
-	db PAL_BLUEMON   ; DRAGONAIR
-	db PAL_BROWNMON  ; DRAGONITE
-	db PAL_MEWMON    ; MEWTWO
-	db PAL_MEWMON    ; MEW
+	db PAL_BULBASAUR
+	db PAL_IVYSAUR
+	db PAL_VENUSAUR
+	db PAL_CHARMANDER
+	db PAL_CHARMELEON
+	db PAL_CHARIZARD
+	db PAL_SQUIRTLE
+	db PAL_WARTORTLE
+	db PAL_BLASTOISE
+	db PAL_CATERPIE
+	db PAL_METAPOD
+	db PAL_BUTTERFREE
+	db PAL_WEEDLE
+	db PAL_KAKUNA
+	db PAL_BEEDRILL
+	db PAL_PIDGEY
+	db PAL_PIDGEOTTO
+	db PAL_PIDGEOT
+	db PAL_RATTATA
+	db PAL_RATICATE
+	db PAL_SPEAROW
+	db PAL_FEAROW
+	db PAL_EKANS
+	db PAL_ARBOK
+	db PAL_PIKACHU
+	db PAL_RAICHU
+	db PAL_SANDSHREW
+	db PAL_SANDSLASH
+	db PAL_NIDORAN_F
+	db PAL_NIDORINA
+	db PAL_NIDOQUEEN
+	db PAL_NIDORAN_M
+	db PAL_NIDORINO
+	db PAL_NIDOKING
+	db PAL_CLEFAIRY
+	db PAL_CLEFABLE
+	db PAL_VULPIX
+	db PAL_NINETALES
+	db PAL_JIGGLYPUFF
+	db PAL_WIGGLYTUFF
+	db PAL_ZUBAT
+	db PAL_GOLBAT
+	db PAL_ODDISH
+	db PAL_GLOOM
+	db PAL_VILEPLUME
+	db PAL_PARAS
+	db PAL_PARASECT
+	db PAL_VENONAT
+	db PAL_VENOMOTH
+	db PAL_DIGLETT
+	db PAL_DUGTRIO
+	db PAL_MEOWTH
+	db PAL_PERSIAN
+	db PAL_PSYDUCK
+	db PAL_GOLDUCK
+	db PAL_MANKEY
+	db PAL_PRIMEAPE
+	db PAL_GROWLITHE
+	db PAL_ARCANINE
+	db PAL_POLIWAG
+	db PAL_POLIWHIRL
+	db PAL_POLIWRATH
+	db PAL_ABRA
+	db PAL_KADABRA
+	db PAL_ALAKAZAM
+	db PAL_MACHOP
+	db PAL_MACHOKE
+	db PAL_MACHAMP
+	db PAL_BELLSPROUT
+	db PAL_WEEPINBELL
+	db PAL_VICTREEBEL
+	db PAL_TENTACOOL
+	db PAL_TENTACRUEL
+	db PAL_GEODUDE
+	db PAL_GRAVELER
+	db PAL_GOLEM
+	db PAL_PONYTA
+	db PAL_RAPIDASH
+	db PAL_SLOWPOKE
+	db PAL_SLOWBRO
+	db PAL_MAGNEMITE
+	db PAL_MAGNETON
+	db PAL_FARFETCH_D
+	db PAL_DODUO
+	db PAL_DODRIO
+	db PAL_SEEL
+	db PAL_DEWGONG
+	db PAL_GRIMER
+	db PAL_MUK
+	db PAL_SHELLDER
+	db PAL_CLOYSTER
+	db PAL_GASTLY
+	db PAL_HAUNTER
+	db PAL_GENGAR
+	db PAL_ONIX
+	db PAL_DROWZEE
+	db PAL_HYPNO
+	db PAL_KRABBY
+	db PAL_KINGLER
+	db PAL_VOLTORB
+	db PAL_ELECTRODE
+	db PAL_EXEGGCUTE
+	db PAL_EXEGGUTOR
+	db PAL_CUBONE
+	db PAL_MAROWAK
+	db PAL_HITMONLEE
+	db PAL_HITMONCHAN
+	db PAL_LICKITUNG
+	db PAL_KOFFING
+	db PAL_WEEZING
+	db PAL_RHYHORN
+	db PAL_RHYDON
+	db PAL_CHANSEY
+	db PAL_TANGELA
+	db PAL_KANGASKHAN
+	db PAL_HORSEA
+	db PAL_SEADRA
+	db PAL_GOLDEEN
+	db PAL_SEAKING
+	db PAL_STARYU
+	db PAL_STARMIE
+	db PAL_MR_MIME
+	db PAL_SCYTHER
+	db PAL_JYNX
+	db PAL_ELECTABUZZ
+	db PAL_MAGMAR
+	db PAL_PINSIR
+	db PAL_TAUROS
+	db PAL_MAGIKARP
+	db PAL_GYARADOS
+	db PAL_LAPRAS
+	db PAL_DITTO
+	db PAL_EEVEE
+	db PAL_VAPOREON
+	db PAL_JOLTEON
+	db PAL_FLAREON
+	db PAL_PORYGON
+	db PAL_OMANYTE
+	db PAL_OMASTAR
+	db PAL_KABUTO
+	db PAL_KABUTOPS
+	db PAL_AERODACTYL
+	db PAL_SNORLAX
+	db PAL_ARTICUNO
+	db PAL_ZAPDOS
+	db PAL_MOLTRES
+	db PAL_DRATINI
+	db PAL_DRAGONAIR
+	db PAL_DRAGONITE
+	db PAL_MEWTWO
+	db PAL_MEW
+TrainerPalettes: ; 726ba (1c:66ba)
+	db PAL_HERO
+	db PAL_YOUNGSTER
+	db PAL_BUGCATCHER
+	db PAL_LASS
+	db PAL_SAILOR
+	db PAL_JR_TRAINER_M
+	db PAL_JR_TRAINER_F
+	db PAL_POKEMANIAC
+	db PAL_SUPERNERD
+	db PAL_HIKER
+	db PAL_BIKER
+	db PAL_BURGLAR
+	db PAL_ENGINEER
+	db PAL_JUGGLER
+	db PAL_FISHERMAN
+	db PAL_SWIMMER
+	db PAL_CUEBALL
+	db PAL_GAMBLER
+	db PAL_BEAUTY
+	db PAL_PSYCHIC
+	db PAL_ROCKER
+	db PAL_JUGGLER2
+	db PAL_TAMER
+	db PAL_BIRDKEEPER
+	db PAL_BLACKBELT
+	db PAL_GARY1
+	db PAL_OAK
+	db PAL_CHIEF
+	db PAL_SCIENTIST
+	db PAL_GIOVANNI
+	db PAL_ROCKET
+	db PAL_COOLTRAINER_M
+	db PAL_COOLTRAINER_F
+	db PAL_BRUNO
+	db PAL_BROCK
+	db PAL_MISTY
+	db PAL_LT_SURGE
+	db PAL_ERIKA
+	db PAL_KOGA
+	db PAL_BLAINE
+	db PAL_SABRINA
+	db PAL_GENTLEMAN
+	db PAL_GARY2
+	db PAL_GARY3
+	db PAL_LORELEI
+	db PAL_CHANNELER
+	db PAL_AGATHA
+	db PAL_LANCE
 
-; palettes for overworlds, title screen, monsters
-SuperPalettes: ; 72660 (1c:6660)
-	RGB 31,29,31 ; PAL_ROUTE
-	RGB 21,28,11
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_PALLET
-	RGB 25,28,27
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_VIRIDIAN
-	RGB 17,26,3
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_PEWTER
-	RGB 23,25,16
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_CERULEAN
-	RGB 17,20,30
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_LAVENDER
-	RGB 27,20,27
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_VERMILION
-	RGB 30,18,0
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_CELADON
-	RGB 16,30,22
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_FUCHSIA
-	RGB 31,15,22
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_CINNABAR
-	RGB 26,10,6
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_INDIGO
-	RGB 22,14,24
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_SAFFRON
-	RGB 27,27,3
-	RGB 20,26,31
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_TOWNMAP
-	RGB 20,26,31
-	RGB 17,23,10
-	RGB 3,2,2
-IF _RED
-	RGB 31,29,31 ; PAL_LOGO1
-	RGB 30,30,17
-	RGB 17,23,10
-	RGB 21,0,4
-ENDC
-IF _BLUE
-	RGB 31,29,31 ; PAL_LOGO1
-	RGB 30,30,17
-	RGB 21,0,4
-	RGB 14,19,29
-ENDC
-	RGB 31,29,31 ; XXX
-	RGB 30,30,17
-	RGB 18,18,24
-	RGB 7,7,16
-	RGB 31,29,31 ; PAL_LOGO2
-	RGB 24,20,30
-	RGB 11,20,30
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_MEWMON
-	RGB 30,22,17
-	RGB 16,14,19
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_BLUEMON
-	RGB 18,20,27
-	RGB 11,15,23
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_REDMON
-	RGB 31,20,10
-	RGB 26,10,6
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_CYANMON
-	RGB 21,25,29
-	RGB 14,19,25
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_PURPLEMON
-	RGB 27,22,24
-	RGB 21,15,23
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_BROWNMON
-	RGB 28,20,15
-	RGB 21,14,9
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_GREENMON
-	RGB 20,26,16
-	RGB 9,20,11
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_PINKMON
-	RGB 30,22,24
-	RGB 28,15,21
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_YELLOWMON
-	RGB 31,28,14
-	RGB 26,20,0
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_GREYMON
-	RGB 26,21,22
-	RGB 15,15,18
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_SLOTS1
-	RGB 26,21,22
-	RGB 27,20,6
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_SLOTS2
-	RGB 31,31,17
-IF _RED
-	RGB 25,17,21
-ENDC
-IF _BLUE
-	RGB 16,19,29
-ENDC
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_SLOTS3
-	RGB 22,31,16
-IF _RED
-	RGB 25,17,21
-ENDC
-IF _BLUE
-	RGB 16,19,29
-ENDC
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_SLOTS4
-IF _RED
-	RGB 16,19,29
-	RGB 25,17,21
-ENDC
-IF _BLUE
-	RGB 25,17,21
-	RGB 16,19,29
-ENDC
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_BLACK
-	RGB 7,7,7
-	RGB 2,3,3
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_GREENBAR
-	RGB 30,26,15
-	RGB 9,20,11
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_YELLOWBAR
-	RGB 30,26,15
-	RGB 26,20,0
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_REDBAR
-	RGB 30,26,15
-	RGB 26,10,6
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_BADGE
-	RGB 30,22,17
-	RGB 11,15,23
-	RGB 3,2,2
-	RGB 31,29,31 ; PAL_CAVE
-	RGB 21,14,9
-	RGB 18,24,22
-	RGB 3,2,2
-	RGB 31,29,31 ; XXX
-	RGB 31,28,14
-	RGB 24,20,10
-	RGB 3,2,2
+DeterminePaletteIDFront: ; 72690 (1c:6690)
+	bit 3, a                 ; bit 3 of battle status 3 (unused?)
+	ld a, PAL_GREYMON
+	ret nz
+	ld a, [hl]
+Func_72696: ; 72696 (1c:6696)
+	ld [$D11E], a
+	and a
+	ld a, [$D031]
+	ld hl, TrainerPalettes
+	jr z, GetTrainerPalID
+	jr GetMonPalID
+
+DeterminePaletteIDBack: ; 726B9 (1c:66B9)
+	bit 3, a                 ; bit 3 of battle status 3 (unused?)
+	ld a, PAL_GREYMON
+	ret nz
+	ld a, [hl]
+	ld [$D11E], a
+	and a
+	ld a, PAL_HERO
+	ret z
+GetMonPalID
+	push bc
+	ld a, $3A
+	call Predef               ; turn Pokemon ID number into Pokedex number
+	pop bc
+	ld a, [$D11E]
+	ld hl, MonsterPalettes
+GetTrainerPalID
+	ld e, a
+	ld d, $00
+	add hl, de
+	ld a, [hl]
+	ret
+
+CopyPalTable:
+	jr nz,.yes
+	jp Func_72188 ; no
+.yes
+	ld a,BANK(SuperPalettes)
+	ld bc,$1000
+	jp FarCopyData
+
+LoadHoFPlayerBackSprite:
+	ld hl, W_TRAINERCLASS
+	ld [hl], $00
+	ld a, $66
+	ret
+
+PCBoxPal:
+	call TextBoxBorder
+SendDexPal:
+	ld hl, PalPacket_72428
+	call CopyPalPacket
+	ld a, PAL_REDBAR
+	jr SetPalID
+
+SendIntroPal:
+	ld hl, PalPacket_72428
+	call CopyPalPacket
+	pop bc
+	pop de
+	pop af
+	push de
+	push bc
+SetPalID
+	ld hl, $CF2E
+	ld [hld], a
+	jp SendSGBPacket
+
+CopyPalPacket:
+	ld bc, $0010
+	ld de, $CF2D
+	jp CopyData
+
+	ds $87
 
 BorderPalettes: ; 72788 (1c:6788)
 IF _RED
@@ -108793,7 +110815,7 @@ Func_7393f: ; 7393f (1c:793f)
 	ld hl, wTileMap
 	ld b, $2
 	ld c, $9
-	call TextBoxBorder
+	call PCBoxPal
 	ld hl, UnnamedText_739d4 ; $79d4
 	call PrintText
 	FuncCoord 11, 0 ; $c3ab
@@ -109080,7 +111102,7 @@ CeruleanHouse2Blocks: ; 7404c (1d:404c)
 Func_7405c: ; 7405c (1d:405c)
 	ld b, BANK(Func_701a0)
 	ld hl, Func_701a0
-	call Bankswitch ; indirect jump to Func_701a0 (701a0 (1c:41a0))
+	call Bankswitch
 	call ClearScreen
 	ld c, $64
 	call DelayFrames
@@ -109326,7 +111348,7 @@ Func_7418e: ; 7418e (1d:418e)
 	push de
 	ld b, BANK(Func_4541)
 	ld hl, Func_4541
-	call Bankswitch ; indirect jump to Func_4541 (4541 (1:4541))
+	call Bankswitch
 	pop de
 	pop de
 	jr .asm_7419b
@@ -109859,7 +111881,7 @@ ViridianGymScript4: ; 7496b (1d:496b)
 .asm_74980
 	ld b, BANK(Func_44fd7)
 	ld hl, Func_44fd7
-	jp Bankswitch ; indirect jump to Func_44fd7 (44fd7 (11:4fd7))
+	jp Bankswitch
 
 ViridianGymScript3: ; 74988 (1d:4988)
 	ld a, [W_ISINBATTLE] ; $d057
@@ -116917,7 +118939,7 @@ Func_79f54: ; 79f54 (1e:5f54)
 	call Func_79fc0
 	ld b, BANK(asm_f055)
 	ld hl, asm_f055
-	call Bankswitch ; indirect jump to asm_f055 (f055 (3:7055))
+	call Bankswitch
 	ld c, $8
 .asm_79f73
 	push bc
@@ -136342,3 +138364,1106 @@ MoveNames: ; b0000 (2c:4000)
 	db "SLASH@"
 	db "SUBSTITUTE@"
 	db "STRUGGLE@"
+
+SECTION "bank2D",ROMX,BANK[$2D]
+
+SeadraPicFront:
+	INCBIN "pic/bmon/seadra.pic"
+SeadraPicBack:
+	INCBIN "pic/monback/seadrab.pic"
+GoldeenPicFront:
+	INCBIN "pic/bmon/goldeen.pic"
+GoldeenPicBack:
+	INCBIN "pic/monback/goldeenb.pic"
+SeakingPicFront:
+	INCBIN "pic/bmon/seaking.pic"
+SeakingPicBack:
+	INCBIN "pic/monback/seakingb.pic"
+StaryuPicFront:
+	INCBIN "pic/bmon/staryu.pic"
+StaryuPicBack:
+	INCBIN "pic/monback/staryub.pic"
+StarmiePicFront:
+	INCBIN "pic/bmon/starmie.pic"
+StarmiePicBack:
+	INCBIN "pic/monback/starmieb.pic"
+MrMimePicFront:
+	INCBIN "pic/bmon/mr.mime.pic"
+MrMimePicBack:
+	INCBIN "pic/monback/mr.mimeb.pic"
+ScytherPicFront:
+	INCBIN "pic/bmon/scyther.pic"
+ScytherPicBack:
+	INCBIN "pic/monback/scytherb.pic"
+JynxPicFront:
+	INCBIN "pic/bmon/jynx.pic"
+JynxPicBack:
+	INCBIN "pic/monback/jynxb.pic"
+ElectabuzzPicFront:
+	INCBIN "pic/bmon/electabuzz.pic"
+ElectabuzzPicBack:
+	INCBIN "pic/monback/electabuzzb.pic"
+MagmarPicFront:
+	INCBIN "pic/bmon/magmar.pic"
+MagmarPicBack:
+	INCBIN "pic/monback/magmarb.pic"
+PinsirPicFront:
+	INCBIN "pic/bmon/pinsir.pic"
+PinsirPicBack:
+	INCBIN "pic/monback/pinsirb.pic"
+TaurosPicFront:
+	INCBIN "pic/bmon/tauros.pic"
+TaurosPicBack:
+	INCBIN "pic/monback/taurosb.pic"
+MagikarpPicFront:
+	INCBIN "pic/bmon/magikarp.pic"
+MagikarpPicBack:
+	INCBIN "pic/monback/magikarpb.pic"
+GyaradosPicFront:
+	INCBIN "pic/bmon/gyarados.pic"
+GyaradosPicBack:
+	INCBIN "pic/monback/gyaradosb.pic"
+LaprasPicFront:
+	INCBIN "pic/bmon/lapras.pic"
+LaprasPicBack:
+	INCBIN "pic/monback/laprasb.pic"
+DittoPicFront:
+	INCBIN "pic/bmon/ditto.pic"
+DittoPicBack:
+	INCBIN "pic/monback/dittob.pic"
+EeveePicFront:
+	INCBIN "pic/bmon/eevee.pic"
+EeveePicBack:
+	INCBIN "pic/monback/eeveeb.pic"
+VaporeonPicFront:
+	INCBIN "pic/bmon/vaporeon.pic"
+VaporeonPicBack:
+	INCBIN "pic/monback/vaporeonb.pic"
+JolteonPicFront:
+	INCBIN "pic/bmon/jolteon.pic"
+JolteonPicBack:
+	INCBIN "pic/monback/jolteonb.pic"
+FlareonPicFront:
+	INCBIN "pic/bmon/flareon.pic"
+FlareonPicBack:
+	INCBIN "pic/monback/flareonb.pic"
+PorygonPicFront:
+	INCBIN "pic/bmon/porygon.pic"
+PorygonPicBack:
+	INCBIN "pic/monback/porygonb.pic"
+OmanytePicFront:
+	INCBIN "pic/bmon/omanyte.pic"
+OmanytePicBack:
+	INCBIN "pic/monback/omanyteb.pic"
+OmastarPicFront:
+	INCBIN "pic/bmon/omastar.pic"
+OmastarPicBack:
+	INCBIN "pic/monback/omastarb.pic"
+KabutoPicFront:
+	INCBIN "pic/bmon/kabuto.pic"
+KabutoPicBack:
+	INCBIN "pic/monback/kabutob.pic"
+KabutopsPicFront:
+	INCBIN "pic/bmon/kabutops.pic"
+KabutopsPicBack:
+	INCBIN "pic/monback/kabutopsb.pic"
+
+SECTION "bank2E",ROMX,BANK[$2E]
+
+AerodactylPicFront:
+	INCBIN "pic/bmon/aerodactyl.pic"
+AerodactylPicBack:
+	INCBIN "pic/monback/aerodactylb.pic"
+SnorlaxPicFront:
+	INCBIN "pic/bmon/snorlax.pic"
+SnorlaxPicBack:
+	INCBIN "pic/monback/snorlaxb.pic"
+ArticunoPicFront:
+	INCBIN "pic/bmon/articuno.pic"
+ArticunoPicBack:
+	INCBIN "pic/monback/articunob.pic"
+ZapdosPicFront:
+	INCBIN "pic/bmon/zapdos.pic"
+ZapdosPicBack:
+	INCBIN "pic/monback/zapdosb.pic"
+MoltresPicFront:
+	INCBIN "pic/bmon/moltres.pic"
+MoltresPicBack:
+	INCBIN "pic/monback/moltresb.pic"
+DratiniPicFront:
+	INCBIN "pic/bmon/dratini.pic"
+DratiniPicBack:
+	INCBIN "pic/monback/dratinib.pic"
+DragonairPicFront:
+	INCBIN "pic/bmon/dragonair.pic"
+DragonairPicBack:
+	INCBIN "pic/monback/dragonairb.pic"
+DragonitePicFront:
+	INCBIN "pic/bmon/dragonite.pic"
+DragonitePicBack:
+	INCBIN "pic/monback/dragoniteb.pic"
+MewtwoPicFront:
+	INCBIN "pic/bmon/mewtwo.pic"
+MewtwoPicBack:
+	INCBIN "pic/monback/mewtwob.pic"
+MewPicFront:
+	INCBIN "pic/bmon/mew.pic"
+MewPicBack:
+	INCBIN "pic/monback/mewb.pic"
+	
+SECTION "bank2F",ROMX,BANK[$2F]
+	
+	; palettes for overworlds, title screen, monsters
+SuperPalettes: ; 72660 (1c:6660)
+	RGB 31, 31, 31
+	RGB 22, 25, 19
+	RGB 16, 21, 30
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 28, 31
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 28, 19
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 24, 24
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 23, 31
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 21, 27
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 24, 16
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 30, 26
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 25, 31
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 20, 19
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 28, 27
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 26, 19
+	RGB 15, 20, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 26, 31
+	RGB 17, 23, 10
+	RGB 00, 00, 00
+IF _RED
+	RGB 31, 31, 31
+	RGB 30, 30, 17
+	RGB 17, 23, 10
+	RGB 21, 00, 04
+ENDC
+IF _BLUE
+	RGB 31, 31, 31
+	RGB 30, 30, 17
+	RGB 21, 00, 04
+	RGB 14, 19, 29
+ENDC
+	RGB 31, 31, 31
+	RGB 30, 23, 09
+	RGB 18, 19, 18
+	RGB 05, 12, 22
+	RGB 31, 31, 31
+	RGB 24, 20, 30
+	RGB 11, 20, 30
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 16, 14, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 20, 27
+	RGB 11, 15, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 20, 10
+	RGB 26, 10, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 25, 29
+	RGB 14, 19, 25
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 22, 24
+	RGB 21, 15, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 20, 15
+	RGB 21, 14, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 26, 16
+	RGB 09, 20, 11
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 24
+	RGB 28, 15, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 28, 14
+	RGB 26, 20, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 21, 22
+	RGB 15, 15, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 21, 22
+	RGB 27, 20, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 31, 17
+	RGB 25, 17, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 31, 16
+	RGB 25, 17, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 19, 29
+	RGB 25, 17, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 07, 07, 07
+	RGB 02, 03, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 25, 15
+	RGB 00, 23, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 25, 15
+	RGB 30, 20, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 25, 15
+	RGB 30, 00, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 11, 15, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 14, 09
+	RGB 18, 24, 22
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 28, 14
+	RGB 24, 20, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 31, 11
+	RGB 31, 10, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 31, 11
+	RGB 31, 12, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 31, 19
+	RGB 31, 09, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 13, 04
+	RGB 22, 05, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 14, 05
+	RGB 23, 09, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 11, 00
+	RGB 06, 09, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 18, 08
+	RGB 12, 19, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 18, 08
+	RGB 12, 19, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 20, 03
+	RGB 08, 11, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 22, 06
+	RGB 31, 09, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 15, 31, 00
+	RGB 09, 14, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 25, 31
+	RGB 26, 05, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 17, 05
+	RGB 25, 05, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 25, 03
+	RGB 20, 14, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 19, 04
+	RGB 30, 04, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 21, 31
+	RGB 19, 08, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 12
+	RGB 19, 08, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 12
+	RGB 19, 08, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 08, 30
+	RGB 16, 03, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 23, 10
+	RGB 17, 10, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 23, 13
+	RGB 21, 08, 11
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 17, 07
+	RGB 31, 11, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 08, 21
+	RGB 21, 00, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 08, 19
+	RGB 22, 04, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 26, 05
+	RGB 26, 06, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 26, 07
+	RGB 31, 12, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 18, 06
+	RGB 12, 07, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 14, 04
+	RGB 13, 07, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 21, 30
+	RGB 12, 06, 14
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 13, 20, 31
+	RGB 07, 12, 14
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 19, 07
+	RGB 09, 16, 27
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 17, 22
+	RGB 21, 02, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 17, 22
+	RGB 21, 02, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 10, 19
+	RGB 13, 03, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 14, 18
+	RGB 13, 07, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 14, 18
+	RGB 13, 07, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 18, 09
+	RGB 23, 09, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 25, 09
+	RGB 18, 15, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 16, 31
+	RGB 06, 16, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 16, 31
+	RGB 06, 16, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 15, 19
+	RGB 05, 08, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 12, 15, 19
+	RGB 05, 08, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 23, 03
+	RGB 06, 09, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 14, 07
+	RGB 08, 09, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 06, 03
+	RGB 08, 09, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 12, 03
+	RGB 23, 03, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 09, 04
+	RGB 14, 05, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 05, 02
+	RGB 11, 00, 14
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 10, 24
+	RGB 12, 05, 14
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 11, 04
+	RGB 24, 06, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 11, 04
+	RGB 24, 06, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 27, 13
+	RGB 20, 08, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 28, 10
+	RGB 12, 09, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 27, 04
+	RGB 17, 15, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 21, 26
+	RGB 08, 11, 24
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 20, 11
+	RGB 19, 09, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 18, 12
+	RGB 16, 08, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 23, 07
+	RGB 31, 09, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 23, 07
+	RGB 31, 09, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 08, 05
+	RGB 07, 08, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 16, 26
+	RGB 08, 05, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 16, 26
+	RGB 06, 06, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 19, 03
+	RGB 12, 08, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 19, 03
+	RGB 12, 08, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 19, 03
+	RGB 12, 08, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 17, 11
+	RGB 09, 11, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 17, 11
+	RGB 22, 04, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 18, 11
+	RGB 09, 11, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 31, 07
+	RGB 27, 10, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 13, 31, 07
+	RGB 29, 09, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 15, 26, 03
+	RGB 31, 10, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 20, 31
+	RGB 30, 05, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 20, 31
+	RGB 26, 02, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 17, 15
+	RGB 08, 11, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 17, 17, 18
+	RGB 08, 11, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 18, 17, 15
+	RGB 08, 11, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 27, 04
+	RGB 31, 05, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 27, 04
+	RGB 31, 05, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 17
+	RGB 21, 05, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 17
+	RGB 12, 17, 11
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 20, 31
+	RGB 31, 06, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 20, 31
+	RGB 31, 06, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 12, 03
+	RGB 06, 26, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 13, 09
+	RGB 12, 08, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 16, 08
+	RGB 18, 08, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 21, 31
+	RGB 29, 09, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 21, 31
+	RGB 08, 11, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 02, 20
+	RGB 12, 01, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 02, 20
+	RGB 12, 01, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 08, 13
+	RGB 21, 07, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 10, 22
+	RGB 12, 04, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 08, 30
+	RGB 17, 00, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 07, 06
+	RGB 14, 00, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 05, 02
+	RGB 09, 00, 16
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 17, 15, 20
+	RGB 09, 06, 11
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 23, 04
+	RGB 18, 10, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 25, 00
+	RGB 21, 12, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 17, 09
+	RGB 29, 05, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 17, 09
+	RGB 29, 05, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 23, 17
+	RGB 31, 09, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 23, 17
+	RGB 31, 09, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 15, 17
+	RGB 19, 05, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 13, 06
+	RGB 05, 16, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 19, 12
+	RGB 16, 10, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 19, 12
+	RGB 16, 10, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 14, 05
+	RGB 15, 16, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 15, 12
+	RGB 27, 03, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 18
+	RGB 26, 06, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 10, 25
+	RGB 18, 06, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 10, 25
+	RGB 18, 06, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 15, 11, 17
+	RGB 07, 09, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 15, 11, 17
+	RGB 07, 09, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 16, 21
+	RGB 31, 09, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 09, 13, 23
+	RGB 17, 06, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 14, 04
+	RGB 08, 08, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 27, 12
+	RGB 11, 17, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 22, 16
+	RGB 09, 16, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 12, 19
+	RGB 31, 10, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 19, 22, 30
+	RGB 31, 10, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 17, 11
+	RGB 31, 05, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 22, 00
+	RGB 19, 07, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 11, 31
+	RGB 28, 07, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 15, 26, 00
+	RGB 23, 25, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 27, 04
+	RGB 29, 06, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 31, 05
+	RGB 24, 16, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 20, 00
+	RGB 23, 07, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 20, 14
+	RGB 17, 10, 07
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 15, 05
+	RGB 10, 07, 04
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 10, 06
+	RGB 18, 03, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 25, 07
+	RGB 09, 14, 26
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 21, 13
+	RGB 08, 16, 28
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 12, 28
+	RGB 13, 07, 16
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 16, 11
+	RGB 17, 10, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 16, 22, 31
+	RGB 09, 11, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 31, 03
+	RGB 28, 11, 01
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 10, 01
+	RGB 21, 05, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 09, 04
+	RGB 12, 11, 25
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 17, 11
+	RGB 07, 14, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 17, 11
+	RGB 07, 14, 21
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 15, 11
+	RGB 14, 11, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 15, 11
+	RGB 14, 11, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 15, 18
+	RGB 13, 11, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 18, 14
+	RGB 13, 09, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 11, 21, 31
+	RGB 08, 11, 16
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 28, 00
+	RGB 23, 16, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 22, 00
+	RGB 31, 12, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 26, 07
+	RGB 05, 11, 24
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 14, 19, 31
+	RGB 05, 11, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 17, 04
+	RGB 11, 10, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 22, 20, 25
+	RGB 16, 05, 20
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 15, 31
+	RGB 07, 11, 26
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 20, 09
+	RGB 09, 12, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 17, 10
+	RGB 06, 10, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 17, 06
+	RGB 13, 08, 25
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 14, 07
+	RGB 03, 07, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 19, 08
+	RGB 15, 25, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 19, 08
+	RGB 10, 20, 02
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 20, 13
+	RGB 13, 05, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 11, 09, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 23, 15, 09
+	RGB 13, 08, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 20, 17, 09
+	RGB 04, 03, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 16, 09
+	RGB 12, 04, 23
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 19, 15
+	RGB 29, 24, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 15, 10
+	RGB 09, 06, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 17, 13
+	RGB 07, 12, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 21, 13, 01
+	RGB 03, 04, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 22, 18
+	RGB 09, 13, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 18, 12
+	RGB 10, 03, 22
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 17, 11
+	RGB 08, 09, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 10, 12, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 22, 19
+	RGB 31, 08, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 15, 10
+	RGB 09, 06, 31
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 20, 15
+	RGB 12, 13, 18
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 06, 12, 26
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 15, 08
+	RGB 13, 10, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 24, 08
+	RGB 12, 09, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 19, 11
+	RGB 13, 16, 00
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 19, 11
+	RGB 10, 13, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 24, 19, 11
+	RGB 10, 13, 17
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 17, 12
+	RGB 08, 10, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 17, 15
+	RGB 20, 08, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 18, 15
+	RGB 22, 09, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 26, 18, 15
+	RGB 22, 09, 03
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 17, 12
+	RGB 08, 10, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 18, 14
+	RGB 14, 07, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 19, 16
+	RGB 20, 10, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 17, 14
+	RGB 09, 14, 10
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 18, 13
+	RGB 07, 15, 08
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 18, 14
+	RGB 12, 07, 13
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 20, 16
+	RGB 07, 11, 12
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 24, 07, 09
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 25, 16, 12
+	RGB 09, 09, 15
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 24, 08
+	RGB 12, 09, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 31, 24, 08
+	RGB 12, 09, 19
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 20, 16
+	RGB 25, 06, 06
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 30, 22, 17
+	RGB 08, 08, 20
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 27, 22, 17
+	RGB 16, 11, 20
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 29, 19, 15
+	RGB 21, 09, 05
+	RGB 00, 00, 00
+	RGB 31, 31, 31
+	RGB 28, 18, 17
+	RGB 22, 07, 08
+	RGB 00, 00, 00
