@@ -33888,8 +33888,9 @@ Func_137aa: ; 137aa (4:77aa)
 	ld c, $3
 	ld a, $b
 	call Predef ; indirect jump to Func_f81d (f81d (3:781d))
-	ld hl, UnnamedText_1386b ; $786b
-	call PrintText
+	; don't show text for picking up money when pay day is used
+;	ld hl, UnnamedText_1386b ; $786b
+;	call PrintText
 .asm_1380a
 	xor a
 	ld [$ccd4], a
