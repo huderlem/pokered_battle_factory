@@ -62998,6 +62998,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	cp [hl]
 	jp c, .noStreakUpdate
 	ld [hl], a ; save best streak
+.noStreakUpdate
 	ld c, 0
 .divisionLoop
 	cp 7
@@ -63008,7 +63009,6 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 .divisionDone
 	ld a, c
 	ld [W_CURCLASS], a
-.noStreakUpdate
 	xor a
 	ld [W_STARTBATTLE], a ; no battle starting
 	ld a, $2
@@ -63025,8 +63025,18 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	sub 7
 	jr .divisionLoop2
 .divisionDone2
-	cp $0
-	jr z, .noSwap
+	and a ; is a $0?
+	jr nz, .notLastBattle
+	ld [W_INCHALLENGE], a ; a is $0 here
+	ld hl, W_CURCLASS
+	push hl
+	inc [hl]
+	ld hl, BeatSevenTrainersText
+	call PrintText
+	pop hl
+	dec [hl]
+	jr .noSwap
+.notLastBattle
 	ld hl, SwapText
 	call PrintText
 	FuncCoord 0, 7 ; $c42c
@@ -63064,6 +63074,10 @@ PickPlayerMonText:
 
 SwapCompleteText:
 	TX_FAR _SwapCompleteText
+	db "@"
+
+BeatSevenTrainersText:
+	TX_FAR _BeatSevenTrainersText
 	db "@"
 
 SwapPokemonEnemy:
@@ -63122,9 +63136,6 @@ SwapPokemonEnemy:
 	add b ; a = menuitem (0-based indexing)
 	ld [W_SWAPMONENEMYINDEX], a
 	ret
-
-LBAL:
-	db $c1, $c2, $c3, $c4
 
 SwapPokemonPlayer:
 	xor a
@@ -68378,6 +68389,9 @@ GetCurrentMove: ; 3eabe (f:6abe)
 	call GetName
 	ld de, $cd6d
 	jp CopyStringToCF4B
+
+LBL:
+	db $c1, $c2, $c3, $c4
 
 Func_3eb01: ; 3eb01 (f:6b01)
 	ld a, [W_ISLINKBATTLE] ; $d12b
@@ -97481,6 +97495,10 @@ ClearParty:
 
 FillMonChoices:
 ; places 6 random pokemon
+	xor a
+	ld [W_NUMINBOX], a ; TODO: this doesn't fix it?
+	ld a, $ff
+	ld [W_NUMINBOX+1], a
 	ld b, 6 ; num mons to place
 .fillLoop
 	push bc
@@ -97557,6 +97575,7 @@ PickMon:
 
 MonClassPointers:
 	dw MonClass1
+	dw MonClass2
 
 MonClass1:
 ; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
@@ -97570,6 +97589,17 @@ MonClass1:
 	dbw CLEFAIRY,   NoDefinedMoves
 	dbw PARAS,      NoDefinedMoves
 	dbw CATERPIE,   NoDefinedMoves
+
+MonClass2:
+	db 8 - 1; num mons in this list - 1
+	dbw MEWTWO,    NoDefinedMoves
+	dbw ZAPDOS,    NoDefinedMoves
+	dbw ARTICUNO,  NoDefinedMoves
+	dbw SNORLAX,   NoDefinedMoves
+	dbw DRAGONITE, NoDefinedMoves
+	dbw CHARIZARD, NoDefinedMoves
+	dbw BLASTOISE, NoDefinedMoves
+	dbw VENUSAUR,  NoDefinedMoves
 
 NoDefinedMoves:
 	db $FF
@@ -97589,7 +97619,6 @@ FillMonData:
 	ld hl, Func_e7a4
 	ld b, BANK(Func_e7a4)
 	call Bankswitch ; indirect jump to Func_e7a4 (e7a4 (3:67a4))
-	; fill in moves if there are moves
 	pop bc
 	ret
 
@@ -138085,6 +138114,16 @@ _PickPlayerMonText:
 
 _SwapCompleteText:
 	db $0, "Swap completed!", $58
+
+_BeatSevenTrainersText:
+	db $0, "Congratulations!", $51
+	db "You won seven", $4f
+	db "battles in a row!", $51
+	db "You have been", $4f
+	db "promoted to", $55
+	db "class @"
+	TX_NUM W_CURCLASS, 1, 3
+	db $0, "!", $58
 
 _AlreadyStartedText:
 	db $0, "You already", $4f
