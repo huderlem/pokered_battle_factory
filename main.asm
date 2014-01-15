@@ -61821,15 +61821,41 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	jr z, .noSwap
 	ld hl, SwapText
 	call PrintText
+	FuncCoord 0, 7 ; $c42c
+	ld hl,Coord
+	ld bc,$0801
+	ld a,$14
+	ld [$D125],a
+	call DisplayTextBoxID
+	ld a,[$CC26]
+	and a
+	jr nz, .noSwap
+.yesSwapMons
+	ld hl, PickEnemyMonText
+	call PrintText
 	call SwapPokemonEnemy
-	ld hl, SwapText
+	ld hl, PickPlayerMonText
 	call PrintText
 	call SwapPokemonPlayer
+	ld hl, SwapCompleteText
+	call PrintText
 .noSwap
 	ret
 
 SwapText:
 	TX_FAR _SwapText
+	db "@"
+
+PickEnemyMonText:
+	TX_FAR _PickEnemyMonText
+	db "@"
+
+PickPlayerMonText:
+	TX_FAR _PickPlayerMonText
+	db "@"
+
+SwapCompleteText:
+	TX_FAR _SwapCompleteText
 	db "@"
 
 SwapPokemonEnemy:
@@ -136023,8 +136049,19 @@ _BattleFactoryBestText:
 	db $0, $57
 
 _SwapText:
-	db $0, "Swap now."
-	db $57
+	db $0, "Do you want to", $4f
+	db "swap #MON?", $57
+
+_PickEnemyMonText:
+	db $0, "Which #MON", $4f
+	db "will you take?", $57
+
+_PickPlayerMonText:
+	db $0, "Which #MON", $4f
+	db "will you drop?", $57
+
+_SwapCompleteText:
+	db $0, "Swap completed!", $58
 
 _AlreadyStartedText:
 	db $0, "You already", $4f
