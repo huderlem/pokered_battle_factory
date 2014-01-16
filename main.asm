@@ -97347,7 +97347,8 @@ FightTrainer:
 	ld [W_MON1], a
 	ld [W_MON2], a
 	ld [W_MON3], a
-	ld a, YOUNGSTER + $C8
+	call PickRandomTrainerClass
+	add $C8 ; add $c8 to trainer class id
 	ld [W_CUROPPONENT], a ; $d059
 	call Delay3
 	ld hl, W_OPTIONS ; $d355
@@ -97359,6 +97360,46 @@ FightTrainer:
 	call Predef ; healparty
 	call AfterBattle
 	ret
+
+PickRandomTrainerClass:
+	call GenRandom
+	cp 27 ; length of NormalTrainerClasses
+	jr nc, PickRandomTrainerClass ; is GenRandom result isn't a valid index
+	ld hl, NormalTrainerClasses
+	ld c, a
+	ld b, 0
+	add hl, bc
+	ld a, [hl]
+	ret
+
+NormalTrainerClasses:
+	db YOUNGSTER    
+	db BUG_CATCHER  
+	db LASS         
+	db SAILOR       
+	db JR__TRAINER_M
+	db JR__TRAINER_F
+	db POKEMANIAC   
+	db SUPER_NERD   
+	db HIKER        
+	db BIKER        
+	db BURGLAR      
+	db ENGINEER     
+	db JUGGLER_X    
+	db FISHER       
+	db SWIMMER      
+	db CUE_BALL     
+	db GAMBLER      
+	db BEAUTY       
+	db PSYCHIC_TR   
+	db ROCKER       
+	db JUGGLER      
+	db TAMER        
+	db BIRD_KEEPER  
+	db BLACKBELT    
+	db SCIENTIST    
+	db COOLTRAINER_M
+	db COOLTRAINER_F
 
 InitTrainer:
 ; set [wEnemyPartyCount] to 0, [$D89D] to FF
