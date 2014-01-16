@@ -97534,6 +97534,25 @@ InitTrainer:
 	ld [hli],a
 	dec a
 	ld [hl],a
+	ld a, [W_CURCLASS]
+	cp 2 ; first class for special trainers
+	jp c, .normalTrainerPicks ; is there even a chance for special trainer?
+	ld a, [W_CURSTREAK] ; see if this is the last battle
+.divisionLoop4
+	cp 7
+	jp c, .doneDividing4
+	sub 7
+	jr .divisionLoop4
+.doneDividing4
+	cp 6
+	jr nz, .normalTrainerPicks ; is it the last battle?
+	push hl
+	push bc
+	call SpecialPickMons
+	pop bc
+	pop hl
+	jr .FinishUp
+.normalTrainerPicks
 	ld b, 3
 .monLoop
 	call PickMon
@@ -97543,7 +97562,6 @@ InitTrainer:
 	push hl
 	push bc
 	call AddPokemonToParty
-	; TODO: change moves here
 	pop bc
 	pop hl
 	dec b
@@ -97790,6 +97808,182 @@ PickMon:
 	pop hl
 	pop de
 	pop bc
+	ret
+
+SpecialPickMons:
+	ld a, [W_TRAINERCLASS]
+	ld hl, SpecialPickMonsFunctionPointers
+	ld c, 3
+	ld b, 0
+.searchLoop2
+	cp [hl]
+	jp z, .foundPickPointer
+	add hl, bc
+	jr .searchLoop2
+.foundPickPointer
+	inc hl
+	ld a, [hli]
+	ld e, a
+	ld a, [hl]
+	ld d, a ; de contains PickMons pointer
+	ld h, d
+	ld l, e
+	jp [hl] ; jump to the PickMons function
+
+SpecialPickMonsFunctionPointers:
+	dbw BROCK,     BrockPickMons
+	dbw MISTY,     MistyPickMons
+	dbw LT__SURGE, SurgePickMons
+	dbw ERIKA,     ErikaPickMons
+	dbw KOGA,      KogaPickMons
+	dbw SABRINA,   SabrinaPickMons
+	dbw BLAINE,    BlainePickMons
+	dbw GIOVANNI,  GioPickMons
+	dbw LORELEI,   LoreleiPickMons
+	dbw BRUNO,     BrunoPickMons
+	dbw AGATHA,    AgathaPickMons
+	dbw LANCE,     LancePickMons
+	dbw SONY3,     GaryPickMons
+	dbw PROF_OAK,  OakPickMons
+
+BrockPickMons:
+	ld a, ONIX
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+MistyPickMons:
+	ld a, STARMIE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+SurgePickMons:
+	ld a, PIKACHU
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+ErikaPickMons:
+	ld a, GLOOM
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+KogaPickMons:
+	ld a, KOFFING
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+SabrinaPickMons:
+	ld a, KADABRA
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+BlainePickMons:
+	ld a, CHARMANDER
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+GioPickMons:
+	ld a, RHYHORN
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+LoreleiPickMons:
+	ld a, DEWGONG
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+BrunoPickMons:
+	ld a, HITMONLEE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+AgathaPickMons:
+	ld a, GENGAR
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+LancePickMons:
+	ld a, DRAGONITE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+GaryPickMons:
+	ld a, BLASTOISE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
+	ret
+
+OakPickMons:
+	ld a, TAUROS
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	call AddPokemonToParty
+	call AddPokemonToParty
+	call AddPokemonToParty
 	ret
 
 MonClassPointers:
