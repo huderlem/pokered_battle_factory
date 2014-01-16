@@ -30449,8 +30449,8 @@ _AddPokemonToParty: ; f2e5 (3:72e5)
 	push hl
 	ld a, [$cc49]
 	and $f
-	ld a, $98     ; set enemy trainer mon IVs to fixed average values
-	ld b, $88
+	ld a, $ff     ; set enemy trainer mon IVs to max values
+	ld b, $ff
 	jr nz, .writeFreshMonData
 	ld a, [$cf91]
 	ld [$d11e], a
@@ -68451,9 +68451,6 @@ GetCurrentMove: ; 3eabe (f:6abe)
 	ld de, $cd6d
 	jp CopyStringToCF4B
 
-LBL:
-	db $c1, $c2, $c3, $c4
-
 Func_3eb01: ; 3eb01 (f:6b01)
 	ld a, [W_ISLINKBATTLE] ; $d12b
 	cp $4
@@ -68470,12 +68467,8 @@ Func_3eb01: ; 3eb01 (f:6b01)
 	jr nz, .asm_3eb33
 	ld a, [W_ISINBATTLE] ; $d057
 	cp $2
-	ld a, $98
-	ld b, $88
-	jr z, .asm_3eb33
-	call GenRandomInBattle
-	ld b, a
-	call GenRandomInBattle
+	ld a, $ff ; max ivs
+	ld b, $ff ; max ivs
 .asm_3eb33
 	ld hl, $cff1
 	ld [hli], a
