@@ -97343,10 +97343,6 @@ BattleFactoryText1: ; (17:656c)
 	jp TextScriptEnd
 
 FightTrainer:
-	ld a, $a5
-	ld [W_MON1], a
-	ld [W_MON2], a
-	ld [W_MON3], a
 	call PickRandomTrainerClass
 	add $C8 ; add $c8 to trainer class id
 	ld [W_CUROPPONENT], a ; $d059
