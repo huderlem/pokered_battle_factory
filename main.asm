@@ -63016,7 +63016,9 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
-	call Func_3381 ; prints losing text from trainer
+	; TODO: make trainer say something random here
+	; call Func_3381 ; prints losing text from trainer
+	call RandomDefeatMessage
 	; was this battle 7?
 	ld a, [W_CURSTREAK]
 .divisionLoop2
@@ -63267,6 +63269,29 @@ SwapPokemonPlayer:
 	ld bc, $000b
 	call CopyData
 	ret
+
+RandomDefeatMessage:
+; make trainer say something after defeat
+	call GenRandom
+	cp 3
+	jp nc, RandomDefeatMessage
+	ld c, 5
+	ld b, 0
+	ld hl, DefeatMessagesTable
+	call AddNTimes
+	call PrintText
+	ret
+
+DefeatMessagesTable:
+DefText1:
+	TX_FAR _DefText1
+	db "@"
+DefText2:
+	TX_FAR _DefText2
+	db "@"
+DefText3:
+	TX_FAR _DefText3
+	db "@"
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -138278,6 +138303,25 @@ _GuideNoText:
 	db $0, "Phew!", $51
 	db "Now I don't have", $4f
 	db "talk as much!", $57
+
+_DefText1:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Oh,", $4f
+	db "rats!", $58
+
+_DefText2:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "guess I'm just", $55
+	db "going to go eat", $55
+	db "now...", $58
+
+_DefText3:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "should have", $55
+	db "trained DIGIMON", $55
+	db "instead.", $58
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
