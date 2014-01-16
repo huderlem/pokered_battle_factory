@@ -97640,8 +97640,25 @@ BattleFactoryReceptionist:
 	call PrintText
 	jr .endReceptionist
 .saidStartBattle
+	ld a, [W_CURCLASS]
+	cp 2
+	jr c, .normalGoodLuckText
+	ld a, [W_CURSTREAK]
+.divisionLoop5
+	cp 7
+	jr c, .divisionDone5
+	sub 7
+	jr .divisionLoop5
+.divisionDone5
+	cp 6
+	jr nz, .normalGoodLuckText
+	ld hl, SpecialStartNowText
+	call PrintText
+	jr .setStartFlag
+.normalGoodLuckText
 	ld hl, StartNowText
 	call PrintText
+.setStartFlag
 	ld a, $1
 	ld [W_STARTBATTLE], a
 .endReceptionist
@@ -97702,6 +97719,10 @@ NotYetText:
 
 StartNowText:
 	TX_FAR _StartNowText
+	db "@"
+
+SpecialStartNowText:
+	TX_FAR _SpecialStartNowText
 	db "@"
 
 GuideIntro:
@@ -138675,6 +138696,24 @@ _StartNowText:
 	db $0, ".", $51
 	db "I wish you the", $4f
 	db "best of luck!", $57
+
+_SpecialStartNowText:
+	db $0, "Your current win", $4f
+	db "streak is @"
+	TX_NUM W_CURSTREAK, 1, 3
+	db $0, ".", $51
+	db "...", $4f
+	db "...", $51
+	db "I just received", $4f
+	db "word that one of", $55
+	db "the BATTLE", $55
+	db "FACTORY HEADs", $55
+	db "wishes to take", $55
+	db "you on in battle!", $51
+	db "Don't be too", $4f
+	db "intimidated!", $51
+	db "Good luck,", $4f
+	db $52, "!", $57
 
 _GuideIntro:
 	db $0, "I'm the BATTLE", $4f
