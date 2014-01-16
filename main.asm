@@ -97678,6 +97678,7 @@ FillMonData:
 
 ShowFactoryMon:
 	xor a
+	ld [wListMenuID], a
 	ld [H_AUTOBGTRANSFERENABLED],a ; disable auto-transfer
 	ld a,1
 	ld [$ffb7],a ; joypad state update flag
@@ -97729,11 +97730,95 @@ ShowFactoryMon:
 	ld a, [wListScrollOffset]
 	add b ; a = menuitem (0-based indexing)
 	ld [wWhichPokemon], a
+	call SaveScreenTilesToBuffer1
+	call FactoryMonSubMenu
+	push af
+	call LoadScreenTilesFromBuffer1
+	pop af
+	and a
+	jr z, .rentMon
+	jp ShowFactoryMon
+.rentMon
 	call TakeFromFactory
 	ld a, [W_NUMINPARTY]
 	cp $3 ; num allowed for factory
-	jr nz, ShowFactoryMon
+	jp nz, ShowFactoryMon
 	ret
+
+FactoryMonSubMenu:
+	FuncCoord 10, 10 ; $c471
+	ld hl, Coord
+	ld b, $6
+	ld c, $8
+	call TextBoxBorder
+	FuncCoord 12, 12 ; $c49b
+	ld hl, Coord
+	ld de, ChooseMonText
+	call PlaceString
+	FuncCoord 12, 14 ; $c4c3
+	ld hl, Coord
+	ld de, ShowStatsText ; $57dc
+	call PlaceString
+	FuncCoord 12, 16
+	ld hl, Coord
+	ld de, CancelText
+	call PlaceString
+	ld hl, wTopMenuItemY ; $cc24
+	ld a, 12
+	ld [hli], a
+	ld a, 11
+	ld [hli], a
+	xor a
+	ld [hli], a
+	inc hl
+	ld a, $2
+	ld [hli], a
+	ld a, $3
+	ld [hli], a
+	xor a
+	ld [hl], a
+	ld hl, wListScrollOffset ; $cc36
+	ld [hli], a
+	ld [hl], a
+	call HandleMenuInput
+	bit 1, a ; B was pressed
+	jr z, .notBPressed
+	ld a, 2 ; cancel
+	ret
+.notBPressed
+	ld a, [wCurrentMenuItem]
+	cp 1
+	jr z, .showStatsScreen
+	cp 0 ; rent?
+	jr nz, .cancelPressed
+	xor a
+	ret
+.cancelPressed
+	ld a, 2
+	ret
+.showStatsScreen
+	ld a, $2
+.asm_217b0
+	ld [$cc49], a
+	ld a, $36
+	call Predef ; indirect jump to StatusScreen (12953 (4:6953))
+	ld a, $37
+	call Predef ; indirect jump to StatusScreen2 (12b57 (4:6b57))
+	call LoadScreenTilesFromBuffer1
+	call ReloadTilesetTilePatterns
+	call GoPAL_SET_CF1C
+	call LoadGBPal
+	jp FactoryMonSubMenu
+
+ChooseMonText:
+	db "RENT@"
+
+ShowStatsText:
+	db "STATS@"
+
+CancelText:
+	db "CANCEL@"
+
 
 TakeFromFactory: ; 21618 (8:5618)
 	ld a, [wWhichPokemon] ; $cf92
