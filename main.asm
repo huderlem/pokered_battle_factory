@@ -63016,9 +63016,6 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
-	; TODO: make trainer say something random here
-	; call Func_3381 ; prints losing text from trainer
-	call RandomDefeatMessage
 	; was this battle 7?
 	ld a, [W_CURSTREAK]
 .divisionLoop2
@@ -63030,6 +63027,14 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	and a ; is a $0?
 	jr nz, .notLastBattle
 	ld [W_INCHALLENGE], a ; a is $0 here
+	ld a, [W_CURCLASS]
+	cp 2 ; first class with special trainers (+1)
+	jr c, .notSpecialMessage
+	call SpecialTrainerDefeatMessage
+	jr .printCongrats
+.notSpecialMessage
+	call RandomDefeatMessage
+.printCongrats
 	ld hl, W_CURCLASS
 	push hl
 	inc [hl]
@@ -63039,6 +63044,8 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	dec [hl]
 	jr .noSwap
 .notLastBattle
+	call RandomDefeatMessage
+.swapping
 	ld hl, SwapText
 	call PrintText
 	FuncCoord 0, 7 ; $c42c
@@ -63269,6 +63276,82 @@ SwapPokemonPlayer:
 	ld bc, $000b
 	call CopyData
 	ret
+
+SpecialTrainerDefeatMessage:
+; make special trainer say their message
+	ld a, [W_CUROPPONENT]
+	ld d, a
+	ld c, 6
+	ld b, 0
+	ld hl, SpecialDefeatMessagesTable
+.searchingLoop
+	ld a, [hl]
+	cp d
+	jr z, .foundIt
+	add hl, bc
+	jr .searchingLoop
+.foundIt
+	inc hl
+	call PrintText
+	ret
+
+SpecialDefeatMessagesTable:
+BrockDefText:
+	db BROCK + $C8
+	TX_FAR _BrockDefText
+	db "@"
+MistyDefText:
+	db MISTY + $C8
+	TX_FAR _MistyDefText
+	db "@"
+SurgeDefText:
+	db LT__SURGE + $C8
+	TX_FAR _SurgeDefText
+	db "@"
+ErikaDefText:
+	db ERIKA + $C8
+	TX_FAR _ErikaDefText
+	db "@"
+KogaDefText:
+	db KOGA + $C8
+	TX_FAR _KogaDefText
+	db "@"
+SabrinaDefText:
+	db SABRINA + $C8
+	TX_FAR _SabrinaDefText
+	db "@"
+BlaineDefText:
+	db BLAINE + $C8
+	TX_FAR _BlaineDefText
+	db "@"
+GioDefText:
+	db GIOVANNI + $C8
+	TX_FAR _GioDefText
+	db "@"
+LoreleiDefText:
+	db LORELEI + $C8
+	TX_FAR _LoreleiDefText
+	db "@"
+BrunoDefText:
+	db BRUNO + $C8
+	TX_FAR _BrunoDefText
+	db "@"
+AgathaDefText:
+	db AGATHA + $C8
+	TX_FAR _AgathaDefText
+	db "@"
+LanceDefText:
+	db LANCE + $C8
+	TX_FAR _LanceDefText
+	db "@"
+GaryDefText:
+	db SONY3 + $C8
+	TX_FAR _GaryDefText
+	db "@"
+OakDefText:
+	db PROF_OAK + $C8
+	TX_FAR _OakDefText
+	db "@"
 
 RandomDefeatMessage:
 ; make trainer say something after defeat
@@ -97380,10 +97463,10 @@ PickTrainerClass:
 	ret
 .specialTrainer
 	ld a, [W_CURCLASS]
-	cp 2 ; first class to have special trainers at the end
+	cp 1 ; first class to have special trainers at the end
 	jr c, .noSpecialTrainer
 	ld hl, SpecialTrainerClasses
-	sub 2 ; subtract first class to have special trainers
+	sub 1 ; subtract first class to have special trainers
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -97712,6 +97795,7 @@ PickMon:
 MonClassPointers:
 	dw MonClass1
 	dw MonClass2
+	dw MonClass1
 
 MonClass1:
 ; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
@@ -138482,6 +138566,84 @@ _DefText3:
 	db "should have", $55
 	db "trained DIGIMON", $55
 	db "instead.", $58
+
+; special trainers defeated texts
+
+_BrockDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "have some real", $55
+	db "potential.", $51
+	db "There are many", $4f
+	db "other FACTORY", $55
+	db "HEADs waiting for", $55
+	db "you to challenge", $55
+	db "them!", $58
+
+_MistyDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Misty.", $58
+
+_SurgeDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Surge.", $58
+
+_ErikaDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Erika.", $58
+
+_KogaDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Koga.", $58
+
+_SabrinaDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Sabrina.", $58
+
+_BlaineDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Blaine.", $58
+
+_GioDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Giovanni.", $58
+
+_LoreleiDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Lorelei.", $58
+
+_BrunoDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Bruno.", $58
+
+_AgathaDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Agatha.", $58
+
+_LanceDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Lance.", $58
+
+_GaryDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Gary.", $58
+
+_OakDefText:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "am Oak.", $58
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
