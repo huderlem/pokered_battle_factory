@@ -97343,7 +97343,7 @@ BattleFactoryText1: ; (17:656c)
 	jp TextScriptEnd
 
 FightTrainer:
-	call PickRandomTrainerClass
+	call PickTrainerClass
 	add $C8 ; add $c8 to trainer class id
 	ld [W_CUROPPONENT], a ; $d059
 	call Delay3
@@ -97357,18 +97357,43 @@ FightTrainer:
 	call AfterBattle
 	ret
 
-PickRandomTrainerClass:
+PickTrainerClass:
+	; is it a special battle?
+	ld a, [W_CURSTREAK]
+.divisionLoop3
+	cp 7
+	jr c, .divisionDone3
+	sub 7
+	jr .divisionLoop3
+.divisionDone3
+	cp 6
+	jr z, .specialTrainer
+.normalTrainer
 	call GenRandom
-	cp 27 ; length of NormalTrainerClasses
-	jr nc, PickRandomTrainerClass ; is GenRandom result isn't a valid index
+	cp 29 ; length of NormalTrainerClasses
+	jr nc, .normalTrainer ; is GenRandom result isn't a valid index
 	ld hl, NormalTrainerClasses
 	ld c, a
 	ld b, 0
 	add hl, bc
 	ld a, [hl]
 	ret
+.specialTrainer
+	ld a, [W_CURCLASS]
+	cp 2 ; first class to have special trainers at the end
+	jr c, .noSpecialTrainer
+	ld hl, SpecialTrainerClasses
+	sub 2 ; subtract first class to have special trainers
+	ld c, a
+	ld b, 0
+	add hl, bc
+	ld a, [hl]
+	ret
+.noSpecialTrainer
+	jr .normalTrainer
 
 NormalTrainerClasses:
+; list of trainers that can appear in normal factory battles
 	db YOUNGSTER    
 	db BUG_CATCHER  
 	db LASS         
@@ -97396,6 +97421,26 @@ NormalTrainerClasses:
 	db SCIENTIST    
 	db COOLTRAINER_M
 	db COOLTRAINER_F
+	db CHANNELER
+	db GENTLEMAN
+
+SpecialTrainerClasses:
+; these are the "factory heads" in order
+; they appear every 7 battles starting at 21 straight victories
+	db BROCK
+	db MISTY
+	db LT__SURGE
+	db ERIKA
+	db KOGA
+	db SABRINA
+	db BLAINE
+	db GIOVANNI
+	db LORELEI
+	db BRUNO
+	db AGATHA
+	db LANCE
+	db SONY3 ; gary
+	db PROF_OAK
 
 InitTrainer:
 ; set [wEnemyPartyCount] to 0, [$D89D] to FF
