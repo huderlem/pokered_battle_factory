@@ -63028,7 +63028,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	jr nz, .notLastBattle
 	ld [W_INCHALLENGE], a ; a is $0 here
 	ld a, [W_CURCLASS]
-	cp 2 ; first class with special trainers (+1)
+	cp 3 ; first class with special trainers (+1)
 	jr c, .notSpecialMessage
 	call SpecialTrainerDefeatMessage
 	jr .printCongrats
@@ -97463,10 +97463,10 @@ PickTrainerClass:
 	ret
 .specialTrainer
 	ld a, [W_CURCLASS]
-	cp 1 ; first class to have special trainers at the end
+	cp 2 ; first class to have special trainers at the end
 	jr c, .noSpecialTrainer
 	ld hl, SpecialTrainerClasses
-	sub 1 ; subtract first class to have special trainers
+	sub 2 ; subtract first class to have special trainers
 	ld c, a
 	ld b, 0
 	add hl, bc
