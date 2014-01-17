@@ -78608,7 +78608,7 @@ Func_46a01: ; 46a01 (11:6a01)
 	ret
 
 HiddenObjectMaps: ; 46a40 (11:6a40)
-	db BATTLE_FACTORY
+	db BLUES_HOUSE
 	db BLUES_HOUSE
 	db OAKS_LAB
 	db VIRIDIAN_POKECENTER
@@ -97335,7 +97335,7 @@ VermilionMartBlocks: ; 5c000 (17:4000)
 
 CopycatsHouseF2Blocks: ; 5c010 (17:4010)
 BattleFactoryBlocks: ; 0x5c010 16?
-	INCBIN "maps/redshouse2f.blk"
+	INCBIN "maps/battlefactory.blk"
 
 MuseumF1Blocks: ; 5c020 (17:4020)
 	INCBIN "maps/museumf1.blk"
@@ -97361,7 +97361,7 @@ ViridianForestexitBlocks: ; 5c090 (17:4090)
 	INCBIN "maps/viridianforestexit.blk"
 
 BattleFactory_h: ; 5c0a4 (17:40a4)
-	db $04 ; tileset
+	db $13 ; tileset
 	db BATTLE_FACTORY_HEIGHT, BATTLE_FACTORY_WIDTH ; dimensions
 	dw BattleFactoryBlocks, BattleFactoryTextPointers, BattleFactoryScript
 	db $00 ; no connections
@@ -97400,7 +97400,7 @@ BattleFactoryScript1:
 	call Delay3
 	ld a, $fc
 	ld [wJoypadForbiddenButtonsMask], a
-	ld a, $6
+	ld a, $a
 	ld [$ff00+$8c], a
 	call DisplayTextID
 	call Delay3
@@ -97412,7 +97412,8 @@ BattleFactoryScript1:
 	ret
 
 FactoryMovementData:
-	db $20, 2 ; left x2
+	db $40, 1 ; right x4
+	db $10, 6 ; up x1
 	db $FF
 
 BattleLoadingText:
@@ -97423,9 +97424,15 @@ BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryText1
 	dw BattleFactoryReceptionist
 	dw BattleFactoryGuide
+	dw BattleFactoryText9
+	dw BattleFactoryTextA
+	dw BattleFactoryTextB
+	dw BattleFactoryTextC
 	dw BattleFactoryWinsText
 	dw BattleFactoryBestText
 	dw BattleLoadingText
+	dw EmptyComputerText
+	dw UsedComputerText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -97770,6 +97777,30 @@ GuideText:
 
 GuideNoText:
 	TX_FAR _GuideNoText
+	db "@"
+
+EmptyComputerText:
+	TX_FAR _EmptyComputerText
+	db "@"
+
+UsedComputerText:
+	TX_FAR _UsedComputerText
+	db "@"
+
+BattleFactoryText9:
+	TX_FAR _BattleFactoryText9
+	db "@"
+
+BattleFactoryTextA:
+	TX_FAR _BattleFactoryTextA
+	db "@"
+
+BattleFactoryTextB:
+	TX_FAR _BattleFactoryTextB
+	db "@"
+
+BattleFactoryTextC:
+	TX_FAR _BattleFactoryTextC
 	db "@"
 
 ClearParty:
@@ -98253,19 +98284,29 @@ TakeFromFactory: ; 21618 (8:5618)
 	ret
 
 BattleFactoryObject: ; 0x5c0d0 ?
-	db $0A ; border tile
+	db $0f ; border tile
 
 	db 1 ; warps
 	db 1, 7, 2, REDS_HOUSE_1F
 
-	db 2 ; signs
-	db $0, $4, $4
-	db $0, $5, $5
+	db 8 ; signs
+	db $b, $4, $8
+	db $d, $4, $9
+	db $4, $a, $b
+	db $4, $e, $c
+	db $8, $a, $c
+	db $8, $e, $c
+	db $c, $a, $c
+	db $c, $e, $b
 
-	db 3 ; people
-	db SPRITE_OAK, $2 + 4, $5 + 4, $ff, $d0, $1 ; person
-	db SPRITE_OAK, $2 + 4, $6 + 4, $ff, $d0, $2 ; person
-	db SPRITE_OAK, $2 + 4, $4 + 4, $ff, $d0, $3 ; person
+	db 7 ; people
+	db SPRITE_OAK, $5 + 4, $3 + 4, $ff, $d0, $1 ; person
+	db SPRITE_OAK, $5 + 4, $4 + 4, $ff, $d0, $2 ; person
+	db SPRITE_OAK, $5 + 4, $5 + 4, $ff, $d0, $3 ; person
+	db SPRITE_OAK, $5 + 4, $e + 4, $ff, $d1, $4 ; person
+	db SPRITE_OAK, $9 + 4, $a + 4, $ff, $d1, $5 ; person
+	db SPRITE_OAK, $9 + 4, $e + 4, $ff, $d1, $6 ; person
+	db SPRITE_OAK, $d + 4, $a + 4, $ff, $d1, $7 ; person
 
 	; warp-to
 	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
@@ -128636,8 +128677,9 @@ _IndigoPlateauStatuesText3: ; 89596 (22:5596)
 	db "#MON LEAGUE HQ", $57
 
 _PokemonBooksText: ; 895c1 (22:55c1)
-	db $0, "Crammed full of", $4f
-	db "#MON books!", $57
+	db $0, "No time for", $4f
+	db "reading books!", $51
+	db "Go battle!", $57
 
 _DiglettSculptureText: ; 895de (22:55de)
 	db $0, "It's a sculpture", $4f
@@ -138721,7 +138763,7 @@ _ReadyBattleText:
 _NotYetText:
 	db $0, "No problem.", $51
 	db "Just talk to me", $4f
-	db "again when you are", $55
+	db "again when you", $55
 	db "are ready.", $57
 
 _StartNowText:
@@ -138919,6 +138961,39 @@ _OakDefText:
 	TX_RAM W_TRAINERNAME
 	db $0, ": I", $4f
 	db "am Oak.", $58
+
+_EmptyComputerText:
+	db $0, "BATTLE FACTORY OS", $4f
+	db "IDLE...", $57
+
+_UsedComputerText:
+	db $0, "A raging battle", $4f
+	db "is going on in", $55
+	db "the computer!", $57
+
+_BattleFactoryText9:
+	db $0, "...", $4f
+	db "...", $51
+	db "(This person is", $4f
+	db "concentrating.)", $57
+
+_BattleFactoryTextA:
+	db $0, "I just swapped my", $4f
+	db "DROWZEE for a", $55
+	db "CHARMELEON!", $57
+
+_BattleFactoryTextB:
+	db $0, "My best streak is", $4f
+	db "32 wins in a row.", $51
+	db "I managed to beat", $4f
+	db "BROCK, and MISTY!", $57
+
+_BattleFactoryTextC:
+	db $0, "Grrr...", $51
+	db "I was unlucky", $4f
+	db "with the first", $55
+	db "#MON I could", $55
+	db "pick.", $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
