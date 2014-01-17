@@ -63030,6 +63030,8 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld a, [W_CURCLASS]
 	cp 3 ; first class with special trainers (+1)
 	jr c, .notSpecialMessage
+	cp 17 ; last class with special trainers (+2)
+	jr nc, .notSpecialMessage ; past the last factory head
 	call SpecialTrainerDefeatMessage
 	jr .printCongrats
 .notSpecialMessage
@@ -97507,6 +97509,8 @@ PickTrainerClass:
 	ld a, [W_CURCLASS]
 	cp 2 ; first class to have special trainers at the end
 	jr c, .noSpecialTrainer
+	cp 16 ; last class to have special trainers at the end (+1)
+	jr nc, .noSpecialTrainer
 	ld hl, SpecialTrainerClasses
 	sub 2 ; subtract first class to have special trainers
 	ld c, a
@@ -97552,20 +97556,20 @@ NormalTrainerClasses:
 SpecialTrainerClasses:
 ; these are the "factory heads" in order
 ; they appear every 7 battles starting at 21 straight victories
-	db BROCK
-	db MISTY
-	db LT__SURGE
-	db ERIKA
-	db KOGA
-	db SABRINA
-	db BLAINE
-	db GIOVANNI
-	db LORELEI
-	db BRUNO
-	db AGATHA
-	db LANCE
-	db SONY3 ; gary
-	db PROF_OAK
+	db BROCK ; 2 (class in which you encounter them)
+	db MISTY ; 3 
+	db LT__SURGE ; 4
+	db ERIKA ; 5
+	db KOGA ; 6
+	db SABRINA ; 7
+	db BLAINE ; 8
+	db GIOVANNI ; 9
+	db LORELEI ; 10
+	db BRUNO ; 11
+	db AGATHA ; 12
+	db LANCE ; 13
+	db SONY3 ; gary ; 14
+	db PROF_OAK ; 15
 
 InitTrainer:
 ; set [wEnemyPartyCount] to 0, [$D89D] to FF
@@ -97579,6 +97583,8 @@ InitTrainer:
 	ld a, [W_CURCLASS]
 	cp 2 ; first class for special trainers
 	jp c, .normalTrainerPicks ; is there even a chance for special trainer?
+	cp 16
+	jp nc, .normalTrainerPicks ; is it past the last special trainer class?
 	ld a, [W_CURSTREAK] ; see if this is the last battle
 .divisionLoop4
 	cp 7
@@ -97685,6 +97691,8 @@ BattleFactoryReceptionist:
 	ld a, [W_CURCLASS]
 	cp 2
 	jr c, .normalGoodLuckText
+	cp 16
+	jr nc, .normalGoodLuckText
 	ld a, [W_CURSTREAK]
 .divisionLoop5
 	cp 7
@@ -97844,6 +97852,10 @@ PickMon:
 	push hl
 	ld b, 0
 	ld a, [W_CURCLASS]
+	cp 16
+	jr c, .haveCorrectClass
+	ld a, 15 ; last class
+.haveCorrectClass	
 	ld c, a
 	sla c ; multiply by 2
 	ld hl, MonClassPointers
@@ -98076,6 +98088,19 @@ OakPickMons:
 MonClassPointers:
 	dw MonClass1
 	dw MonClass2
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
+	dw MonClass1
 	dw MonClass1
 
 MonClass1:
