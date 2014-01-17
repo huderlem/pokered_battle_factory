@@ -36739,7 +36739,7 @@ ViridianCityText14: ; 19232 (6:5232)
 PewterCityScript: ; 19237 (6:5237)
 	call EnableAutoTextBoxDrawing
 	ld hl, PewterCityScriptPointers
-	ld a, [W_PEWTERCITYCURSCRIPT]
+	ld a, [W_BATTLEFACTORYCURSCRIPT]
 	jp CallFunctionInTable
 
 PewterCityScriptPointers: ; 19243 (6:5243)
@@ -36813,7 +36813,7 @@ PewterCityScript1: ; 19280 (6:5280)
 	ld de, MovementData_192ce ; $52ce
 	call MoveSprite
 	ld a, $2
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 MovementData_192ce: ; 192ce (6:52ce)
@@ -36828,7 +36828,7 @@ PewterCityScript2: ; 192d3 (6:52d3)
 	ld a, $11
 	call Predef
 	ld a, $3
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 PewterCityScript3: ; 192e9 (6:52e9)
@@ -36842,7 +36842,7 @@ PewterCityScript3: ; 192e9 (6:52e9)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 PewterCityScript4: ; 19305 (6:5305)
@@ -36879,7 +36879,7 @@ PewterCityScript4: ; 19305 (6:5305)
 	ld de, MovementData_19353
 	call MoveSprite
 	ld a, $5
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 MovementData_19353: ; 19353 (6:5353)
@@ -36894,7 +36894,7 @@ PewterCityScript5: ; 19359 (6:5359)
 	ld a, $11
 	call Predef
 	ld a, $6
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 PewterCityScript6: ; 1936f (6:536f)
@@ -36908,7 +36908,7 @@ PewterCityScript6: ; 1936f (6:536f)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
 PewterCityTextPointers: ; 1938b (6:538b)
@@ -36961,7 +36961,7 @@ PewterCityText3: ; 193b1 (6:53b1)
 	ld [$cf13], a
 	call Func_32f4
 	ld a, $1
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 .asm_ac429 ; 0x193ee
 	jp TextScriptEnd
 
@@ -37025,7 +37025,7 @@ PewterCityText5: ; 19436 (6:5436)
 	ld [$cf13], a
 	call Func_32f4
 	ld a, $4
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	jp TextScriptEnd
 
 UnnamedText_1945d: ; 1945d (6:545d)
@@ -63012,7 +63012,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	xor a
 	ld [W_STARTBATTLE], a ; no battle starting
 	ld a, $2
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
@@ -97370,20 +97370,54 @@ BattleFactory_h: ; 5c0a4 (17:40a4)
 BattleFactoryScript: ; 5c0b0 (17:40b0)
 	call EnableAutoTextBoxDrawing
 	ld hl, BattleFactoryScriptPointers
-	ld a, [W_PEWTERCITYCURSCRIPT]
+	ld a, [W_BATTLEFACTORYCURSCRIPT]
 	jp CallFunctionInTable
 
 BattleFactoryScriptPointers:
+	dw BattleFactoryScript0
 	dw BattleFactoryScript1
 
-BattleFactoryScript1:
+BattleFactoryScript0:
 	ld a, [W_STARTBATTLE]
 	and a
 	ret z
+	ld a, $ff
+	ld [wJoypadForbiddenButtonsMask], a
+	ld hl, $ccd3
+	ld de, FactoryMovementData
+	call DecodeRLEList
+	dec a
+	ld [$cd38], a
+	call Func_3486
+	ld a, 1
+	ld [W_BATTLEFACTORYCURSCRIPT], a
+	ret
+
+BattleFactoryScript1:
+	ld a, [$cd38]
+	and a
+	ret nz
+	call Delay3
+	ld a, $fc
+	ld [wJoypadForbiddenButtonsMask], a
+	ld a, $6
+	ld [$ff00+$8c], a
+	call DisplayTextID
+	call Delay3
+	xor a
+	ld [wJoypadForbiddenButtonsMask], a
 	call FightTrainer
 	xor a
-	ld [W_PEWTERCITYCURSCRIPT], a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
+
+FactoryMovementData:
+	db $20, 2 ; left x2
+	db $FF
+
+BattleLoadingText:
+	TX_FAR _BattleLoadingText
+	db "@"
 
 BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryText1
@@ -97391,6 +97425,7 @@ BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleFactoryGuide
 	dw BattleFactoryWinsText
 	dw BattleFactoryBestText
+	dw BattleLoadingText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -138696,6 +138731,13 @@ _StartNowText:
 	db $0, ".", $51
 	db "I wish you the", $4f
 	db "best of luck!", $57
+
+_BattleLoadingText:
+	db $0, "BATTLE FACTORY OS", $4f
+	db "BOOTING...", $55
+	db "SYSTEM LOADED...", $55
+	db "OPPONENT FOUND...", $55
+	db "BEGIN BATTLE...", $57
 
 _SpecialStartNowText:
 	db $0, "Your current win", $4f

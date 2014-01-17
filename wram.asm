@@ -1089,7 +1089,7 @@ W_CURCLASS: ; d5f3 increments every time you beat 7 in a row
 W_CURTRAINER: ; d5f4 increments every time you beat a trainer
 	ds 1
 	ds 2
-W_PEWTERCITYCURSCRIPT: ; d5f7
+W_BATTLEFACTORYCURSCRIPT: ; d5f7
 	ds 1
 W_ROUTE3CURSCRIPT: ; d5f8
 	ds 1
