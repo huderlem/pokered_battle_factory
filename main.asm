@@ -15080,8 +15080,8 @@ DungeonWarpData: ; 63d8 (1:63d8)
 ;	db Tileset_id
 FirstMapSpec: ; 6420 (1:6420)
 	db BATTLE_FACTORY
-	FLYWARP_DATA BATTLE_FACTORY_WIDTH,6,3
-	db $04
+	FLYWARP_DATA BATTLE_FACTORY_WIDTH,14,14
+	db $13
 
 BattleCenterSpec1: ; 6428 (1:6428)
 	db BATTLE_CENTER
@@ -63358,7 +63358,7 @@ OakDefText:
 RandomDefeatMessage:
 ; make trainer say something after defeat
 	call GenRandom
-	cp 3
+	cp 9 ; number of messages in table
 	jp nc, RandomDefeatMessage
 	ld c, 5
 	ld b, 0
@@ -63376,6 +63376,24 @@ DefText2:
 	db "@"
 DefText3:
 	TX_FAR _DefText3
+	db "@"
+DefText4:
+	TX_FAR _DefText4
+	db "@"
+DefText5:
+	TX_FAR _DefText5
+	db "@"
+DefText6:
+	TX_FAR _DefText6
+	db "@"
+DefText7:
+	TX_FAR _DefText7
+	db "@"
+DefText8:
+	TX_FAR _DefText8
+	db "@"
+DefText9:
+	TX_FAR _DefText9
 	db "@"
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
@@ -138909,6 +138927,38 @@ _DefText3:
 	db "trained DIGIMON", $55
 	db "instead.", $58
 
+_DefText4:
+	TX_RAM W_TRAINERNAME
+	db $0, ": No!", $4f
+	db "Foiled again!", $58
+
+_DefText5:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "just got lucky", $55
+	db "with your picks!", $58
+
+_DefText6:
+	TX_RAM W_TRAINERNAME
+	db $0, ": My", $4f
+	db "streak is ruined!", $58
+
+_DefText7:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Wah", $4f
+	db "Wah Wahhhh...", $58
+
+_DefText8:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "don't like you.", $58
+
+_DefText9:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Now", $4f
+	db "I have to start", $55
+	db "over again...", $58
+
 ; special trainers defeated texts
 
 _BrockDefText:
@@ -138924,52 +138974,104 @@ _BrockDefText:
 
 _MistyDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Misty.", $58
+	db $0, ": Wow!", $4f
+	db "You have", $55
+	db "a knack for this", $55
+	db "place!", $51
+	db "That's two HEADs", $4f
+	db "down!", $51
+	db "Keep it up!", $58
 
 _SurgeDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Surge.", $58
+	db $0, ": Zap!", $4f
+	db "You're charging", $55
+	db "through the", $55
+	db "FACTORY ranks", $55
+	db "with a high", $55
+	db "voltage!", $51
+	db "You have a long", $4f
+	db "way to go, still.", $58
 
 _ErikaDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Erika.", $58
+	db $0, ": Oh!", $4f
+	db "You've uprooted", $55
+	db "my status as a", $55
+	db "FACTORY HEAD!", $51
+	db "Rather few", $4f
+	db "trainers ever", $55
+	db "make it to me.", $51
+	db "Best of luck in", $4f
+	db "your future", $55
+	db "endeavors!", $58
 
 _KogaDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Koga.", $58
+	db $0, ": Aha!", $4f
+	db "A worth opponent,", $55
+	db "indeed!", $51
+	db "My ninja ways", $4f
+	db "were no match for", $55
+	db "nimble skills in", $55
+	db "battle!", $51
+	db "The road ahead", $4f
+	db "is tougher, yet!", $58
 
 _SabrinaDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Sabrina.", $58
+	db $0, ": ...", $4f
+	db "Thank you for", $55
+	db "playing with me!", $51
+	db "I see strong", $4f
+	db "#MON and", $55
+	db "mighty opponents", $55
+	db "in your future.", $58
 
 _BlaineDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Blaine.", $58
+	db $0, ": When", $4f
+	db "you're hot, you're", $55
+	db "hot!", $51
+	db "I was not!", $51
+	db "Go beat the rest", $4f
+	db "of the bots!", $58
 
 _GioDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Giovanni.", $58
+	db $0, ": Heh.", $4f
+	db "I haven't been", $55
+	db "pushed like that", $55
+	db "in ages.", $51
+	db "You're alright,", $4f
+	db "kid.", $51
+	db "You'd make a", $4f
+	db "great ROCKET!", $58
 
 _LoreleiDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Lorelei.", $58
+	db $0, ": Ice", $4f
+	db "must run through", $55
+	db "your veins with", $55
+	db "a chilling", $55
+	db "victory like", $55
+	db "that!", $4f
+	db "You've had an", $4f
+	db "IN-credible run", $55
+	db "so far!", $58
 
 _BrunoDefText:
 	TX_RAM W_TRAINERNAME
 	db $0, ": I", $4f
-	db "am Bruno.", $58
+	db "am at peace with", $55
+	db "this loss.", $51
+	db "You clearly have", $4f
+	db "what it takes to", $55
+	db "go all the way.", $58
 
 _AgathaDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
+	db $0, ": ", $4f
 	db "am Agatha.", $58
 
 _LanceDefText:
