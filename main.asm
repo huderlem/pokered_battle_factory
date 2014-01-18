@@ -139008,13 +139008,13 @@ _DefText12:
 	TX_RAM W_TRAINERNAME
 	db $0, ": What?", $4f
 	db "I don't want to", $55
-	db "start over!" $58
+	db "start over!", $58
 
 _DefText13:
 	TX_RAM W_TRAINERNAME
 	db $0, ": I'll", $4f
 	db "beat you next", $55
-	db "time!" $58
+	db "time!", $58
 
 _DefText14:
 	TX_RAM W_TRAINERNAME
@@ -139195,7 +139195,7 @@ _LanceDefText:
 _GaryDefText:
 	TX_RAM W_TRAINERNAME
 	db $0, ": ...", $4f
-	db "Get lost." $58
+	db "Get lost.", $58
 
 _OakDefText:
 	TX_RAM W_TRAINERNAME
