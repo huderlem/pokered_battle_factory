@@ -63428,7 +63428,66 @@ DefText19:
 DefText20:
 	TX_FAR _DefText20
 	db "@"
-
+DefText21:
+	TX_FAR _DefText21
+	db "@"
+DefText22:
+	TX_FAR _DefText22
+	db "@"
+DefText23:
+	TX_FAR _DefText23
+	db "@"
+DefText24:
+	TX_FAR _DefText24
+	db "@"
+DefText25:
+	TX_FAR _DefText25
+	db "@"
+DefText26:
+	TX_FAR _DefText26
+	db "@"
+DefText27:
+	TX_FAR _DefText27
+	db "@"
+DefText28:
+	TX_FAR _DefText28
+	db "@"
+DefText29:
+	TX_FAR _DefText29
+	db "@"
+DefText30:
+	TX_FAR _DefText30
+	db "@"
+DefText31:
+	TX_FAR _DefText31
+	db "@"
+DefText32:
+	TX_FAR _DefText32
+	db "@"
+DefText33:
+	TX_FAR _DefText33
+	db "@"
+DefText34:
+	TX_FAR _DefText34
+	db "@"
+DefText35:
+	TX_FAR _DefText35
+	db "@"
+DefText36:
+	TX_FAR _DefText36
+	db "@"
+DefText37:
+	TX_FAR _DefText37
+	db "@"
+DefText38:
+	TX_FAR _DefText38
+	db "@"
+DefText39:
+	TX_FAR _DefText39
+	db "@"
+DefText40:
+	TX_FAR _DefText40
+	db "@"
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -139057,6 +139116,118 @@ _DefText20:
 	db $0, ": What", $4f
 	db "a waste...", $58
 
+_DefText21:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Just", $4f
+	db "leave me alone!", $58
+
+_DefText22:
+	TX_RAM W_TRAINERNAME
+	db $0, ": This", $4f
+	db "always happens to", $55
+	db "me!", $58
+
+_DefText23:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'm", $4f
+	db "blown away!", $58
+
+_DefText24:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "must have", $55
+	db "cheated!", $58
+
+_DefText25:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Man!", $4f
+	db "This is the", $55
+	db "worst!", $58
+
+_DefText26:
+	TX_RAM W_TRAINERNAME
+	db $0, ": The", $4f
+	db "odds were in your", $55
+	db "favor.", $58
+
+_DefText27:
+	TX_RAM W_TRAINERNAME
+	db $0, ": No,", $4f
+	db "no, noooooo!", $58
+
+_DefText28:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'm", $4f
+	db "going to go cry", $55
+	db "in the corner!.", $58
+
+_DefText29:
+	TX_RAM W_TRAINERNAME
+	db $0, ":", $4f
+	db "Really? Get out", $55
+	db "of here!", $58
+
+_DefText30:
+	TX_RAM W_TRAINERNAME
+	db $0, ": If I", $4f
+	db "had a nickel for", $55
+	db "every time this", $55
+	db "has happened...", $58
+
+_DefText31:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "burned me...", $58
+
+_DefText32:
+	TX_RAM W_TRAINERNAME
+	db $0, ": That", $4f
+	db "was a clutch", $55
+	db "performance!", $58
+
+_DefText33:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "beat me!", $58
+
+_DefText34:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Next", $4f
+	db "time, I'll make", $55
+	db "it further!", $58
+
+_DefText35:
+	TX_RAM W_TRAINERNAME
+	db $0, ":", $4f
+	db "Sometimes, losing", $55
+	db "is a good thing.", $58
+
+_DefText36:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'm", $4f
+	db "amateur at best.", $58
+
+_DefText37:
+	TX_RAM W_TRAINERNAME
+	db $0, ": How", $4f
+	db "are you so good?", $58
+
+_DefText38:
+	TX_RAM W_TRAINERNAME
+	db $0, ": An", $4f
+	db "excellent match,", $55
+	db "that was!", $58
+
+_DefText39:
+	TX_RAM W_TRAINERNAME
+	db $0, ":", $4f
+	db "Wait, what?", $58
+
+_DefText40:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Who", $4f
+	db "designed this", $55
+	db "lame system!", $58
 
 ; special trainers defeated texts
 
