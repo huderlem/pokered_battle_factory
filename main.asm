@@ -63358,7 +63358,7 @@ OakDefText:
 RandomDefeatMessage:
 ; make trainer say something after defeat
 	call GenRandom
-	cp 9 ; number of messages in table
+	cp 20 ; number of messages in table
 	jp nc, RandomDefeatMessage
 	ld c, 5
 	ld b, 0
@@ -63395,6 +63395,40 @@ DefText8:
 DefText9:
 	TX_FAR _DefText9
 	db "@"
+DefText10:
+	TX_FAR _DefText10
+	db "@"
+DefText11:
+	TX_FAR _DefText11
+	db "@"
+DefText12:
+	TX_FAR _DefText12
+	db "@"
+DefText13:
+	TX_FAR _DefText13
+	db "@"
+DefText14:
+	TX_FAR _DefText14
+	db "@"
+DefText15:
+	TX_FAR _DefText15
+	db "@"
+DefText16:
+	TX_FAR _DefText16
+	db "@"
+DefText17:
+	TX_FAR _DefText17
+	db "@"
+DefText18:
+	TX_FAR _DefText18
+	db "@"
+DefText19:
+	TX_FAR _DefText19
+	db "@"
+DefText20:
+	TX_FAR _DefText20
+	db "@"
+
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
 	TX_FAR _MoneyForWinningText
@@ -138959,6 +138993,71 @@ _DefText9:
 	db "I have to start", $55
 	db "over again...", $58
 
+_DefText10:
+	TX_RAM W_TRAINERNAME
+	db $0, ": And", $4f
+	db "now I'm sad. :(", $58
+
+_DefText11:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "had something in", $55
+	db "my eye!", $58
+
+_DefText12:
+	TX_RAM W_TRAINERNAME
+	db $0, ": What?", $4f
+	db "I don't want to", $55
+	db "start over!" $58
+
+_DefText13:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'll", $4f
+	db "beat you next", $55
+	db "time!" $58
+
+_DefText14:
+	TX_RAM W_TRAINERNAME
+	db $0, ": This", $4f
+	db "game is so cheap!", $58
+
+_DefText15:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Ugh.", $4f
+	db "I guess it's back", $55
+	db "to the old grind.", $58
+
+_DefText16:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "tried so hard,", $55
+	db "and got so far!", $58
+
+_DefText17:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "just broke my", $55
+	db "heart!", $58
+
+_DefText18:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "was actually sort", $55
+	db "of attached to", $55
+	db "those #MON.", $58
+
+_DefText19:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'll", $4f
+	db "admit that you're", $55
+	db "better than I am.", $58
+
+_DefText20:
+	TX_RAM W_TRAINERNAME
+	db $0, ": What", $4f
+	db "a waste...", $58
+
+
 ; special trainers defeated texts
 
 _BrockDefText:
@@ -139071,23 +139170,56 @@ _BrunoDefText:
 
 _AgathaDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": ", $4f
-	db "am Agatha.", $58
+	db $0, ": Oh my,", $4f
+	db "It seems the", $55
+	db "young ones have", $55
+	db "caught up to me!", $51
+	db "In my youth, I", $4f
+	db "believe that the", $55
+	db "outcome of this", $55
+	db "battle would have", $55
+	db "been different.", $51
+	db "Carry on, my boy.", $58
 
 _LanceDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Lance.", $58
+	db $0, ": Hm.", $4f
+	db "You certainly", $55
+	db "have a deep", $55
+	db "understanding of", $55
+	db "#MON.", $51
+	db "Only two HEADs", $4f
+	db "remain in your", $55
+	db "path.", $58
 
 _GaryDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Gary.", $58
+	db $0, ": ...", $4f
+	db "Get lost." $58
 
 _OakDefText:
 	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am Oak.", $58
+	db $0, ": Aha!", $4f
+	db "I always knew you", $55
+	db "you had the heart", $55
+	db "of a #MON", $55
+	db "master!", $51
+	db "You've done quite", $4f
+	db "an amazing thing", $55
+	db "just now!", $51
+	db "It just so", $4f
+	db "happens that I", $55
+	db "run this BATTLE", $55
+	db "FACTORY, and you", $55
+	db "just climbed to", $55
+	db "the very top!", $51
+	db "You can keep", $4f
+	db "going, but you", $55
+	db "should probably", $55
+	db "go play outside", $55
+	db "instead!", $51
+	db "...", $51
+	db "VICTORY", $58
 
 _EmptyComputerText:
 	db $0, "BATTLE FACTORY OS", $4f
