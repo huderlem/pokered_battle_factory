@@ -59430,102 +59430,18 @@ WriteMonMoves: ; 3afb8 (e:6fb8)
 	push hl
 	push de
 	push bc
-	ld hl, EvosMovesPointerTable
-	ld b, $0
-	ld a, [$cf91]  ; cur mon ID
-	dec a
-	add a
-	rl b
-	ld c, a
-	add hl, bc
+	ld hl, W_MOVE1
 	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-.skipEvoEntriesLoop
-	ld a, [hli]
-	and a
-	jr nz, .skipEvoEntriesLoop
-	jr .firstMove
-.nextMove
-	pop de
-.nextMove2
-	inc hl
-.firstMove
-	ld a, [hli]       ; read level of next move in learnset
-	and a
-	jp z, .done       ; end of list
-	ld b, a
-	ld a, [W_CURENEMYLVL] ; $d127
-	cp b
-	jp c, .done       ; mon level < move level (assumption: learnset is sorted by level)
-	ld a, [$cee9]
-	and a
-	jr z, .skipMinLevelCheck
-	ld a, [wWhichTrade] ; $cd3d (min move level)
-	cp b
-	jr nc, .nextMove2 ; min level >= move level
-.skipMinLevelCheck
-	push de
-	ld c, $4
-.moveAlreadyLearnedCheckLoop
-	ld a, [de]
-	inc de
-	cp [hl]
-	jr z, .nextMove
-	dec c
-	jr nz, .moveAlreadyLearnedCheckLoop
-	pop de
-	push de
-	ld c, $4
-.findEmptySlotLoop
-	ld a, [de]
-	and a
-	jr z, .writeMoveToSlot2
-	inc de
-	dec c
-	jr nz, .findEmptySlotLoop
-	pop de                        ; no empty move slots found
-	push de
-	push hl
-	ld h, d
-	ld l, e
-	call WriteMonMoves_ShiftMoveData ; shift all moves one up (deleting move 1)
-	ld a, [$cee9]
-	and a
-	jr z, .writeMoveToSlot
-	push de
-	ld bc, $12
-	add hl, bc
-	ld d, h
-	ld e, l
-	call WriteMonMoves_ShiftMoveData ; shift all move PP data one up
-	pop de
-.writeMoveToSlot
-	pop hl
-.writeMoveToSlot2
-	ld a, [hl]
 	ld [de], a
-	ld a, [$cee9]
-	and a
-	jr z, .nextMove
-	push hl            ; write move PP value
-	ld a, [hl]
-	ld hl, $15
-	add hl, de
-	push hl
-	dec a
-	ld hl, Moves
-	ld bc, $6
-	call AddNTimes
-	ld de, $cee9
-	ld a, BANK(Moves)
-	call FarCopyData
-	ld a, [$ceee]
-	pop hl
-	ld [hl], a
-	pop hl
-	jr .nextMove
-.done
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
 	pop bc
 	pop de
 	pop hl
@@ -63358,7 +63274,7 @@ OakDefText:
 RandomDefeatMessage:
 ; make trainer say something after defeat
 	call GenRandom
-	cp 20 ; number of messages in table
+	cp 60 ; number of messages in table
 	jp nc, RandomDefeatMessage
 	ld c, 5
 	ld b, 0
@@ -63487,6 +63403,66 @@ DefText39:
 	db "@"
 DefText40:
 	TX_FAR _DefText40
+	db "@"
+DefText41:
+	TX_FAR _DefText41
+	db "@"
+DefText42:
+	TX_FAR _DefText42
+	db "@"
+DefText43:
+	TX_FAR _DefText43
+	db "@"
+DefText44:
+	TX_FAR _DefText44
+	db "@"
+DefText45:
+	TX_FAR _DefText45
+	db "@"
+DefText46:
+	TX_FAR _DefText46
+	db "@"
+DefText47:
+	TX_FAR _DefText47
+	db "@"
+DefText48:
+	TX_FAR _DefText48
+	db "@"
+DefText49:
+	TX_FAR _DefText49
+	db "@"
+DefText50:
+	TX_FAR _DefText50
+	db "@"
+DefText51:
+	TX_FAR _DefText51
+	db "@"
+DefText52:
+	TX_FAR _DefText52
+	db "@"
+DefText53:
+	TX_FAR _DefText53
+	db "@"
+DefText54:
+	TX_FAR _DefText54
+	db "@"
+DefText55:
+	TX_FAR _DefText55
+	db "@"
+DefText56:
+	TX_FAR _DefText56
+	db "@"
+DefText57:
+	TX_FAR _DefText57
+	db "@"
+DefText58:
+	TX_FAR _DefText58
+	db "@"
+DefText59:
+	TX_FAR _DefText59
+	db "@"
+DefText60:
+	TX_FAR _DefText60
 	db "@"
 
 MoneyForWinningText: ; 3c6e4 (f:46e4)
@@ -97979,32 +97955,23 @@ PickMon:
 	ld l, e
 	ld a, [hli] ; num mons in class list
 	ld b, a
+.getValidRandom
 	call GenRandom
-	and b ; mask to length of list
+	cp b
+	jr c, .gotValidRandom
+	jr .getValidRandom
+.gotValidRandom
 	ld b, a
 	add b
-	add b ; multiplied a by 3
+	add b
+	add b
+	add b ; multiplied a by 5
 	ld c, a
 	ld b, $0
 	add hl, bc ; hl contains pointer to [mon id][moves_pointer]
 	ld a, [hli] ; a contains mon id
 	ld d, a
 .readMoves
-	ld a, [hli]
-	ld c, a
-	ld a, [hli]
-	ld b, a ; bc contains pointer to moves list
-	ld h, b
-	ld l, c
-	ld a, [hl]
-	cp $ff
-	jp nz, .movesListed
-	ld [W_MOVE1], a
-	ld [W_MOVE2], a
-	ld [W_MOVE3], a
-	ld [W_MOVE4], a
-	jr .done
-.movesListed
 	ld a, [hli]
 	ld [W_MOVE1], a
 	ld a, [hli]
@@ -98217,29 +98184,42 @@ MonClassPointers:
 MonClass1:
 ; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
 ; second byte is $FF is no moves specified
-	db 8 - 1; num mons in this list - 1
-	dbw RATTATA,    NoDefinedMoves
-	dbw EKANS,      NoDefinedMoves
-	dbw PIDGEY,     NoDefinedMoves
-	dbw SPEAROW,    NoDefinedMoves
-	dbw JIGGLYPUFF, NoDefinedMoves
-	dbw CLEFAIRY,   NoDefinedMoves
-	dbw PARAS,      NoDefinedMoves
-	dbw CATERPIE,   NoDefinedMoves
+	db 24; num mons in this list
+	db CATERPIE, TACKLE, STRING_SHOT, 0, 0
+	db WEEDLE, POISON_STING, STRING_SHOT, 0, 0
+	db MAGIKARP, TACKLE, 0, 0, 0
+	db ZUBAT, WING_ATTACK, CONFUSE_RAY, BITE, LEECH_LIFE
+	db PIDGEY, WING_ATTACK, QUICK_ATTACK, MIRROR_MOVE, SAND_ATTACK
+	db RATTATA, SUPER_FANG, HYPER_FANG, QUICK_ATTACK, TAIL_WHIP
+	db JIGGLYPUFF, BODY_SLAM, SING, DISABLE, DEFENSE_CURL
+	db DIGLETT, SLASH, DIG, SAND_ATTACK, GROWL
+	db SPEAROW, DRILL_PECK, MIRROR_MOVE, GROWL, LEER
+	db NIDORAN_M, DOUBLE_KICK, HORN_DRILL, POISON_STING, LEER
+	db EKANS, ACID, BITE, SCREECH, WRAP
+	db NIDORAN_F, DOUBLE_KICK, POISON_STING, TAIL_WHIP, FURY_SWIPES
+	db PARAS, SLASH, LEECH_LIFE, SPORE, GROWTH
+	db DITTO, TRANSFORM, 0, 0, 0
+	db CHARMANDER, SLASH, RAGE, EMBER, LEER
+	db VULPIX, FIRE_SPIN, CONFUSE_RAY, QUICK_ATTACK, TAIL_WHIP
+	db SQUIRTLE, WATER_GUN, BITE, WITHDRAW, TAIL_WHIP
+	db VENONAT, SLEEP_POWDER, POISONPOWDER, LEECH_LIFE, SUPERSONIC
+	db MEOWTH, SLASH, PAY_DAY, SCREECH, GROWL
+	db DRATINI, SLAM, THUNDER_WAVE, LEER, WRAP
+	db BULBASAUR, RAZOR_LEAF, LEECH_SEED, GROWTH, POISONPOWDER
+	db ODDISH, ABSORB, ACID, POISONPOWDER, SLEEP_POWDER
+	db CLEFAIRY, METRONOME, DOUBLESLAP, MINIMIZE, DEFENSE_CURL
+	db PIKACHU, THUNDERSHOCK, QUICK_ATTACK, THUNDER_WAVE, TAIL_WHIP
 
 MonClass2:
 	db 8 - 1; num mons in this list - 1
-	dbw MEWTWO,    NoDefinedMoves
-	dbw ZAPDOS,    NoDefinedMoves
-	dbw ARTICUNO,  NoDefinedMoves
-	dbw SNORLAX,   NoDefinedMoves
-	dbw DRAGONITE, NoDefinedMoves
-	dbw CHARIZARD, NoDefinedMoves
-	dbw BLASTOISE, NoDefinedMoves
-	dbw VENUSAUR,  NoDefinedMoves
-
-NoDefinedMoves:
-	db $FF
+	dbw MEWTWO,    POISON_STING, STRING_SHOT, $00, $00
+	dbw ZAPDOS,    POISON_STING, STRING_SHOT, $00, $00
+	dbw ARTICUNO,  POISON_STING, STRING_SHOT, $00, $00
+	dbw SNORLAX,   POISON_STING, STRING_SHOT, $00, $00
+	dbw DRAGONITE, POISON_STING, STRING_SHOT, $00, $00
+	dbw CHARIZARD, POISON_STING, STRING_SHOT, $00, $00
+	dbw BLASTOISE, POISON_STING, STRING_SHOT, $00, $00
+	dbw VENUSAUR,  POISON_STING, STRING_SHOT, $00, $00
 
 FillMonData:
 	push bc
@@ -98383,6 +98363,7 @@ FactoryMonSubMenu:
 	ld a, $2
 .asm_217b0
 	ld [$cc49], a
+	call CleanLCD_OAM
 	ld a, $36
 	call Predef ; indirect jump to StatusScreen (12953 (4:6953))
 	ld a, $37
@@ -139065,7 +139046,7 @@ _DefText11:
 
 _DefText12:
 	TX_RAM W_TRAINERNAME
-	db $0, ": What?", $4f
+	db $0, ": Huh?", $4f
 	db "I don't want to", $55
 	db "start over!", $58
 
@@ -139228,6 +139209,126 @@ _DefText40:
 	db $0, ": Who", $4f
 	db "designed this", $55
 	db "lame system!", $58
+
+_DefText41:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "don't enjoy", $55
+	db "losing!", $58
+
+_DefText42:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Can", $4f
+	db "you teach me", $55
+	db "your ways?", $58
+
+_DefText43:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "see what you", $55
+	db "did there!", $58
+
+_DefText44:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "blinded me with", $55
+	db "SCIENCE!", $58
+
+_DefText45:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'll", $4f
+	db "be back to fight", $55
+	db "you again!", $58
+
+_DefText46:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Don't", $4f
+	db "cross my path", $55
+	db "again!", $58
+
+_DefText47:
+	TX_RAM W_TRAINERNAME
+	db $0, ":", $4f
+	db "Tartar Sauce!", $58
+
+_DefText48:
+	TX_RAM W_TRAINERNAME
+	db $0, ": NO!", $58
+
+_DefText49:
+	TX_RAM W_TRAINERNAME
+	db $0, ": GAH!", $58
+
+_DefText50:
+	TX_RAM W_TRAINERNAME
+	db $0, ": And", $4f
+	db "now depression", $55
+	db "sets in...", $58
+
+_DefText51:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "need to improve", $55
+	db "my luck!", $58
+
+_DefText52:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "like the HOENN", $55
+	db "BATTLE FACTORY", $55
+	db "more...", $58
+
+_DefText53:
+	TX_RAM W_TRAINERNAME
+	db $0, ": If", $4f
+	db "only REVIVEs", $55
+	db "were allowed.", $58
+
+_DefText54:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I", $4f
+	db "won!", $51
+	db "Oh wait, no you", $4f
+	db "won...", $58
+
+_DefText55:
+	TX_RAM W_TRAINERNAME
+	db $0, ": The", $4f
+	db "pain of defeat", $55
+	db "goes deep.", $58
+
+_DefText56:
+	TX_RAM W_TRAINERNAME
+	db $0, ": My", $4f
+	db "mom says I'm the", $55
+	db "best trainer!", $58
+
+_DefText57:
+	TX_RAM W_TRAINERNAME
+	db $0, ": I'm", $4f
+	db "better at the", $55
+	db "BATTLE TOWER.", $58
+
+_DefText58:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Oh", $4f
+	db "man!", $51
+	db "I thought I still", $4f
+	db "had more #MON!", $58
+
+_DefText59:
+	TX_RAM W_TRAINERNAME
+	db $0, ": You", $4f
+	db "smell.  I don't", $55
+	db "want to smell you", $55
+	db "later.", $58
+
+_DefText60:
+	TX_RAM W_TRAINERNAME
+	db $0, ": Why", $4f
+	db "don't you pick on", $55
+	db "someone your own", $55
+	db "size!", $58
 
 ; special trainers defeated texts
 
