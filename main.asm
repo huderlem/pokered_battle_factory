@@ -97691,6 +97691,24 @@ InitTrainer:
 	ld b, 3
 .monLoop
 	call PickMon
+	ld hl, wEnemyPartyCount
+	ld e, [hl]
+	inc hl
+.checkTrainerSafePick
+	cp [hl]
+	jr z, .monLoop
+	inc hl
+	dec e
+	jr nz, .checkTrainerSafePick
+	ld hl, W_PARTYMON1
+	ld e, 3
+.checkSafePick
+	cp [hl]
+	jr z, .monLoop
+	inc hl
+	dec e
+	jr nz, .checkSafePick
+.safePick	
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
