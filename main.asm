@@ -97918,11 +97918,25 @@ FillMonChoices:
 	ld [W_NUMINBOX], a ; TODO: this doesn't fix it?
 	ld a, $ff
 	ld [W_NUMINBOX+1], a
+	ld [W_NUMINBOX+2], a
+	ld [W_NUMINBOX+3], a
+	ld [W_NUMINBOX+4], a
+	ld [W_NUMINBOX+5], a
+	ld [W_NUMINBOX+6], a
 	ld b, 6 ; num mons to place
 .fillLoop
 	push bc
 	call PickMon
 	pop bc
+	ld hl, W_NUMINBOX+1
+	ld c, 6
+.notPickedLoop
+	cp [hl]
+	jp z, .fillLoop
+	inc hl
+	dec c
+	jp nz, .notPickedLoop
+.safePick
 	ld [$cf91], a
 	ld a, 50 ; mon level
 	ld [$d127], a
