@@ -62927,8 +62927,6 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld [W_CURCLASS], a
 	xor a
 	ld [W_STARTBATTLE], a ; no battle starting
-	ld a, $2
-	ld [W_BATTLEFACTORYCURSCRIPT], a
 	call Func_3ed12
 	ld c, $28
 	call DelayFrames
@@ -67049,7 +67047,7 @@ CriticalHitTest: ; 3e023 (f:6023)
 .asm_3e032
 	ld [$d0b5], a
 	call GetMonHeader
-	ld a, [W_MONHBASESPEED]
+	ld a, 32
 	ld b, a
 	srl b                        ; (effective (base speed/2))
 	ld a, [H_WHOSETURN] ; $FF00+$f3
@@ -67074,7 +67072,7 @@ CriticalHitTest: ; 3e023 (f:6023)
 	ld b, $ff                    ; cap at 255/256
 	jr .noFocusEnergyUsed
 .focusEnergyUsed
-	srl b
+	sla b ; fixed focus energy
 .noFocusEnergyUsed
 	ld hl, HighCriticalMoves      ; table of high critical hit moves
 .Loop
@@ -97465,6 +97463,7 @@ BattleFactoryScript: ; 5c0b0 (17:40b0)
 BattleFactoryScriptPointers:
 	dw BattleFactoryScript0
 	dw BattleFactoryScript1
+	dw BattleFactoryScript2
 
 BattleFactoryScript0:
 	ld a, [W_STARTBATTLE]
@@ -97495,8 +97494,31 @@ BattleFactoryScript1:
 	call Delay3
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
+	ld a, 2
+	ld [W_BATTLEFACTORYCURSCRIPT], a
+	ret
+
+BattleFactoryScript2:
 	call FightTrainer
+	ld a, [W_CURSTREAK]
+	and a
+	jr nz, .wonBattle
 	xor a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
+	ret
+.wonBattle
+	ld a, [W_INCHALLENGE]
+	and a
+	jr nz, .stillGoing
+	xor a
+	ld [W_BATTLEFACTORYCURSCRIPT], a
+	ret
+.stillGoing
+	ld a, $a
+	ld [$ff00+$8c], a
+	call DisplayTextID
+	call Delay3
+	ld a, 2
 	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 
@@ -97522,6 +97544,7 @@ BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw BattleLoadingText
 	dw EmptyComputerText
 	dw UsedComputerText
+	dw ComputerDoneText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -97916,6 +97939,10 @@ BattleFactoryTextC:
 	TX_FAR _BattleFactoryTextC
 	db "@"
 
+ComputerDoneText:
+	TX_FAR _ComputerDoneText
+	db "@"
+
 ClearParty:
 ; clears all pokemon from party
 .clearloop
@@ -97962,6 +97989,9 @@ FillMonChoices:
 	dec b
 	jp nz, .fillLoop
 	ret
+
+LASDDF:
+	db $78, $78, $7a, $77
 
 PickMon:
 ; randomly chooses a mon
@@ -98214,8 +98244,6 @@ MonClassPointers:
 	dw MonClass1
 
 MonClass1:
-; num mons must be a power of 2 starting with 2: (2, 4, 8, 16, 32, ..., 256)
-; second byte is $FF is no moves specified
 	db 24; num mons in this list
 	db CATERPIE, TACKLE, STRING_SHOT, 0, 0
 	db WEEDLE, POISON_STING, STRING_SHOT, 0, 0
@@ -98224,7 +98252,7 @@ MonClass1:
 	db PIDGEY, WING_ATTACK, QUICK_ATTACK, MIRROR_MOVE, SAND_ATTACK
 	db RATTATA, SUPER_FANG, HYPER_FANG, QUICK_ATTACK, TAIL_WHIP
 	db JIGGLYPUFF, BODY_SLAM, SING, DISABLE, DEFENSE_CURL
-	db DIGLETT, SLASH, DIG, SAND_ATTACK, GROWL
+	db DIGLETT, SCRATCH, DIG, SAND_ATTACK, GROWL
 	db SPEAROW, DRILL_PECK, MIRROR_MOVE, GROWL, LEER
 	db NIDORAN_M, DOUBLE_KICK, HORN_DRILL, POISON_STING, LEER
 	db EKANS, ACID, BITE, SCREECH, WRAP
@@ -98243,15 +98271,38 @@ MonClass1:
 	db PIKACHU, THUNDERSHOCK, QUICK_ATTACK, THUNDER_WAVE, TAIL_WHIP
 
 MonClass2:
-	db 8 - 1; num mons in this list - 1
-	dbw MEWTWO,    POISON_STING, STRING_SHOT, $00, $00
-	dbw ZAPDOS,    POISON_STING, STRING_SHOT, $00, $00
-	dbw ARTICUNO,  POISON_STING, STRING_SHOT, $00, $00
-	dbw SNORLAX,   POISON_STING, STRING_SHOT, $00, $00
-	dbw DRAGONITE, POISON_STING, STRING_SHOT, $00, $00
-	dbw CHARIZARD, POISON_STING, STRING_SHOT, $00, $00
-	dbw BLASTOISE, POISON_STING, STRING_SHOT, $00, $00
-	dbw VENUSAUR,  POISON_STING, STRING_SHOT, $00, $00
+	db 30 ; num mons in this list
+	db DIGLETT, SLASH, DIG, SAND_ATTACK, GROWL
+	db VULPIX, FLAMETHROWER, CONFUSE_RAY, QUICK_ATTACK, TAIL_WHIP
+	db MANKEY, KARATE_CHOP, SEISMIC_TOSS, LEER, LOW_KICK
+	db POLIWAG, WATER_GUN, BODY_SLAM, AMNESIA, HYPNOSIS
+	db MACHOP, KARATE_CHOP, SEISMIC_TOSS, LEER, LOW_KICK
+	db BELLSPROUT, SLAM, RAZOR_LEAF, ACID, WRAP
+	db BELLSPROUT, RAZOR_LEAF, STUN_SPORE, SLEEP_POWDER, POISONPOWDER
+	db GEODUDE, ROCK_THROW, EARTHQUAKE, HARDEN, SELFDESTRUCT
+	db MAGNEMITE, THUNDERSHOCK, SWIFT, SUPERSONIC, SCREECH
+	db CUBONE, BONE_CLUB, HEADBUTT, LEER, RAGE
+	db HORSEA, WATER_GUN, SWIFT, SMOKESCREEN, LEER
+	db SLOWPOKE, WATER_GUN, HEADBUTT, AMNESIA, DISABLE
+	db DODUO, DRILL_PECK, FURY_ATTACK, GROWL, DOUBLE_TEAM
+	db GRIMER, SLUDGE, POUND, POISON_GAS, DISABLE
+	db GASTLY, HYPNOSIS, NIGHT_SHADE, CONFUSE_RAY, LICK
+	db VOLTORB, SWIFT, SELFDESTRUCT, LIGHT_SCREEN, SCREECH
+	db SANDSHREW, SLASH, POISON_STING, SAND_ATTACK, FURY_SWIPES
+	db GROWLITHE, FLAMETHROWER, BITE, LEER, AGILITY
+	db SEEL, AURORA_BEAM, HEADBUTT, REST, GROWL
+	db SHELLDER, CLAMP, AURORA_BEAM, SUPERSONIC, WITHDRAW
+	db EXEGGCUTE, SLEEP_POWDER, LEECH_SEED, BARRAGE, POISONPOWDER
+	db EXEGGCUTE, SLEEP_POWDER, POISONPOWDER, LEECH_SEED, SOLARBEAM
+	db EEVEE, BITE, QUICK_ATTACK, TAIL_WHIP, SAND_ATTACK
+	db TENTACOOL, WATER_GUN, ACID, SUPERSONIC, SCREECH
+	db DROWZEE, CONFUSION, HEADBUTT, DISABLE, HYPNOSIS
+	db GOLDEEN, WATERFALL, HORN_DRILL, SUPERSONIC, TAIL_WHIP
+	db STARYU, WATER_GUN, SWIFT, HARDEN, MINIMIZE
+	db FARFETCH_D, SLASH, PECK, SWORDS_DANCE, LEER
+	db KOFFING, SLUDGE, SMOKESCREEN, SELFDESTRUCT, TACKLE
+	db KRABBY, STOMP, GUILLOTINE, BUBBLE, HARDEN
+
 
 FillMonData:
 	push bc
@@ -138907,7 +138958,8 @@ _NotStartedText:
 _ReadyBattleText:
 	db $0, "Are you ready to", $4f
 	db "start your next", $55
-	db "battle, ", $52, "?", $57
+	db "battle sequence,", $51
+	db $52, "?", $57
 
 _NotYetText:
 	db $0, "No problem.", $51
@@ -138924,9 +138976,12 @@ _StartNowText:
 	db "best of luck!", $57
 
 _BattleLoadingText:
-	db $0, "BATTLE FACTORY OS", $4f
-	db "BOOTING...", $55
-	db "SYSTEM LOADED...", $55
+	db $0, "CURRENT WINNING", $4f
+	db "STREAK: @"
+	TX_NUM W_CURSTREAK, 1, 3
+	db $0, "...", $51
+	db "INITIALIZING", $4f
+	db "BATTLE...", $55
 	db "OPPONENT FOUND...", $55
 	db "BEGIN BATTLE...", $57
 
@@ -139557,6 +139612,10 @@ _BattleFactoryTextC:
 	db "with the first", $55
 	db "#MON I could", $55
 	db "pick.", $57
+
+_ComputerDoneText:
+	db $0, "BATTLE SESSION", $4f
+	db "COMPLETE...", $51
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
