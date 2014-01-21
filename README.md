@@ -1,6 +1,6 @@
-# Pokémon Red
+# Pokémon Red Battle Factory
 
-This is a disassembly of Pokémon Red.
+This is a remake of the Battle Factory from the Battle Frontier.  It is a fork of the pokered disassembly project, which is linked to below.
 
 It uses the following ROM as a base:
 
