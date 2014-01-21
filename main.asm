@@ -7319,6 +7319,9 @@ DisplayListMenuIDLoop: ; 2c53 (0:2c53)
 	ld a,[hl] ; a = item quantity
 	ld [$cf97],a
 .skipGettingQuantity
+	nop
+	nop
+	nop
 	ld a,[$cf91]
 	ld [$d0b5],a
 	ld a,$01
@@ -14718,25 +14721,8 @@ OakSpeech: ; 6115 (1:6115)
 	call Func_62ce
 	xor a
 	ld [$FFD7],a
-	ld a, PAL_OAK
-	call GotPaletteID
-	ld de,ProfOakPic
-	ld bc, (Bank(ProfOakPic) << 8) | $00
-	call IntroPredef3B   ; displays Oak pic?
-	call FadeInIntroPic
 	ld hl,OakSpeechText1
 	call PrintText      ; prints text box
-	call GBFadeOut2
-	call ClearScreen
-	call GetNidoPalID
-	ld a,NIDORINO
-	ld [$D0B5],a    ; pic displayed is stored at this location
-	ld [$CF91],a
-	call GetMonHeader      ; this is also related to the pic
-	FuncCoord 6, 4 ; $c3f6
-	ld hl,Coord     ; position on tilemap the pic is displayed
-	call LoadFlippedFrontSpriteByMonIndex      ; displays pic?
-	call MovePicLeft
 	ld hl,OakSpeechText2
 	call PrintText      ; Prints text box
 	call GBFadeOut2
@@ -14748,16 +14734,6 @@ OakSpeech: ; 6115 (1:6115)
 	ld hl,IntroducePlayerText
 	call PrintText
 	call Func_695d ; brings up NewName/Red/etc menu
-	call GBFadeOut2
-	call GetRivalPalID
-	ld de,Rival1Pic
-	ld bc,(Bank(Rival1Pic) << 8) | $00
-	call IntroPredef3B ; displays rival pic
-	call FadeInIntroPic
-	ld hl,IntroduceRivalText
-	call PrintText
-	call Func_69a4
-
 Func_61bc: ; 61bc (1:61bc)
 	call GBFadeOut2
 	call GetRedPalID
@@ -14824,8 +14800,6 @@ OakSpeechText1: ; 6253 (1:6253)
 	db "@"
 OakSpeechText2: ; 6258 (1:6258)
 	TX_FAR _OakSpeechText2A
-	db $14
-	TX_FAR _OakSpeechText2B
 	db "@"
 IntroducePlayerText: ; 6262 (1:6262)
 	TX_FAR _IntroducePlayerText
@@ -63674,6 +63648,7 @@ HandlePlayerBlackOut: ; 3c837 (f:4837)
 	ld [W_CURSTREAK], a
 	ld [W_STARTBATTLE], a
 	ld [W_INCHALLENGE], a
+	ld [W_CURCLASS], a
 	scf
 	ret
 
@@ -97514,8 +97489,29 @@ BattleFactoryScript2:
 	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
 .stillGoing
+	ld a, [W_CURSTREAK]
+	ld c, 0
+.divisionLoop7
+	cp 7
+	jr c, .divisionDone7
+	sub 7
+	inc c
+	jr .divisionLoop7
+.divisionDone7
+	cp 6
+	jr nz, .normalTrainer
+	ld a, c
+	cp 16
+	jr nc, .normalTrainer
+	cp 2
+	jr c, .normalTrainer
+	ld a, $e
+	ld [$ff00+$8c], a
+	jr .displayText
+.normalTrainer
 	ld a, $a
 	ld [$ff00+$8c], a
+.displayText
 	call DisplayTextID
 	call Delay3
 	ld a, 2
@@ -97545,6 +97541,7 @@ BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 	dw EmptyComputerText
 	dw UsedComputerText
 	dw ComputerDoneText
+	dw SpecialOpponentText
 
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
@@ -97573,7 +97570,7 @@ BattleFactoryText1: ; (17:656c)
 	call ShowFactoryMon
 	call LoadScreenTilesFromBuffer2
 	call UpdateSprites
-	ld hl, BattleFactoryText3
+	ld hl, FinishedPickingMonsText
 	call PrintText
 	ld a, $1
 	ld [W_INCHALLENGE], a
@@ -97871,6 +97868,10 @@ BattleFactoryText4:
 	TX_FAR _BattleFactoryText4
 	db "@"
 
+FinishedPickingMonsText:
+	TX_FAR _FinishedPickingMonsText
+	db "@"
+
 BattleFactoryWinsText:
 	TX_FAR _BattleFactoryWinsText
 	db "@"
@@ -97941,6 +97942,10 @@ BattleFactoryTextC:
 
 ComputerDoneText:
 	TX_FAR _ComputerDoneText
+	db "@"
+
+SpecialOpponentText:
+	TX_FAR _SpecialOpponentText
 	db "@"
 
 ClearParty:
@@ -98086,12 +98091,63 @@ SpecialPickMonsFunctionPointers:
 	dbw PROF_OAK,  OakPickMons
 
 BrockPickMons:
+; vulpix, onix, magnemite/geodude
+	ld a, VULPIX
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, FLAMETHROWER
+	ld [W_MOVE1], a
+	ld a, CONFUSE_RAY
+	ld [W_MOVE2], a
+	ld a, QUICK_ATTACK
+	ld [W_MOVE3], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE4], a
+	call AddPokemonToParty
 	ld a, ONIX
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, ROCK_THROW
+	ld [W_MOVE1], a
+	ld a, DIG
+	ld [W_MOVE2], a
+	ld a, SLAM
+	ld [W_MOVE3], a
+	ld a, SCREECH
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	call GenRandom
+	cp 128
+	jr c, .secondMon
+	ld a, MAGNEMITE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, THUNDERSHOCK
+	ld [W_MOVE1], a
+	ld a, THUNDER_WAVE
+	ld [W_MOVE2], a
+	ld a, SWIFT
+	ld [W_MOVE3], a
+	ld a, SUPERSONIC
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	ret
+.secondMon
+	ld a, GEODUDE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, EXPLOSION
+	ld [W_MOVE1], a
+	ld a, ROCK_THROW
+	ld [W_MOVE2], a
+	ld a, STRENGTH
+	ld [W_MOVE3], a
+	ld a, HARDEN
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
@@ -98228,20 +98284,20 @@ OakPickMons:
 MonClassPointers:
 	dw MonClass1
 	dw MonClass2
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
-	dw MonClass1
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
+	dw MonClass2
 
 MonClass1:
 	db 24; num mons in this list
@@ -98500,13 +98556,13 @@ BattleFactoryObject: ; 0x5c0d0 ?
 	db $c, $e, $b
 
 	db 7 ; people
-	db SPRITE_OAK, $5 + 4, $3 + 4, $ff, $d0, $1 ; person
-	db SPRITE_OAK, $5 + 4, $4 + 4, $ff, $d0, $2 ; person
-	db SPRITE_OAK, $5 + 4, $5 + 4, $ff, $d0, $3 ; person
-	db SPRITE_OAK, $5 + 4, $e + 4, $ff, $d1, $4 ; person
-	db SPRITE_OAK, $9 + 4, $a + 4, $ff, $d1, $5 ; person
-	db SPRITE_OAK, $9 + 4, $e + 4, $ff, $d1, $6 ; person
-	db SPRITE_OAK, $d + 4, $a + 4, $ff, $d1, $7 ; person
+	db SPRITE_OAK, $5 + 4, $5 + 4, $ff, $d0, $1 ; person
+	db SPRITE_NURSE, $5 + 4, $4 + 4, $ff, $d0, $2 ; person
+	db SPRITE_OAK_AIDE, $5 + 4, $3 + 4, $ff, $d0, $3 ; person
+	db SPRITE_BLACK_HAIR_BOY_1, $5 + 4, $e + 4, $ff, $d1, $4 ; person
+	db SPRITE_LASS, $9 + 4, $a + 4, $ff, $d1, $5 ; person
+	db SPRITE_ROCKER, $9 + 4, $e + 4, $ff, $d1, $6 ; person
+	db SPRITE_BLACK_HAIR_BOY_1, $d + 4, $a + 4, $ff, $d1, $7 ; person
 
 	; warp-to
 	EVENT_DISP BATTLE_FACTORY_WIDTH, 1, 7
@@ -128957,10 +129013,13 @@ _Sony1WinText: ; 8972a (22:572a)
 	db "I great or what?", $58
 
 _PlayerBlackedOutText2: ; 89748 (22:5748)
-	db $0, $52, " is out of", $4f
-	db "useable #MON!", $51
-	db $52, " blacked", $4f
-	db "out!", $58
+	db $0, "All your #MON", $4f
+	db "have fainted!", $51
+	db "Your win streak", $4f
+	db "has been reset", $55
+	db "to 0!", $51
+	db "Better luck next", $4f
+	db "time!", $58
 
 _LinkBattleLostText: ; 89772 (22:5772)
 	db $0, $52, " lost to", $4f
@@ -129627,8 +129686,8 @@ UnnamedText_8a629: ; 8a629 (22:6629)
 	db $0, "?", $57
 
 _UnnamedText_699f: ; 8a62f (22:662f)
-	db $0, "Right! So your", $4f
-	db "name is ", $52, "!", $58
+	db $0, "That's a funny", $4f
+	db "name...", $58
 
 _UnnamedText_69e7: ; 8a64a (22:664a)
 	db $0, "That's right! I", $4f
@@ -138875,15 +138934,34 @@ _UsedCutText: ; a8315 (2a:4315)
 	db "away with CUT!", $58
 
 _BattleFactoryText2:
-	db $0, "Welcome to the", $4f
-	db "BATTLE FACTORY!", $57
+	db $0, "Hello, ", $52, "!", $51
+	db "Would you like to", $4f
+	db "select a team for", $55
+	db "your upcoming", $55
+	db "challenge?", $57
 
 _BattleFactoryText3:
-	db $0, "Alright! Let's", $4f
-	db "go!", $57
+	db $0, "Alright, let me", $4f
+	db "bring up your", $55
+	db "choices.", $51
+	db "...", $4f
+	db "...", $51
+	db "Please select 3", $4f
+	db "#MON from the", $55
+	db "list.", $57
 
 _BattleFactoryText4:
-	db $0, "Come back later!", $57
+	db $0, "Ok, just talk to", $4f
+	db "me again when you", $55
+	db "are ready.", $57
+
+_FinishedPickingMonsText:
+	db $0, "You're all set!", $51
+	db "Speak with the", $4f
+	db "receptionist next", $55
+	db "to me when you're", $55
+	db "ready to start", $55
+	db "your challenge.", $57
 
 _BattleFactoryWinsText:
 	db $0, "CURRENT WINNING", $4f
@@ -138940,9 +139018,9 @@ _AlreadyStartedText:
 	db "#MON team.", $51
 	db "Please speak with", $4f
 	db "the battle", $55
-	db "receptionist to", $55
-	db "begin your next", $55
-	db "battle.", $57
+	db "receptionist next", $55
+	db "to me to begin", $55
+	db "your challenge.", $57
 
 _NotStartedText:
 	db $0, "I am the battle", $4f
@@ -138953,12 +139031,14 @@ _NotStartedText:
 	db "your team by", $55
 	db "speaking with the", $55
 	db "BATTLE FACTORY", $55
-	db "administrator.", $57
+	db "administrator who", $55
+	db "is standing next", $55
+	db "to me!", $57
 
 _ReadyBattleText:
 	db $0, "Are you ready to", $4f
 	db "start your next", $55
-	db "battle sequence,", $51
+	db "battle challenge,", $55
 	db $52, "?", $57
 
 _NotYetText:
@@ -139052,6 +139132,10 @@ _GuideText:
 	db "confront some", $55
 	db "very special", $55
 	db "opponents.", $51
+	db "If you ever lose,", $4f
+	db "you'll start all", $55
+	db "over, so don't", $55
+	db "lose!", $51
 	db "To get started,", $4f
 	db "first speak with", $55
 	db "the administrator", $55
@@ -139616,6 +139700,18 @@ _BattleFactoryTextC:
 _ComputerDoneText:
 	db $0, "BATTLE SESSION", $4f
 	db "COMPLETE...", $51
+
+_SpecialOpponentText:
+	db $0, "CURRENT WINNING", $4f
+	db "STREAK: @"
+	TX_NUM W_CURSTREAK, 1, 3
+	db $0, "...", $51
+	db "INITIALIZING", $4f
+	db "BATTLE...", $55
+	db "OPPONENT FOUND...", $55
+	db "FACTORY HEAD", $55
+	db "DETECTED...", $55
+	db "BEGIN BATTLE...", $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 
