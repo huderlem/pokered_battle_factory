@@ -7230,7 +7230,7 @@ DisplayListMenuID: ; 2be6 (0:2be6)
 	ld [wTopMenuItemY],a
 	ld a,5
 	ld [wTopMenuItemX],a
-	ld a,%00000111 ; A button, B button, Select button
+	ld a,%00000011 ; A button, B button, Select button
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
@@ -63048,7 +63048,7 @@ SwapPokemonEnemy:
 	ld [wTopMenuItemY],a
 	ld a,5
 	ld [wTopMenuItemX],a
-	ld a,%00000111 ; A button, B button, Select button
+	ld a,%00000011 ; A button, B button, Select button
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
@@ -63105,7 +63105,7 @@ SwapPokemonPlayer:
 	ld [wTopMenuItemY],a
 	ld a,5
 	ld [wTopMenuItemX],a
-	ld a,%00000111 ; A button, B button, Select button
+	ld a,%00000011 ; A button, B button, Select button
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
@@ -98412,7 +98412,7 @@ ShowFactoryMon:
 	ld [wTopMenuItemY],a
 	ld a,5
 	ld [wTopMenuItemX],a
-	ld a,%00000111 ; A button, B button, Select button
+	ld a,%00000011 ; A button, B button, Select button
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
