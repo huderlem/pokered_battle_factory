@@ -2,6 +2,8 @@
 
 This is a remake of the Battle Factory from the Battle Frontier.  It is a fork of the pokered disassembly project, which is linked to below.
 
+Disassembly of [**Pokémon Red**](https://github.com/iimarckus/pokered)
+
 It uses the following ROM as a base:
 
 	Pokemon Red (UE) [S][!].gb
