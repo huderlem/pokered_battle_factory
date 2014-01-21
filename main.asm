@@ -62969,18 +62969,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	call PrintText
 	call SwapPokemonPlayer
 	jr nc, .swapCompleted
-	ld hl, SwapAreYouSureText2
-	call PrintText
-	FuncCoord 0, 7 ; $c42c
-	ld hl,Coord
-	ld bc,$0801
-	ld a,$14
-	ld [$D125],a
-	call DisplayTextBoxID
-	ld a,[$CC26]
-	and a
-	jr z, .yesSwapMons
-	jr .swapPlayerMons
+	jr .yesSwapMons
 .swapCompleted
 	ld hl, SwapCompleteText
 	call PrintText
