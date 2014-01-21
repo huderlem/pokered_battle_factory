@@ -4,6 +4,8 @@ This is a remake of the Battle Factory from the Battle Frontier.  It is a fork o
 
 Disassembly of [**Pokémon Red**](https://github.com/iimarckus/pokered)
 
+It also uses the [**Gen 2 Graphics**](https://github.com/dannye/pokered-gen-II) patch created by dannye.
+
 It uses the following ROM as a base:
 
 	Pokemon Red (UE) [S][!].gb
