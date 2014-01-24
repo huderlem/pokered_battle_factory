@@ -10954,7 +10954,7 @@ ENDC
 	jr .asm_438f
 
 .titlescreenTilemap ; 437f (1:437f)
-	db $41,$42,$43,$42,$44,$42,$45,$46,$47,$48,$49,$4A,$4B,$4C,$4D,$4E ; ©'95.'96.'98 GAME FREAK inc.
+	db $41,$42,$43,$44,$45,$7f,$7f,$46,$47,$48,$49,$4a,$4b,$4c,$4d,$41 ; "Shanty Town"
 
 .asm_438f
 	call SaveScreenTilesToBuffer2
@@ -11001,13 +11001,7 @@ ENDC
 
 .TitleScreenPokemonLogoYScrolls: ; 43db (1:43db)
 ; Controls the bouncing effect of the Pokemon logo on the title screen
-	db -4,16  ; y scroll amount, number of times to scroll
-	db 3,4
-	db -3,4
-	db 2,2
-	db -2,2
-	db 1,2
-	db -1,2
+	db -8,8  ; y scroll amount, number of times to scroll
 	db 0      ; terminate list with 0
 
 .ScrollTitleScreenPokemonLogo
@@ -11292,7 +11286,7 @@ PrintGameVersionOnTitleScreen: ; 4598 (1:4598)
 ; these point to special tiles specifically loaded for that purpose and are not usual text
 VersionOnTitleScreenText: ; 45a1 (1:45a1)
 IF _RED
-	db $60,$61,$7F,$65,$66,$67,$68,$69,"@" ; "Red Version"
+	db $60,$61,$65,$66,$67,$68,$69,"@" ; "Red Version"
 ENDC
 IF _BLUE
 	db $61,$62,$63,$64,$65,$66,$67,$68,"@" ; "Blue Version"
@@ -74010,8 +74004,8 @@ PlayIntro: ; 41682 (10:5682)
 	inc a
 	ld [H_AUTOBGTRANSFERENABLED], a
 	call Func_4188a
-	call PlayIntroScene
-	call GBFadeOut2
+	; call PlayIntroScene
+	; call GBFadeOut2
 	xor a
 	ld [$FF00+$ae], a
 	ld [H_AUTOBGTRANSFERENABLED], a
@@ -74302,15 +74296,15 @@ Func_41852: ; 41852 (10:5852)
 	jp FarCopyData2
 
 Func_4188a: ; 4188a (10:588a)
-	ld b, $c
-	call GoPAL_SET
-	ld b, BANK(Func_4538)
-	ld hl, Func_4538
-	call Bankswitch
-	ld a, $e4
-	ld [rBGP], a ; $FF00+$47
-	ld c, $b4
-	call DelayFrames
+	; ld b, $c
+	; call GoPAL_SET
+	; ld b, BANK(Func_4538)
+	; ld hl, Func_4538
+	; call Bankswitch
+	; ld a, $e4
+	; ld [rBGP], a ; $FF00+$47
+	; ld c, $b4
+	; call DelayFrames
 	call ClearScreen
 	call DisableLCD
 	xor a
