@@ -63179,25 +63179,9 @@ BrockDefText:
 	db BROCK + $C8
 	TX_FAR _BrockDefText
 	db "@"
-MistyDefText:
-	db MISTY + $C8
-	TX_FAR _MistyDefText
-	db "@"
-SurgeDefText:
-	db LT__SURGE + $C8
-	TX_FAR _SurgeDefText
-	db "@"
-ErikaDefText:
-	db ERIKA + $C8
-	TX_FAR _ErikaDefText
-	db "@"
 KogaDefText:
 	db KOGA + $C8
 	TX_FAR _KogaDefText
-	db "@"
-SabrinaDefText:
-	db SABRINA + $C8
-	TX_FAR _SabrinaDefText
 	db "@"
 BlaineDefText:
 	db BLAINE + $C8
@@ -63211,21 +63195,9 @@ LoreleiDefText:
 	db LORELEI + $C8
 	TX_FAR _LoreleiDefText
 	db "@"
-BrunoDefText:
-	db BRUNO + $C8
-	TX_FAR _BrunoDefText
-	db "@"
-AgathaDefText:
-	db AGATHA + $C8
-	TX_FAR _AgathaDefText
-	db "@"
 LanceDefText:
 	db LANCE + $C8
 	TX_FAR _LanceDefText
-	db "@"
-GaryDefText:
-	db SONY3 + $C8
-	TX_FAR _GaryDefText
 	db "@"
 OakDefText:
 	db PROF_OAK + $C8
@@ -97490,7 +97462,7 @@ BattleFactoryScript2:
 	cp 6
 	jr nz, .normalTrainer
 	ld a, c
-	cp 16
+	cp 9
 	jr nc, .normalTrainer
 	cp 2
 	jr c, .normalTrainer
@@ -97605,7 +97577,7 @@ PickTrainerClass:
 	ld a, [W_CURCLASS]
 	cp 2 ; first class to have special trainers at the end
 	jr c, .noSpecialTrainer
-	cp 16 ; last class to have special trainers at the end (+1)
+	cp 9 ; last class to have special trainers at the end (+1)
 	jr nc, .noSpecialTrainer
 	ld hl, SpecialTrainerClasses
 	sub 2 ; subtract first class to have special trainers
@@ -97653,19 +97625,12 @@ SpecialTrainerClasses:
 ; these are the "factory heads" in order
 ; they appear every 7 battles starting at 21 straight victories
 	db BROCK ; 2 (class in which you encounter them)
-	db MISTY ; 3 
-	db LT__SURGE ; 4
-	db ERIKA ; 5
-	db KOGA ; 6
-	db SABRINA ; 7
-	db BLAINE ; 8
-	db GIOVANNI ; 9
-	db LORELEI ; 10
-	db BRUNO ; 11
-	db AGATHA ; 12
-	db LANCE ; 13
-	db SONY3 ; gary ; 14
-	db PROF_OAK ; 15
+	db KOGA ; 3
+	db BLAINE ; 4
+	db GIOVANNI ; 5
+	db LORELEI ; 6
+	db LANCE ; 7
+	db PROF_OAK ; 8
 
 InitTrainer:
 ; set [wEnemyPartyCount] to 0, [$D89D] to FF
@@ -97679,7 +97644,7 @@ InitTrainer:
 	ld a, [W_CURCLASS]
 	cp 2 ; first class for special trainers
 	jp c, .normalTrainerPicks ; is there even a chance for special trainer?
-	cp 16
+	cp 9
 	jp nc, .normalTrainerPicks ; is it past the last special trainer class?
 	ld a, [W_CURSTREAK] ; see if this is the last battle
 .divisionLoop4
@@ -97805,7 +97770,7 @@ BattleFactoryReceptionist:
 	ld a, [W_CURCLASS]
 	cp 2
 	jr c, .normalGoodLuckText
-	cp 16
+	cp 9
 	jr nc, .normalGoodLuckText
 	ld a, [W_CURSTREAK]
 .divisionLoop5
@@ -97995,9 +97960,9 @@ PickMon:
 	push hl
 	ld b, 0
 	ld a, [W_CURCLASS]
-	cp 16
+	cp 9
 	jr c, .haveCorrectClass
-	ld a, 15 ; last class
+	ld a, 8 ; last class
 .haveCorrectClass	
 	ld c, a
 	sla c ; multiply by 2
@@ -98017,14 +97982,18 @@ PickMon:
 	jr c, .gotValidRandom
 	jr .getValidRandom
 .gotValidRandom
-	ld b, a
-	add b
-	add b
-	add b
-	add b ; multiplied a by 5
+	push de
 	ld c, a
-	ld b, $0
-	add hl, bc ; hl contains pointer to [mon id][moves_pointer]
+	ld b, 0
+	ld d, 5
+.addingLoop
+	add hl, bc
+	dec d
+	jr z, .finishedAdding
+	jr .addingLoop
+.finishedAdding
+	pop de
+	; hl now contains pointer to [mon id][moves_pointer]
 	ld a, [hli] ; a contains mon id
 	ld d, a
 .readMoves
@@ -98065,18 +98034,11 @@ SpecialPickMons:
 
 SpecialPickMonsFunctionPointers:
 	dbw BROCK,     BrockPickMons
-	dbw MISTY,     MistyPickMons
-	dbw LT__SURGE, SurgePickMons
-	dbw ERIKA,     ErikaPickMons
 	dbw KOGA,      KogaPickMons
-	dbw SABRINA,   SabrinaPickMons
 	dbw BLAINE,    BlainePickMons
 	dbw GIOVANNI,  GioPickMons
 	dbw LORELEI,   LoreleiPickMons
-	dbw BRUNO,     BrunoPickMons
-	dbw AGATHA,    AgathaPickMons
 	dbw LANCE,     LancePickMons
-	dbw SONY3,     GaryPickMons
 	dbw PROF_OAK,  OakPickMons
 
 BrockPickMons:
@@ -98140,73 +98102,165 @@ BrockPickMons:
 	call AddPokemonToParty
 	ret
 
-MistyPickMons:
-	ld a, STARMIE
-	ld [$CF91], a
-	ld a, 1
-	ld [$CC49],a ; $1 for enemy party
-	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
-SurgePickMons:
-	ld a, PIKACHU
-	ld [$CF91], a
-	ld a, 1
-	ld [$CC49],a ; $1 for enemy party
-	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
-ErikaPickMons:
-	ld a, GLOOM
-	ld [$CF91], a
-	ld a, 1
-	ld [$CC49],a ; $1 for enemy party
-	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
 KogaPickMons:
-	ld a, KOFFING
+	ld a, WEEZING
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, SLUDGE
+	ld [W_MOVE1], a
+	ld a, SELFDESTRUCT
+	ld [W_MOVE2], a
+	ld a, TOXIC
+	ld [W_MOVE3], a
+	ld a, SMOKESCREEN
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	ld a, GOLBAT
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, WING_ATTACK
+	ld [W_MOVE1], a
+	ld a, LEECH_LIFE
+	ld [W_MOVE2], a
+	ld a, TOXIC
+	ld [W_MOVE3], a
+	ld a, CONFUSE_RAY
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	call GenRandom
+	cp 64
+	jr c, .secondMon
+	ld a, VENOMOTH
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, PSYWAVE
+	ld [W_MOVE1], a
+	ld a, TOXIC
+	ld [W_MOVE2], a
+	ld a, SLEEP_POWDER
+	ld [W_MOVE3], a
+	ld a, POISONPOWDER
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
-
-SabrinaPickMons:
-	ld a, KADABRA
+.secondMon
+	ld a, SCYTHER
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
-	call AddPokemonToParty
-	call AddPokemonToParty
+	ld a, SLASH
+	ld [W_MOVE1], a
+	ld a, SWORDS_DANCE
+	ld [W_MOVE2], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE3], a
+	ld a, TOXIC
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
 BlainePickMons:
-	ld a, CHARMANDER
+	ld a, NINETALES
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, FIRE_BLAST
+	ld [W_MOVE1], a
+	ld a, CONFUSE_RAY
+	ld [W_MOVE2], a
+	ld a, TAKE_DOWN
+	ld [W_MOVE3], a
+	ld a, DIG
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	ld a, RHYDON
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, EARTHQUAKE
+	ld [W_MOVE1], a
+	ld a, HORN_DRILL
+	ld [W_MOVE2], a
+	ld a, TAKE_DOWN
+	ld [W_MOVE3], a
+	ld a, FIRE_BLAST
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	ld a, MAGMAR
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, FIRE_BLAST
+	ld [W_MOVE1], a
+	ld a, CONFUSE_RAY
+	ld [W_MOVE2], a
+	ld a, SMOKESCREEN
+	ld [W_MOVE3], a
+	ld a, PSYCHIC
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
 GioPickMons:
-	ld a, RHYHORN
+	ld a, KANGASKHAN
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, MEGA_PUNCH
+	ld [W_MOVE1], a
+	ld a, EARTHQUAKE
+	ld [W_MOVE2], a
+	ld a, DIZZY_PUNCH
+	ld [W_MOVE3], a
+	ld a, SUBMISSION
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	ld a, RHYDON
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, EARTHQUAKE
+	ld [W_MOVE1], a
+	ld a, HORN_DRILL
+	ld [W_MOVE2], a
+	ld a, TAKE_DOWN
+	ld [W_MOVE3], a
+	ld a, FISSURE
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	call GenRandom
+	cp 128
+	jr c, .secondMon
+	ld a, NIDOKING
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, THRASH
+	ld [W_MOVE1], a
+	ld a, TOXIC
+	ld [W_MOVE2], a
+	ld a, SURF
+	ld [W_MOVE3], a
+	ld a, ICE_BEAM
+	ld [W_MOVE4], a
+	call AddPokemonToParty
+	ret
+.secondMon
+	ld a, NIDOQUEEN
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, EARTHQUAKE
+	ld [W_MOVE1], a
+	ld a, BODY_SLAM
+	ld [W_MOVE2], a
+	ld a, ROCK_SLIDE
+	ld [W_MOVE3], a
+	ld a, TOXIC
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
@@ -98215,28 +98269,58 @@ LoreleiPickMons:
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, ICE_BEAM
+	ld [W_MOVE1], a
+	ld a, SURF
+	ld [W_MOVE2], a
+	ld a, REST
+	ld [W_MOVE3], a
+	ld a, TAKE_DOWN
+	ld [W_MOVE4], a
 	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
-BrunoPickMons:
-	ld a, HITMONLEE
+	ld a, LAPRAS
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, ICE_BEAM
+	ld [W_MOVE1], a
+	ld a, SURF
+	ld [W_MOVE2], a
+	ld a, THUNDERBOLT
+	ld [W_MOVE3], a
+	ld a, SING
+	ld [W_MOVE4], a
 	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
-AgathaPickMons:
-	ld a, GENGAR
+	call GenRandom
+	cp 128
+	jr c, .secondMon
+	ld a, CLOYSTER
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, SPIKE_CANNON
+	ld [W_MOVE1], a
+	ld a, ICE_BEAM
+	ld [W_MOVE2], a
+	ld a, WITHDRAW
+	ld [W_MOVE3], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
-	call AddPokemonToParty
+	ret
+.secondMon
+	ld a, JYNX
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, ICE_PUNCH
+	ld [W_MOVE1], a
+	ld a, LOVELY_KISS
+	ld [W_MOVE2], a
+	ld a, THRASH
+	ld [W_MOVE3], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
@@ -98245,18 +98329,40 @@ LancePickMons:
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, HYPER_BEAM
+	ld [W_MOVE1], a
+	ld a, THUNDERBOLT
+	ld [W_MOVE2], a
+	ld a, SURF
+	ld [W_MOVE3], a
+	ld a, ICE_BEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
-	call AddPokemonToParty
-	call AddPokemonToParty
-	ret
-
-GaryPickMons:
-	ld a, BLASTOISE
+	ld a, AERODACTYL
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, WING_ATTACK
+	ld [W_MOVE1], a
+	ld a, TAKE_DOWN
+	ld [W_MOVE2], a
+	ld a, ROCK_SLIDE
+	ld [W_MOVE3], a
+	ld a, HYPER_BEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
-	call AddPokemonToParty
+	ld a, CHARIZARD
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, FLAMETHROWER
+	ld [W_MOVE1], a
+	ld a, FLY
+	ld [W_MOVE2], a
+	ld a, HYPER_BEAM
+	ld [W_MOVE3], a
+	ld a, SLASH
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
@@ -98265,8 +98371,111 @@ OakPickMons:
 	ld [$CF91], a
 	ld a, 1
 	ld [$CC49],a ; $1 for enemy party
+	ld a, EARTHQUAKE
+	ld [W_MOVE1], a
+	ld a, DOUBLE_EDGE
+	ld [W_MOVE2], a
+	ld a, FIRE_BLAST
+	ld [W_MOVE3], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	call GenRandom
+	cp 86
+	jr c, .secondMon
+	cp 172
+	jr c, .thirdMon
+	ld a, EXEGGUTOR
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, PSYCHIC
+	ld [W_MOVE1], a
+	ld a, MEGA_DRAIN
+	ld [W_MOVE2], a
+	ld a, HYPNOSIS
+	ld [W_MOVE3], a
+	ld a, EGG_BOMB
+	ld [W_MOVE4], a
 	call AddPokemonToParty
+	jr .lastMon
+.secondMon
+	ld a, ARCANINE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, FIRE_BLAST
+	ld [W_MOVE1], a
+	ld a, DOUBLE_EDGE
+	ld [W_MOVE2], a
+	ld a, DIG
+	ld [W_MOVE3], a
+	ld a, DOUBLE_TEAM
+	ld [W_MOVE4], a
+	call AddPokemonToParty
+	jr .lastMon
+.thirdMon
+	ld a, GYARADOS
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, SURF
+	ld [W_MOVE1], a
+	ld a, HYPER_BEAM
+	ld [W_MOVE2], a
+	ld a, THUNDER
+	ld [W_MOVE3], a
+	ld a, BLIZZARD
+	ld [W_MOVE4], a
+	call AddPokemonToParty
+.lastMon
+	call GenRandom
+	cp 86
+	jr c, .pickBlastoise
+	cp 172
+	jr c, .pickCharizard
+	ld a, VENUSAUR
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, RAZOR_LEAF
+	ld [W_MOVE1], a
+	ld a, SOLARBEAM
+	ld [W_MOVE2], a
+	ld a, SLEEP_POWDER
+	ld [W_MOVE3], a
+	ld a, TOXIC
+	ld [W_MOVE4], a
+	call AddPokemonToParty
+	ret
+.pickBlastoise
+	ld a, BLASTOISE
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, HYDRO_PUMP
+	ld [W_MOVE1], a
+	ld a, BODY_SLAM
+	ld [W_MOVE2], a
+	ld a, ICE_BEAM
+	ld [W_MOVE3], a
+	ld a, EARTHQUAKE
+	ld [W_MOVE4], a
+	call AddPokemonToParty
+	ret
+.pickCharizard
+	ld a, CHARIZARD
+	ld [$CF91], a
+	ld a, 1
+	ld [$CC49],a ; $1 for enemy party
+	ld a, FIRE_BLAST
+	ld [W_MOVE1], a
+	ld a, FLY
+	ld [W_MOVE2], a
+	ld a, FLASH
+	ld [W_MOVE3], a
+	ld a, HYPER_BEAM
+	ld [W_MOVE4], a
 	call AddPokemonToParty
 	ret
 
@@ -98276,17 +98485,10 @@ MonClassPointers:
 	dw MonClass3
 	dw MonClass4
 	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
-	dw MonClass5
+	dw MonClass6
+	dw MonClass7
+	dw MonClass8
+	dw MonClass9
 
 MonClass1:
 	db 24; num mons in this list
@@ -98297,7 +98499,7 @@ MonClass1:
 	db PIDGEY, WING_ATTACK, QUICK_ATTACK, MIRROR_MOVE, SAND_ATTACK
 	db RATTATA, SUPER_FANG, QUICK_ATTACK, TAIL_WHIP, 0
 	db JIGGLYPUFF, POUND, SING, DISABLE, DEFENSE_CURL
-	db DIGLETT, SCRATCH, DIG, SAND_ATTACK, GROWL
+	db DIGLETT, SCRATCH, SAND_ATTACK, GROWL, 0
 	db SPEAROW, PECK, MIRROR_MOVE, GROWL, LEER
 	db NIDORAN_M, DOUBLE_KICK, HORN_DRILL, POISON_STING, LEER
 	db EKANS, ACID, BITE, SCREECH, WRAP
@@ -98393,7 +98595,7 @@ MonClass4:
 	db IVYSAUR, RAZOR_LEAF, SLEEP_POWDER, GROWTH, LEECH_SEED
 	db CHARMELEON, FLAMETHROWER, SLASH, LEER, DOUBLE_TEAM
 	db WARTORTLE, SURF, BODY_SLAM, WITHDRAW, SKULL_BASH
-	db KABADRBA, PSYBEAM, RECOVER, DISABLE, CONFUSION
+	db KADABRA, PSYBEAM, RECOVER, DISABLE, CONFUSION
 	db POLIWHIRL, SURF, MEGA_PUNCH, AMNESIA, HYPNOSIS
 	db ONIX, SLAM, ROCK_SLIDE, HARDEN, SCREECH
 	db MR_MIME, CONFUSION, LIGHT_SCREEN, BARRIER, SUBSTITUTE
@@ -98446,13 +98648,203 @@ MonClass5:
 	db ARBOK, ACID, GLARE, TAKE_DOWN, SCREECH
 	db VENOMOTH, PSYWAVE, POISONPOWDER, LEECH_LIFE, SLEEP_POWDER
 	db VENOMOTH, TOXIC, CONFUSION, LEECH_LIFE, SUPERSONIC
-	db PERSION, SLASH, SCREECH, SWIFT, DOUBLE_TEAM
+	db PERSIAN, SLASH, SCREECH, SWIFT, DOUBLE_TEAM
 	db FEAROW, DRILL_PECK, FLY, MIRROR_MOVE, DOUBLE_TEAM
 	db CLEFABLE, METRONOME, MEGA_PUNCH, SUBSTITUTE, SING 
 	db PRIMEAPE, THRASH, SEISMIC_TOSS, SCREECH, COUNTER
 	db SEAKING, WATERFALL, HORN_DRILL, SUPERSONIC, FURY_ATTACK
 	db GOLBAT, WING_ATTACK, CONFUSE_RAY, TOXIC, BITE
 	db VILEPLUME, PETAL_DANCE, POISONPOWDER, MEGA_DRAIN, ACID
+
+MonClass6:
+	db 35
+	db SLOWBRO, BUBBLEBEAM, HEADBUTT, AMNESIA, DISABLE
+	db SLOWBRO, CONFUSION, HEADBUTT, AMNESIA, DISABLE
+	db RAICHU, THUNDERBOLT, SWIFT, DOUBLE_TEAM, FLASH
+	db MAGNETON, THUNDERBOLT, THUNDER_WAVE, SUPERSONIC, SCREECH
+	db TANGELA, MEGA_DRAIN, SLEEP_POWDER, SLAM, GROWTH
+	db TANGELA, MEGA_DRAIN, POISONPOWDER, SLAM, GROWTH
+	db TANGELA, MEGA_DRAIN, STUN_SPORE, SLAM, GROWTH
+	db SEADRA, SURF, SWIFT, DOUBLE_TEAM, SMOKESCREEN
+	db ELECTABUZZ, THUNDERPUNCH, MEGA_PUNCH, LIGHT_SCREEN, SCREECH
+	db MAGMAR, FLAMETHROWER, SMOG, SMOKESCREEN, CONFUSE_RAY
+	db PIDGEOT, WING_ATTACK, QUICK_ATTACK, DOUBLE_TEAM, SAND_ATTACK
+	db PIDGEOT, FLY, QUICK_ATTACK, MIRROR_MOVE, SAND_ATTACK
+	db DODRIO, DRILL_PECK, TRI_ATTACK, DOUBLE_TEAM, GROWL
+	db MUK, SLUDGE, TOXIC, ACID_ARMOR, MINIMIZE
+	db MUK, BODY_SLAM, TOXIC, ACID_ARMOR, MINIMIZE
+	db ELECTRODE, THUNDERBOLT, SWIFT, LIGHT_SCREEN, EXPLOSION
+	db ELECTRODE, SWIFT, THUNDER_WAVE, LIGHT_SCREEN, EXPLOSION
+	db SANDSLASH, SLASH, ROCK_SLIDE, POISON_STING, SAND_ATTACK
+	db SANDSLASH, DIG, ROCK_SLIDE, POISON_STING, SAND_ATTACK
+	db GOLDUCK, SURF, CONFUSION, DISABLE, SWIFT
+	db ALAKAZAM, PSYBEAM, RECOVER, REFLECT, DISABLE
+	db DEWGONG, AURORA_BEAM, TAKE_DOWN, REST, GROWL
+	db NIDOQUEEN, BODY_SLAM, DOUBLE_KICK, POISON_STING, GROWL
+	db NIDOKING, THRASH, DOUBLE_KICK, POISON_STING, TOXIC
+	db VENOMOTH, PSYWAVE, POISONPOWDER, LEECH_LIFE, SLEEP_POWDER
+	db VENOMOTH, TOXIC, PSYWAVE, LEECH_LIFE, SUPERSONIC
+	db PERSIAN, SLASH, SCREECH, SWIFT, DOUBLE_TEAM
+	db FEAROW, DRILL_PECK, FLY, MIRROR_MOVE, DOUBLE_TEAM
+	db CLEFABLE, METRONOME, MEGA_PUNCH, SUBSTITUTE, SING 
+	db PRIMEAPE, THRASH, SEISMIC_TOSS, SCREECH, COUNTER
+	db SEAKING, WATERFALL, HORN_DRILL, SUPERSONIC, FURY_ATTACK
+	db GOLBAT, WING_ATTACK, CONFUSE_RAY, TOXIC, BITE
+	db VILEPLUME, PETAL_DANCE, POISONPOWDER, MEGA_DRAIN, ACID
+	db DUGTRIO, EARTHQUAKE, SLASH, SAND_ATTACK, DOUBLE_TEAM
+	db DUGTRIO, DIG, SLASH, SAND_ATTACK, DOUBLE_TEAM
+
+MonClass7:
+	db 45
+	db POLIWRATH, SURF, STRENGTH, HYPNOSIS, BODY_SLAM
+	db HYPNO, PSYCHIC, POISON_GAS, HYPNOSIS, HEADBUTT
+	db KANGASKHAN, MEGA_PUNCH, DIZZY_PUNCH, LEER, COUNTER
+	db KANGASKHAN, TAKE_DOWN, EARTHQUAKE, LEER, STRENGTH
+	db CHANSEY, POUND, SUBSTITUTE, SOFTBOILED, REST
+	db CHANSEY, TOXIC, SUBSTITUTE, SOFTBOILED, REST
+	db MACHAMP, SUBMISSION, KARATE_CHOP, FOCUS_ENERGY, LEER
+	db VICTREEBEL, RAZOR_LEAF, ACID, CUT, STUN_SPORE
+	db VICTREEBEL, MEGA_DRAIN, TOXIC, DOUBLE_TEAM, STUN_SPORE
+	db GOLEM, EARTHQUAKE, ROCK_THROW, EXPLOSION, MEGA_PUNCH
+	db RAPIDASH, FIRE_SPIN, TAKE_DOWN, SKULL_BASH, TAIL_WHIP
+	db WEEZING, SLUDGE, TOXIC, HAZE, EXPLOSION
+	db SCYTHER, SLASH, SWORDS_DANCE, WING_ATTACK, DOUBLE_TEAM
+	db NINETALES, FIRE_BLAST, SKULL_BASH, DOUBLE_TEAM, SWIFT
+	db VENUSAUR, RAZOR_LEAF, LEECH_SEED, SLEEP_POWDER, MEGA_DRAIN
+	db VENUSAUR, SOLARBEAM, POISONPOWDER, LEECH_SEED, GROWTH
+	db CHARIZARD, FLAMETHROWER, SLASH, LEER, CUT
+	db CHARIZARD, FLY, EMBER, BODY_SLAM, LEER
+	db BLASTOISE, SURF, BITE, ICE_BEAM, WITHDRAW
+	db BLASTOISE, EARTHQUAKE, BUBBLEBEAM, WITHDRAW, REFLECT
+	db GENGAR, HYPNOSIS, DREAM_EATER, NIGHT_SHADE, CONFUSE_RAY
+	db GENGAR, TOXIC, DOUBLE_TEAM, MEGA_DRAIN, CONFUSE_RAY
+	db KINGLER, CRABHAMMER, STOMP, HARDEN, LEER
+	db KINGLER, BUBBLEBEAM, GUILLOTINE, HARDEN, LEER
+	db OMASTAR, SURF, SPIKE_CANNON, LEER, WITHDRAW
+	db PINSIR, SLASH, SWORDS_DANCE, SEISMIC_TOSS, HARDEN
+	db MAGMAR, FLAMETHROWER, SMOG, SMOKESCREEN, CONFUSE_RAY
+	db MAGMAR, PSYWAVE, FIRE_PUNCH, SMOKESCREEN, CONFUSE_RAY
+	db PIDGEOT, WING_ATTACK, TAKE_DOWN, DOUBLE_TEAM, SAND_ATTACK
+	db PIDGEOT, FLY, QUICK_ATTACK, MIRROR_MOVE, SAND_ATTACK
+	db DODRIO, DRILL_PECK, TRI_ATTACK, DOUBLE_TEAM, GROWL
+	db MUK, SLUDGE, TOXIC, ACID_ARMOR, MINIMIZE
+	db MUK, BODY_SLAM, TOXIC, ACID_ARMOR, MINIMIZE
+	db ELECTRODE, THUNDERBOLT, SWIFT, LIGHT_SCREEN, EXPLOSION
+	db ELECTRODE, SWIFT, THUNDER_WAVE, LIGHT_SCREEN, EXPLOSION
+	db SANDSLASH, SLASH, ROCK_SLIDE, POISON_STING, SAND_ATTACK
+	db SANDSLASH, EARTHQUAKE, ROCK_SLIDE, POISON_STING, SAND_ATTACK
+	db GOLDUCK, SURF, CONFUSION, DISABLE, SWIFT
+	db GOLDUCK, SURF, ICE_BEAM, PSYCHIC, DISABLE
+	db ALAKAZAM, PSYBEAM, RECOVER, REFLECT, DISABLE
+	db DEWGONG, ICE_BEAM, TAKE_DOWN, REST, GROWL
+	db NIDOQUEEN, BODY_SLAM, DOUBLE_KICK, POISON_STING, GROWL
+	db NIDOQUEEN, BODY_SLAM, FISSURE, POISON_STING, GROWL
+	db NIDOKING, THRASH, DOUBLE_KICK, POISON_STING, TOXIC
+	db NIDOKING, THRASH, FISSURE, POISON_STING, TOXIC
+
+MonClass8:
+	db 32
+	db VAPOREON, SURF, AURORA_BEAM, ACID_ARMOR, SUBSTITUTE
+	db JOLTEON, THUNDERBOLT, PIN_MISSILE, DOUBLE_KICK, DOUBLE_TEAM
+	db FLAREON, FLAMETHROWER, TAKE_DOWN, DOUBLE_TEAM, SMOG
+	db KABUTOPS, SURF, SLASH, ABSORB, LEER
+	db SNORLAX, REST, HEADBUTT, AMNESIA, BODY_SLAM
+	db TENTACRUEL, SURF, TOXIC, BARRIER, SUPERSONIC
+	db STARMIE, SURF, ICE_BEAM, SWIFT, HARDEN
+	db STARMIE, THUNDER_WAVE, PSYCHIC, SWIFT, RECOVER
+	db RHYDON, TAKE_DOWN, EARTHQUAKE, LEER, FIRE_BLAST
+	db RHYDON, HORN_DRILL, ROCK_SLIDE, LEER, MEGA_PUNCH
+	db AERODACTYL, WING_ATTACK, ROCK_SLIDE, TAKE_DOWN, SUPERSONIC
+	db TAUROS, BODY_SLAM, STRENGTH, EARTHQUAKE, LEER
+	db LAPRAS, SURF, ICE_BEAM, CONFUSE_RAY, SING
+	db ARCANINE, TAKE_DOWN, FIRE_BLAST, SWIFT, LEER
+	db EXEGGUTOR, MEGA_DRAIN, HYPNOSIS, EGG_BOMB, STOMP
+	db CLOYSTER, ICE_BEAM, SURF, WITHDRAW, SPIKE_CANNON
+	db GYARADOS, SURF, DRAGON_RAGE, STRENGTH, LEER
+	db WEEZING, SLUDGE, TOXIC, HAZE, EXPLOSION
+	db SCYTHER, SLASH, SWORDS_DANCE, WING_ATTACK, DOUBLE_TEAM
+	db NINETALES, FIRE_BLAST, SKULL_BASH, DOUBLE_TEAM, SWIFT
+	db VENUSAUR, RAZOR_LEAF, LEECH_SEED, SLEEP_POWDER, MEGA_DRAIN
+	db VENUSAUR, SOLARBEAM, POISONPOWDER, LEECH_SEED, GROWTH
+	db CHARIZARD, FLAMETHROWER, SLASH, LEER, CUT
+	db CHARIZARD, FLY, EMBER, BODY_SLAM, LEER
+	db BLASTOISE, SURF, BITE, ICE_BEAM, WITHDRAW
+	db BLASTOISE, EARTHQUAKE, BUBBLEBEAM, WITHDRAW, REFLECT
+	db GENGAR, HYPNOSIS, DREAM_EATER, NIGHT_SHADE, CONFUSE_RAY
+	db GENGAR, TOXIC, DOUBLE_TEAM, MEGA_DRAIN, CONFUSE_RAY
+	db KINGLER, CRABHAMMER, STOMP, HARDEN, LEER
+	db KINGLER, BUBBLEBEAM, GUILLOTINE, HARDEN, LEER
+	db OMASTAR, SURF, SPIKE_CANNON, LEER, WITHDRAW
+	db PINSIR, SLASH, SWORDS_DANCE, SEISMIC_TOSS, HARDEN
+	db CHANSEY, POUND, SUBSTITUTE, SOFTBOILED, REST
+	db CHANSEY, TOXIC, SUBSTITUTE, SOFTBOILED, REST
+	
+MonClass9:
+	db 64
+	db DRAGONITE, HYPER_BEAM, SLAM, THUNDER_WAVE, THUNDERBOLT
+	db DRAGONITE, HYPER_BEAM, BODY_SLAM, SURF, ICE_BEAM
+	db DRAGONITE, THUNDERBOLT, FIRE_BLAST, ICE_BEAM, SURF
+	db GYARADOS, HYPER_BEAM, SURF, STRENGTH, DOUBLE_TEAM
+	db GYARADOS, HYPER_BEAM, TAKE_DOWN, THUNDERBOLT, ICE_BEAM
+	db EXEGGUTOR, PSYCHIC, MEGA_DRAIN, LIGHT_SCREEN, SUBSTITUTE
+	db EXEGGUTOR, PSYCHIC, MEGA_DRAIN, TOXIC, EXPLOSION
+	db ARCANINE, TAKE_DOWN, FIRE_BLAST, SWIFT, LEER
+	db ARCANINE, TAKE_DOWN, FIRE_BLAST, DIG, LEER
+	db LAPRAS, SURF, ICE_BEAM, CONFUSE_RAY, SING
+	db LAPRAS, SURF, BLIZZARD, CONFUSE_RAY, REST
+	db LAPRAS, PSYWAVE, ICE_BEAM, THUNDERBOLT, SING
+	db TAUROS, BODY_SLAM, STRENGTH, EARTHQUAKE, LEER
+	db TAUROS, BODY_SLAM, SURF, DOUBLE_TEAM, TOXIC
+	db AERODACTYL, WING_ATTACK, ROCK_SLIDE, TAKE_DOWN, SUPERSONIC
+	db AERODACTYL, HYPER_BEAM, ROCK_SLIDE, TAKE_DOWN, SUPERSONIC
+	db RHYDON, TAKE_DOWN, EARTHQUAKE, LEER, FIRE_BLAST
+	db RHYDON, HORN_DRILL, ROCK_SLIDE, LEER, MEGA_PUNCH
+	db STARMIE, SURF, ICE_BEAM, SWIFT, HARDEN
+	db STARMIE, THUNDER_WAVE, PSYCHIC, SWIFT, RECOVER	
+	db STARMIE, PSYCHIC, SURF, THUNDERBOLT, RECOVER
+	db TENTACRUEL, SURF, TOXIC, BARRIER, SUPERSONIC
+	db TENTACRUEL, HYDRO_PUMP, BLIZZARD, SUBSTITUTE, SUPERSONIC
+	db SNORLAX, REST, HEADBUTT, AMNESIA, BODY_SLAM
+	db SNORLAX, HYPER_BEAM, HEADBUTT, AMNESIA, REST
+	db SNORLAX, MEGA_KICK, HEADBUTT, AMNESIA, REFLECT
+	db SNORLAX, ROCK_SLIDE, STRENGTH, AMNESIA, BUBBLEBEAM
+	db KABUTOPS, SURF, SLASH, ABSORB, LEER
+	db KABUTOPS, SURF, SUBMISSION, SWORDS_DANCE, SLASH
+	db VAPOREON, SURF, ICE_BEAM, ACID_ARMOR, SUBSTITUTE
+	db VAPOREON, SURF, BLIZZARD, REST, SUBSTITUTE
+	db JOLTEON, THUNDERBOLT, PIN_MISSILE, DOUBLE_KICK, DOUBLE_TEAM
+	db JOLTEON, THUNDERBOLT, PIN_MISSILE, DOUBLE_KICK, DOUBLE_TEAM
+	db FLAREON, FLAMETHROWER, TAKE_DOWN, DOUBLE_TEAM, SMOG
+	db VENUSAUR, RAZOR_LEAF, LEECH_SEED, SLEEP_POWDER, MEGA_DRAIN
+	db VENUSAUR, SOLARBEAM, POISONPOWDER, LEECH_SEED, GROWTH
+	db CHARIZARD, FLAMETHROWER, SLASH, LEER, CUT
+	db CHARIZARD, FLY, FLAMETHROWER, BODY_SLAM, LEER
+	db BLASTOISE, SURF, BITE, ICE_BEAM, WITHDRAW
+	db BLASTOISE, EARTHQUAKE, BUBBLEBEAM, WITHDRAW, REFLECT
+	db GENGAR, HYPNOSIS, DREAM_EATER, NIGHT_SHADE, CONFUSE_RAY
+	db GENGAR, TOXIC, DOUBLE_TEAM, PSYCHIC, MEGA_DRAIN
+	db CHANSEY, DOUBLE_EDGE, SUBSTITUTE, SOFTBOILED, REST
+	db CHANSEY, TOXIC, SUBSTITUTE, SOFTBOILED, REST
+	db CHANSEY, ICE_BEAM, THUNDERBOLT, SOFTBOILED, PSYCHIC
+	db MACHAMP, SUBMISSION, KARATE_CHOP, MEGA_PUNCH, LEER
+	db MACHAMP, SUBMISSION, KARATE_CHOP, EARTHQUAKE, ROCK_SLIDE
+	db SCYTHER, SLASH, SWORDS_DANCE, WING_ATTACK, DOUBLE_TEAM
+	db KANGASKHAN, MEGA_PUNCH, DIZZY_PUNCH, LEER, COUNTER
+	db KANGASKHAN, TAKE_DOWN, EARTHQUAKE, LEER, STRENGTH
+	db POLIWRATH, SURF, STRENGTH, HYPNOSIS, BODY_SLAM
+	db POLIWRATH, SURF, SUBMISSION, HYPNOSIS, BODY_SLAM
+	db ALAKAZAM, PSYCHIC, RECOVER, REFLECT, DISABLE
+	db DEWGONG, ICE_BEAM, TAKE_DOWN, REST, GROWL
+	db DEWGONG, BLIZZARD, SURF, REST, HORN_DRILL
+	db NIDOQUEEN, BODY_SLAM, DOUBLE_KICK, POISON_STING, GROWL
+	db NIDOQUEEN, BODY_SLAM, FISSURE, POISON_STING, GROWL
+	db NIDOQUEEN, SURF, ICE_BEAM, SUBMISSION, DOUBLE_TEAM
+	db NIDOKING, THRASH, DOUBLE_KICK, POISON_STING, TOXIC
+	db NIDOKING, THRASH, FISSURE, POISON_STING, TOXIC
+	db NIDOKING, SURF, FIRE_BLAST, ROCK_SLIDE, TOXIC
+	db ARTICUNO, ICE_BEAM, FLY, SWIFT, DOUBLE_TEAM
+	db ZAPDOS, THUNDERBOLT, DRILL_PECK, SWIFT, DOUBLE_TEAM
+	db MOLTRES, FIRE_BLAST, SKY_ATTACK, SWIFT, DOUBLE_TEAM
 
 
 FillMonData:
@@ -139609,61 +140001,17 @@ _BrockDefText:
 	db "you to challenge", $55
 	db "them!", $58
 
-_MistyDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": Wow!", $4f
-	db "You have", $55
-	db "a knack for this", $55
-	db "place!", $51
-	db "That's two HEADs", $4f
-	db "down!", $51
-	db "Keep it up!", $58
-
-_SurgeDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": Zap!", $4f
-	db "You're charging", $55
-	db "through the", $55
-	db "FACTORY ranks", $55
-	db "with a high", $55
-	db "voltage!", $51
-	db "You have a long", $4f
-	db "way to go, still.", $58
-
-_ErikaDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": Oh!", $4f
-	db "You've uprooted", $55
-	db "my status as a", $55
-	db "FACTORY HEAD!", $51
-	db "Rather few", $4f
-	db "trainers ever", $55
-	db "make it to me.", $51
-	db "Best of luck in", $4f
-	db "your future", $55
-	db "endeavors!", $58
-
 _KogaDefText:
 	TX_RAM W_TRAINERNAME
 	db $0, ": Aha!", $4f
-	db "A worth opponent,", $55
+	db "A worthy opponent", $55
 	db "indeed!", $51
 	db "My ninja ways", $4f
 	db "were no match for", $55
-	db "nimble skills in", $55
-	db "battle!", $51
+	db "your nimble ways", $55
+	db "in battle!", $51
 	db "The road ahead", $4f
 	db "is tougher, yet!", $58
-
-_SabrinaDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": ...", $4f
-	db "Thank you for", $55
-	db "playing with me!", $51
-	db "I see strong", $4f
-	db "#MON and", $55
-	db "mighty opponents", $55
-	db "in your future.", $58
 
 _BlaineDefText:
 	TX_RAM W_TRAINERNAME
@@ -139692,32 +140040,10 @@ _LoreleiDefText:
 	db "your veins with", $55
 	db "a chilling", $55
 	db "victory like", $55
-	db "that!", $4f
+	db "that!", $51
 	db "You've had an", $4f
 	db "IN-credible run", $55
 	db "so far!", $58
-
-_BrunoDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": I", $4f
-	db "am at peace with", $55
-	db "this loss.", $51
-	db "You clearly have", $4f
-	db "what it takes to", $55
-	db "go all the way.", $58
-
-_AgathaDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": Oh my,", $4f
-	db "It seems the", $55
-	db "young ones have", $55
-	db "caught up to me!", $51
-	db "In my youth, I", $4f
-	db "believe that the", $55
-	db "outcome of this", $55
-	db "battle would have", $55
-	db "been different.", $51
-	db "Carry on, my boy.", $58
 
 _LanceDefText:
 	TX_RAM W_TRAINERNAME
@@ -139726,14 +140052,9 @@ _LanceDefText:
 	db "have a deep", $55
 	db "understanding of", $55
 	db "#MON.", $51
-	db "Only two HEADs", $4f
-	db "remain in your", $55
+	db "Only one HEAD", $4f
+	db "remains in your", $55
 	db "path.", $58
-
-_GaryDefText:
-	TX_RAM W_TRAINERNAME
-	db $0, ": ...", $4f
-	db "Get lost.", $58
 
 _OakDefText:
 	TX_RAM W_TRAINERNAME
