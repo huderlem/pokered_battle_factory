@@ -74314,15 +74314,15 @@ Func_41852: ; 41852 (10:5852)
 	jp FarCopyData2
 
 Func_4188a: ; 4188a (10:588a)
-	; ld b, $c
-	; call GoPAL_SET
+	ld b, $c
+	call GoPAL_SET
 	; ld b, BANK(Func_4538)
 	; ld hl, Func_4538
 	; call Bankswitch
-	; ld a, $e4
-	; ld [rBGP], a ; $FF00+$47
-	; ld c, $b4
-	; call DelayFrames
+	ld a, $e4
+	ld [rBGP], a ; $FF00+$47
+	ld c, $b4
+	call DelayFrames
 	call ClearScreen
 	call DisableLCD
 	xor a
