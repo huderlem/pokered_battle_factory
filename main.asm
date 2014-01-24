@@ -140113,7 +140113,7 @@ _BattleFactoryTextB:
 	db $0, "My best streak is", $4f
 	db "32 wins in a row.", $51
 	db "I managed to beat", $4f
-	db "BROCK, and MISTY!", $57
+	db "BROCK, and KOGA!", $57
 
 _BattleFactoryTextC:
 	db $0, "Grrr...", $51
