@@ -97537,8 +97537,7 @@ FightTrainer:
 	ld [W_CUROPPONENT], a ; $d059
 	call Delay3
 	ld hl, W_OPTIONS ; $d355
-	res 7, [hl]
-	set 6, [hl]
+	set 6, [hl] ; no switching pokemon
 	ld a, $2c
 	call Predef ; indirect jump to Func_3ef18 (3ef18 (f:6f18)) Runs the battle.
 	ld a, $7
