@@ -62930,7 +62930,7 @@ TrainerBattleVictory: ; 3c696 (f:4696)
 	ld a, [W_CURCLASS]
 	cp 3 ; first class with special trainers (+1)
 	jr c, .notSpecialMessage
-	cp 17 ; last class with special trainers (+2)
+	cp 10 ; last class with special trainers (+2)
 	jr nc, .notSpecialMessage ; past the last factory head
 	call SpecialTrainerDefeatMessage
 	jr .printCongrats
