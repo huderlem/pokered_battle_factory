@@ -63064,6 +63064,8 @@ SwapPokemonEnemy:
 	ld [wListScrollOffset], a
 	ld a, $77
 	ld [wListMenuID], a
+	ld a, Bank(SwapPokemonEnemy)
+	ld [$cf08], a ; save current bank
 	call DisplayListMenuIDLoop
 	ret c ; player tried to close menu
 	ld a, [wCurrentMenuItem]
@@ -63120,6 +63122,8 @@ SwapPokemonPlayer:
 	ld [wCurrentMenuItem], a
 	ld [wListScrollOffset], a
 	ld [wListMenuID], a
+	ld a, Bank(SwapPokemonPlayer)
+	ld [$cf08], a ; save current bank
 	call DisplayListMenuIDLoop
 	ret c ; player tried to close menu
 	ld a, [wCurrentMenuItem]
@@ -98923,6 +98927,8 @@ ShowFactoryMon:
 	xor a
 	ld [wCurrentMenuItem], a
 	ld [wListScrollOffset], a
+	ld a, Bank(ShowFactoryMon)
+	ld [$cf08], a ; save current bank
 	call DisplayListMenuIDLoop
 	jr c, ShowFactoryMon ; player tried to close menu
 	ld a, [wCurrentMenuItem]
