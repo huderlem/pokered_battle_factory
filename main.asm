@@ -61963,6 +61963,85 @@ SaveMonIDs:
 	ld [$dee2], a
 	ret
 
+SwapMonSubMenu:
+	FuncCoord 10, 10 ; $c471
+	ld hl, Coord
+	ld b, $6
+	ld c, $8
+	call TextBoxBorder
+	FuncCoord 12, 12 ; $c49b
+	ld hl, Coord
+	ld de, SwapMenuMonText
+	call PlaceString
+	FuncCoord 12, 14 ; $c4c3
+	ld hl, Coord
+	ld de, SwapMenuStatsText ; $57dc
+	call PlaceString
+	FuncCoord 12, 16
+	ld hl, Coord
+	ld de, SwapMenuCancelText
+	call PlaceString
+	ld hl, wTopMenuItemY ; $cc24
+	ld a, 12
+	ld [hli], a
+	ld a, 11
+	ld [hli], a
+	xor a
+	ld [hli], a
+	inc hl
+	ld a, $2
+	ld [hli], a
+	ld a, $3
+	ld [hli], a
+	xor a
+	ld [hl], a
+	ld hl, wListScrollOffset ; $cc36
+	ld [hli], a
+	ld [hl], a
+	call HandleMenuInput
+	bit 1, a ; B was pressed
+	jr z, .notBPressed
+	scf 
+	ccf
+	ret
+.notBPressed
+	ld a, [wCurrentMenuItem]
+	cp 1
+	jr z, .showStatsScreen
+	cp 0 ; rent?
+	jr nz, .cancelPressed
+	xor a
+	scf
+	ret
+.cancelPressed
+	ld a, 2
+	scf
+	ccf
+	ret
+.showStatsScreen
+	ld a, $1 ; enemy's party
+.doAction
+	ld [$cc49], a
+	call CleanLCD_OAM
+	ld a, $36
+	call Predef ; indirect jump to StatusScreen (12953 (4:6953))
+	ld a, $37
+	call Predef ; indirect jump to StatusScreen2 (12b57 (4:6b57))
+	call LoadScreenTilesFromBuffer1
+	; call ReloadTilesetTilePatterns
+	call GoPAL_SET_CF1C
+	call LoadGBPal
+	jp SwapMonSubMenu
+
+SwapMenuMonText:
+	db "SWAP@"
+
+SwapMenuStatsText:
+	db "STATS@"
+
+SwapMenuCancelText:
+	db "CANCEL@"
+
 SECTION "bankF",ROMX,BANK[$F]
 
 ; These are move effects (second value from the Moves table in bank $E).
@@ -63049,7 +63128,7 @@ SwapPokemonEnemy:
 	ld [wTopMenuItemY],a
 	ld a,5
 	ld [wTopMenuItemX],a
-	ld a,%00000011 ; A button, B button, Select button
+	ld a,%00000011 ; A button, B button
 	ld [wMenuWatchedKeys],a
 	ld c,10
 	call DelayFrames
@@ -63073,6 +63152,15 @@ SwapPokemonEnemy:
 	ld a, [wListScrollOffset]
 	add b ; a = menuitem (0-based indexing)
 	ld [W_SWAPMONENEMYINDEX], a
+	call SaveScreenTilesToBuffer1
+	ld hl, SwapMonSubMenu
+	ld b, BANK(SwapMonSubMenu)
+	call Bankswitch
+	push af
+	call LoadScreenTilesFromBuffer1
+	pop af
+	jp nc, SwapPokemonEnemy
+	ccf
 	ret
 
 SwapPokemonPlayer:
