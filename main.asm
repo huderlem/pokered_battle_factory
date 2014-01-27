@@ -62033,6 +62033,76 @@ SwapMonSubMenu:
 	call LoadGBPal
 	jp SwapMonSubMenu
 
+SwapMonSubMenuPlayer:
+	FuncCoord 10, 10 ; $c471
+	ld hl, Coord
+	ld b, $6
+	ld c, $8
+	call TextBoxBorder
+	FuncCoord 12, 12 ; $c49b
+	ld hl, Coord
+	ld de, SwapMenuMonText
+	call PlaceString
+	FuncCoord 12, 14 ; $c4c3
+	ld hl, Coord
+	ld de, SwapMenuStatsText ; $57dc
+	call PlaceString
+	FuncCoord 12, 16
+	ld hl, Coord
+	ld de, SwapMenuCancelText
+	call PlaceString
+	ld hl, wTopMenuItemY ; $cc24
+	ld a, 12
+	ld [hli], a
+	ld a, 11
+	ld [hli], a
+	xor a
+	ld [hli], a
+	inc hl
+	ld a, $2
+	ld [hli], a
+	ld a, $3
+	ld [hli], a
+	xor a
+	ld [hl], a
+	ld hl, wListScrollOffset ; $cc36
+	ld [hli], a
+	ld [hl], a
+	call HandleMenuInput
+	bit 1, a ; B was pressed
+	jr z, .notBPressed
+	scf 
+	ccf
+	ret
+.notBPressed
+	ld a, [wCurrentMenuItem]
+	cp 1
+	jr z, .showStatsScreen
+	cp 0 ; rent?
+	jr nz, .cancelPressed
+	xor a
+	scf
+	ret
+.cancelPressed
+	ld a, 2
+	scf
+	ccf
+	ret
+.showStatsScreen
+	xor a ; player's party
+.doAction
+	ld [$cc49], a
+	call CleanLCD_OAM
+	ld a, $36
+	call Predef ; indirect jump to StatusScreen (12953 (4:6953))
+	ld a, $37
+	call Predef ; indirect jump to StatusScreen2 (12b57 (4:6b57))
+	call LoadScreenTilesFromBuffer1
+	; call ReloadTilesetTilePatterns
+	call GoPAL_SET_CF1C
+	call LoadGBPal
+	jp SwapMonSubMenuPlayer
+
 SwapMenuMonText:
 	db "SWAP@"
 
@@ -63218,7 +63288,20 @@ SwapPokemonPlayer:
 	ld b, a
 	ld a, [wListScrollOffset]
 	add b ; a = menuitem (0-based indexing)
+	ld b, a ; b = menuitem
+	push bc
+	call SaveScreenTilesToBuffer1
+	ld hl, SwapMonSubMenuPlayer
+	ld b, BANK(SwapMonSubMenuPlayer)
+	call Bankswitch
+	push af
+	call LoadScreenTilesFromBuffer1
+	pop af
+	pop bc
+	jp nc, SwapPokemonPlayer
 	; swap mon data
+	ld a, b ; menuitem
+	ld [wCurrentMenuItem], a
 	ld hl, W_PARTYMON1DATA
 	ld bc, $002c
 	call AddNTimes
@@ -63232,9 +63315,6 @@ SwapPokemonPlayer:
 	call CopyData ; swap mon data
 	; swap mon id
 	ld a, [wCurrentMenuItem]
-	ld b, a
-	ld a, [wListScrollOffset]
-	add b ; a = menuitem (0-based indexing)
 	ld c, a
 	ld b, 0
 	ld hl, W_PARTYMON1
@@ -63245,9 +63325,6 @@ SwapPokemonPlayer:
 	ld [$d11e], a ; used for GetMonName
 	ld hl, W_PARTYMON1NAME
 	ld a, [wCurrentMenuItem]
-	ld b, a
-	ld a, [wListScrollOffset]
-	add b ; a = menuitem (0-based indexing)
 	ld bc, $000b
 	call AddNTimes ; hl contains pointer to mon name which is 0xb bytes
 	ld d, h
