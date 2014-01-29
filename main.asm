@@ -36150,7 +36150,7 @@ PalletTownScript: ; 18e5b (6:4e5b)
 .next
 	call EnableAutoTextBoxDrawing
 	ld hl,PalletTownScriptPointers
-	ld a,[W_BESTSTREAK]
+	ld a,[W_PALLETTOWNCURSCRIPT]
 	jp CallFunctionInTable
 
 PalletTownScriptPointers: ; 18e73 (6:4e73)
@@ -36186,7 +36186,7 @@ PalletTownScript0: ; 18e81 (6:4e81)
 
 	; trigger the next script
 	ld a,1
-	ld [W_BESTSTREAK],a
+	ld [W_PALLETTOWNCURSCRIPT],a
 	ret
 
 PalletTownScript1: ; 18eb2 (6:4eb2)
@@ -36204,7 +36204,7 @@ PalletTownScript1: ; 18eb2 (6:4eb2)
 
 	; trigger the next script
 	ld a,2
-	ld [W_BESTSTREAK],a
+	ld [W_PALLETTOWNCURSCRIPT],a
 	ret
 
 PalletTownScript2: ; 18ed2 (6:4ed2)
@@ -36236,7 +36236,7 @@ PalletTownScript2: ; 18ed2 (6:4ed2)
 
 	; trigger the next script
 	ld a,3
-	ld [W_BESTSTREAK],a
+	ld [W_PALLETTOWNCURSCRIPT],a
 	ret
 
 PalletTownScript3: ; 18f12 (6:4f12)
@@ -36265,7 +36265,7 @@ PalletTownScript3: ; 18f12 (6:4f12)
 
 	; trigger the next script
 	ld a,4
-	ld [W_BESTSTREAK],a
+	ld [W_PALLETTOWNCURSCRIPT],a
 	ret
 
 PalletTownScript4: ; 18f4b (6:4f4b)
@@ -36275,7 +36275,7 @@ PalletTownScript4: ; 18f4b (6:4f4b)
 
 	; trigger the next script
 	ld a,5
-	ld [W_BESTSTREAK],a
+	ld [W_PALLETTOWNCURSCRIPT],a
 	ret
 
 PalletTownScript5: ; 18f56 (6:4f56)
@@ -36373,7 +36373,7 @@ PalletTownText7: ; 0x18fec sign by Blue’s house
 ViridianCityScript: ; 18ff1 (6:4ff1)
 	call EnableAutoTextBoxDrawing
 	ld hl, ViridianCityScriptPointers
-	ld a, [W_CURTRAINER]
+	ld a, [W_VIRIDIANCITYCURSCRIPT]
 	jp CallFunctionInTable
 
 ViridianCityScriptPointers: ; 18ffd (6:4ffd)
@@ -36410,7 +36410,7 @@ ViridianCityScript_1900b: ; 1900b (6:500b)
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	ret
 
 ViridianCityScript_1903d: ; 1903d (6:503d)
@@ -36430,7 +36430,7 @@ ViridianCityScript_1903d: ; 1903d (6:503d)
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	ret
 
 ViridianCityScript1: ; 19062 (6:5062)
@@ -36453,7 +36453,7 @@ ViridianCityScript1: ; 19062 (6:5062)
 	ld a, WEEDLE
 	ld [W_CUROPPONENT], a
 	ld a, $2
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	ret
 
 ViridianCityScript2: ; 1908f (6:508f)
@@ -36476,7 +36476,7 @@ ViridianCityScript2: ; 1908f (6:508f)
 	ld [W_BATTLETYPE], a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	ret
 
 ViridianCityScript3: ; 190c1 (6:50c1)
@@ -36485,7 +36485,7 @@ ViridianCityScript3: ; 190c1 (6:50c1)
 	ret nz
 	call Delay3
 	ld a, 0
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	ret
 
 ViridianCityScript_190cf: ; 190cf (6:50cf)
@@ -36599,7 +36599,7 @@ ViridianCityText5: ; 1917f (6:517f)
 	call PrintText
 	call ViridianCityScript_190cf
 	ld a, $3
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	jp TextScriptEnd
 
 UnnamedText_19191: ; 19191 (6:5191)
@@ -36660,7 +36660,7 @@ ViridianCityText7: ; 191df (6:51df)
 	ld hl, UnnamedText_1920f
 	call PrintText
 	ld a, $1
-	ld [W_CURTRAINER], a
+	ld [W_VIRIDIANCITYCURSCRIPT], a
 	jr .asm_2413a ; 0x191ff
 .asm_42f68 ; 0x19201
 	ld hl, UnnamedText_19214
@@ -38057,7 +38057,7 @@ BluesHouse_h: ; 0x19b2f id=39
 BluesHouseScript: ; 19b3b (6:5b3b)
 	call EnableAutoTextBoxDrawing
 	ld hl,BluesHouseScriptPointers
-	ld a,[W_CURTRAINER]
+	ld a,[W_BLUESHOUSECURSCRIPT]
 	jp CallFunctionInTable
 
 BluesHouseScriptPointers: ; 19b47 (6:5b47)
@@ -38070,7 +38070,7 @@ BluesHouseScript0: ; 19b4b (6:5b4b)
 
 	; trigger the next script
 	ld a,1
-	ld [W_CURTRAINER],a
+	ld [W_BLUESHOUSECURSCRIPT],a
 	ret
 
 BluesHouseScript1: ; 19b56 (6:5b56)
@@ -40055,7 +40055,7 @@ OaksLabScript: ; 1cb0e (7:4b0e)
 	xor a
 	ld [$cc3c], a
 	ld hl, OaksLabScriptPointers
-	ld a, [W_CURSTREAK]
+	ld a, [W_OAKSLABCURSCRIPT]
 	jp CallFunctionInTable
 
 OaksLabScriptPointers: ; 1cb28 (7:4b28)
@@ -40094,7 +40094,7 @@ OaksLabScript0: ; 1cb4e (7:4b4e)
 	res 4, [hl]
 
 	ld a, $1
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript1: ; 1cb6e (7:4b6e)
@@ -40104,7 +40104,7 @@ OaksLabScript1: ; 1cb6e (7:4b6e)
 	call MoveSprite
 
 	ld a, $2
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OakEntryMovement: ; 1cb7e (7:4b7e)
@@ -40124,7 +40124,7 @@ OaksLabScript2: ; 1cb82 (7:4b82)
 	call Predef
 
 	ld a, $3
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript3: ; 1cba2 (7:4ba2)
@@ -40147,7 +40147,7 @@ OaksLabScript3: ; 1cba2 (7:4ba2)
 	call Func_34a6 ; face object
 
 	ld a, $4
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 PlayerEntryMovementRLE: ; 1cbcf (7:4bcf)
@@ -40172,7 +40172,7 @@ OaksLabScript4: ; 1cbd2 (7:4bd2)
 	call Func_2307
 
 	ld a, $5
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript5: ; 1cbfd (7:4bfd)
@@ -40199,7 +40199,7 @@ OaksLabScript5: ; 1cbfd (7:4bfd)
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $6
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript6: ; 1cc36 (7:4c36)
@@ -40229,7 +40229,7 @@ OaksLabScript6: ; 1cc36 (7:4c36)
 	ld [$d528], a
 
 	ld a, $7
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript7: ; 1cc72 (7:4c72)
@@ -40239,7 +40239,7 @@ OaksLabScript7: ; 1cc72 (7:4c72)
 	call Delay3
 
 	ld a, $6
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript8: ; 1cc80 (7:4c80)
@@ -40311,7 +40311,7 @@ OaksLabScript8: ; 1cc80 (7:4c80)
 	call MoveSprite
 
 	ld a, $9
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript9: ; 1cd00 (7:4d00)
@@ -40364,7 +40364,7 @@ OaksLabScript9: ; 1cd00 (7:4d00)
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $a
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript10: ; 1cd6d (7:4d6d)
@@ -40402,7 +40402,7 @@ OaksLabScript10: ; 1cd6d (7:4d6d)
 	call MoveSprite
 
 	ld a, $b
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript11: ; 1cdb9 (7:4db9)
@@ -40441,7 +40441,7 @@ OaksLabScript11: ; 1cdb9 (7:4db9)
 	ld a, $8
 	ld [$d528], a
 	ld a, $c
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript12: ; 1ce03 (7:4e03)
@@ -40464,7 +40464,7 @@ OaksLabScript12: ; 1ce03 (7:4e03)
 	set 3, [hl]
 
 	ld a, $d
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript13: ; 1ce32 (7:4e32)
@@ -40492,7 +40492,7 @@ OaksLabScript13: ; 1ce32 (7:4e32)
 	ld [$cc5b], a
 
 	ld a, $e
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 .RivalExitMovement
@@ -40510,7 +40510,7 @@ OaksLabScript14: ; 1ce6d (7:4e6d)
 	ld [wJoypadForbiddenButtonsMask], a
 	call Func_2307 ; reset to map music
 	ld a, $12
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	jr .done ; 0x1ce8a $23
 .asm_1ce8c
 	ld a, [$cf0f]
@@ -40566,7 +40566,7 @@ OaksLabScript15: ; 1ceb0 (7:4eb0)
 	call MoveSprite
 
 	ld a, $10
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript_1cefd ; 1cefd (7:4efd)
@@ -40660,7 +40660,7 @@ OaksLabScript16: ; 1cf12 (7:4f12)
 	call MoveSprite
 
 	ld a, $11
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript17: ; 1cfd4 (7:4fd4)
@@ -40681,12 +40681,12 @@ OaksLabScript17: ; 1cfd4 (7:4fd4)
 	ld a, $15
 	call Predef
 	ld a, $5
-	ld [W_BESTSTREAK], a
+	ld [W_PALLETTOWNCURSCRIPT], a
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 
 	ld a, $12
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	ret
 
 OaksLabScript18: ; 1d009 (7:5009)
@@ -40981,7 +40981,7 @@ asm_1d1e5: ; 1d1e5 (7:51e5)
 	ld a, $fc
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $8
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 OaksLabMonChoiceEnd: ; 1d21f (7:521f)
 	jp TextScriptEnd
 
@@ -41065,7 +41065,7 @@ OaksLabText5: ; 1d248 (7:5248)
 	call PrintText
 	call OaksLabScript_1d00a
 	ld a, $f
-	ld [W_CURSTREAK], a
+	ld [W_OAKSLABCURSCRIPT], a
 	jr .asm_0f042 ; 0x1d2c6
 .asm_333a2 ; 0x1d2c8
 	ld hl, OaksLabAroundWorldText
@@ -57487,23 +57487,133 @@ ReadTrainer: ; 39c53 (e:5c53)
 	dec a
 	ld [hl],a
 
-; read the three pokemon ids from memory for battlefactory
-	ld a, 50
-	ld [W_CURENEMYLVL],a
-	ld hl, W_MON1
-	ld b, 3
-.monLoop
-	ld a, [hli] ; a contains species
-	ld [$CF91], a
-	ld a, 1
-	ld [$CC49],a ; $1 for enemy party
-	push hl
-	push bc
-	call AddPokemonToParty
-	pop bc
-	pop hl
+; get the pointer to trainer data for this class
+	ld a,[W_CUROPPONENT]
+	sub $C9 ; convert value from pokemon to trainer
+	add a,a
+	ld hl,TrainerDataPointers
+	ld c,a
+	ld b,0
+	add hl,bc ; hl points to trainer class
+	ld a,[hli]
+	ld h,[hl]
+	ld l,a
+	ld a,[W_TRAINERNO]
+	ld b,a
+; At this point b contains the trainer number,
+; and hl points to the trainer class.
+; Our next task is to iterate through the trainers,
+; decrementing b each time, until we get to the right one.
+.outer
 	dec b
-	jr nz, .monLoop
+	jr z,.IterateTrainer
+.inner
+	ld a,[hli]
+	and a
+	jr nz,.inner
+	jr .outer
+
+; if the first byte of trainer data is FF,
+; - each pokemon has a specific level
+;      (as opposed to the whole team being of the same level)
+; - if [W_LONEATTACKNO] != 0, one pokemon on the team has a special move
+; else the first byte is the level of every pokemon on the team
+.IterateTrainer
+	ld a,[hli]
+	cp $FF ; is the trainer special?
+	jr z,.SpecialTrainer ; if so, check for special moves
+	ld [W_CURENEMYLVL],a
+.LoopTrainerData
+	ld a,[hli]
+	and a ; have we reached the end of the trainer data?
+	jr z,.FinishUp
+	ld [$CF91],a ; write species somewhere (XXX why?)
+	ld a,1
+	ld [$CC49],a
+	push hl
+	call AddPokemonToParty
+	pop hl
+	jr .LoopTrainerData
+.SpecialTrainer
+; if this code is being run:
+; - each pokemon has a specific level
+;      (as opposed to the whole team being of the same level)
+; - if [W_LONEATTACKNO] != 0, one pokemon on the team has a special move
+	ld a,[hli]
+	and a ; have we reached the end of the trainer data?
+	jr z,.AddLoneMove
+	ld [W_CURENEMYLVL],a
+	ld a,[hli]
+	ld [$CF91],a
+	ld a,1
+	ld [$CC49],a
+	push hl
+	call AddPokemonToParty
+	pop hl
+	jr .SpecialTrainer
+.AddLoneMove
+; does the trainer have a single monster with a different move
+	ld a,[W_LONEATTACKNO] ; Brock is 01, Misty is 02, Erika is 04, etc
+	and a
+	jr z,.AddTeamMove
+	dec a
+	add a,a
+	ld c,a
+	ld b,0
+	ld hl,LoneMoves
+	add hl,bc
+	ld a,[hli]
+	ld d,[hl]
+	ld hl,W_ENEMYMON1MOVE3
+	ld bc,W_ENEMYMON2MOVE3 - W_ENEMYMON1MOVE3
+	call AddNTimes
+	ld [hl],d
+	jr .FinishUp
+.AddTeamMove
+; check if our trainer's team has special moves
+
+; get trainer class number
+	ld a,[$D059]
+	sub $C8
+	ld b,a
+	ld hl,TeamMoves
+
+; iterate through entries in TeamMoves, checking each for our trainer class
+.IterateTeamMoves
+	ld a,[hli]
+	cp b
+	jr z,.GiveTeamMoves ; is there a match?
+	inc hl ; if not, go to the next entry
+	inc a
+	jr nz,.IterateTeamMoves
+
+	; no matches found. is this trainer champion rival?
+	ld a,b
+	cp SONY3
+	jr z,.ChampionRival
+	jr .FinishUp ; nope
+.GiveTeamMoves
+	ld a,[hl]
+	ld [$D95E],a
+	jr .FinishUp
+.ChampionRival ; give moves to his team
+
+; pidgeot
+	ld a,SKY_ATTACK
+	ld [W_ENEMYMON1MOVE3],a
+
+; starter
+	ld a,[W_RIVALSTARTER]
+	cp BULBASAUR
+	ld b,MEGA_DRAIN
+	jr z,.GiveStarterMove
+	cp CHARMANDER
+	ld b,FIRE_BLAST
+	jr z,.GiveStarterMove
+	ld b,BLIZZARD ; must be squirtle
+.GiveStarterMove
+	ld a,b
+	ld [W_ENEMYMON6MOVE3],a
 .FinishUp ; XXX this needs documenting
 	xor a       ; clear D079-D07B
 	ld de,$D079
@@ -69413,9 +69523,18 @@ asm_3ef3d: ; 3ef3d (f:6f3d)
 	jp c, Func_3ef8b
 	ld [W_TRAINERCLASS], a ; $d031
 	call Func_3566
+	ld a, [W_INCHALLENGE]
+	cp $1
+	jr z, .inNormalChallenge
+	ld hl, ReadTrainer
+	ld b, BANK(ReadTrainer)
+	call Bankswitch ; indirect jump to ReadTrainer (39c53 (e:5c53))
+	jr .past
+.inNormalChallenge
 	ld hl, InitTrainer
 	ld b, BANK(InitTrainer)
 	call Bankswitch ; indirect jump to InitTrainer (39c53 (e:5c53))
+.past
 	call Func_3ec32
 	call Func_3f04b
 	xor a
@@ -80747,9 +80866,9 @@ CeladonGymScript: ; 4890a (12:490a)
 	call EnableAutoTextBoxDrawing
 	ld hl, CeladonGymTrainerHeaders
 	ld de, CeladonGymScriptPointers
-	ld a, [W_MOVE2]
+	ld a, [W_CELADONGYMCURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MOVE2], a
+	ld [W_CELADONGYMCURSCRIPT], a
 	ret
 
 CeladonGymScript_48927: ; 48927 (12:4927)
@@ -80766,7 +80885,7 @@ Gym4LeaderName: ; 4893d (12:493d)
 Func_48943: ; 48943 (12:4943)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_MOVE2], a
+	ld [W_CELADONGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -80923,7 +81042,7 @@ CeladonGymText1: ; 48a11 (12:4a11)
 	ld a, $4
 	ld [$d05c], a
 	ld a, $3
-	ld [W_MOVE2], a
+	ld [W_CELADONGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 .asm_96252 ; 0x48a5b
 	jp TextScriptEnd
@@ -86601,15 +86720,15 @@ Route24Script: ; 513ad (14:53ad)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route24TrainerHeaders
 	ld de, Route24ScriptPointers
-	ld a, [W_SWAPMONENEMYINDEX]
+	ld a, [W_ROUTE24CURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ret
 
 Func_513c0: ; 513c0 (14:53c0)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -86642,7 +86761,7 @@ Route24Script0: ; 513d5 (14:53d5)
 	ld [$cd38], a
 	call Func_3486
 	ld a, $4
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -86655,7 +86774,7 @@ Route24Script4: ; 51411 (14:5411)
 	ret nz
 	call Delay3
 	ld a, $0
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -86674,7 +86793,7 @@ Route24Script3: ; 51422 (14:5422)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
 	ld a, $0
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -86776,7 +86895,7 @@ Route24Text1: ; 514a4 (14:54a4)
 	xor a
 	ld [H_CURRENTPRESSEDBUTTONS], a
 	ld a, $3
-	ld [W_SWAPMONENEMYINDEX], a
+	ld [W_ROUTE24CURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	jp TextScriptEnd
 .asm_a03f5 ; 0x514f9
@@ -86929,9 +87048,9 @@ Route25Script: ; 515cb (14:55cb)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route25TrainerHeaders
 	ld de, Route25ScriptPointers
-	ld a, [W_INCHALLENGE]
+	ld a, [W_ROUTE25CURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_INCHALLENGE], a
+	ld [W_ROUTE25CURSCRIPT], a
 	ret
 
 Route25Script_515e1: ; 515e1 (14:55e1)
@@ -90411,9 +90530,9 @@ Route4Script: ; 55658 (15:5658)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route4TrainerHeaders
 	ld de, Route4ScriptPointers
-	ld a, [W_STARTBATTLE]
+	ld a, [W_ROUTE4CURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_STARTBATTLE], a
+	ld [W_ROUTE4CURSCRIPT], a
 	ret
 
 Route4ScriptPointers: ; 5566b (15:566b)
@@ -94392,9 +94511,9 @@ Route6Script: ; 590b0 (16:50b0)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route6TrainerHeaders
 	ld de, Route6ScriptPointers
-	ld a, [W_MOVE3]
+	ld a, [W_ROUTE6CURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MOVE3], a
+	ld [W_ROUTE6CURSCRIPT], a
 	ret
 
 Route6ScriptPointers: ; 590c3 (16:50c3)
@@ -94580,9 +94699,9 @@ Route8Script: ; 591b6 (16:51b6)
 	call EnableAutoTextBoxDrawing
 	ld hl, Route8TrainerHeaders
 	ld de, Route8ScriptPointers
-	ld a, [W_MOVE4]
+	ld a, [W_ROUTE8CURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MOVE4], a
+	ld [W_ROUTE8CURSCRIPT], a
 	ret
 
 Route8ScriptPointers: ; 591c9 (16:51c9)
@@ -97625,8 +97744,8 @@ BattleFactoryScript2:
 	ret
 .wonBattle
 	ld a, [W_INCHALLENGE]
-	and a
-	jr nz, .stillGoing
+	cp $1
+	jr z, .stillGoing
 	xor a
 	ld [W_BATTLEFACTORYCURSCRIPT], a
 	ret
@@ -97688,8 +97807,8 @@ BattleFactoryTextPointers: ; 5c0cf (17:40cf)
 BattleFactoryText1: ; (17:656c)
 	db $08 ; asm
 	ld a, [W_INCHALLENGE]
-	cp $0
-	jr z, .askToStart
+	cp $1
+	jr nz, .askToStart
 	ld hl, AlreadyStartedText
 	call PrintText
 	jp TextScriptEnd
@@ -99615,9 +99734,9 @@ PewterGymScript: ; 5c387 (17:4387)
 	call EnableAutoTextBoxDrawing
 	ld hl, PewterGymTrainerHeaders
 	ld de, PewterGymScriptPointers
-	ld a, [W_MON2]
+	ld a, [W_PEWTERGYMCURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MON2], a
+	ld [W_PEWTERGYMCURSCRIPT], a
 	ret
 
 PewterGymScript_5c3a4: ; 5c3a4 (17:43a4)
@@ -99634,7 +99753,7 @@ Gym1LeaderName: ; 5c3b9 (17:43b9)
 Func_5c3bf: ; 5c3bf (17:43bf)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_MON2], a
+	ld [W_PEWTERGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -99742,7 +99861,7 @@ PewterGymText1: ; 5c44e (17:444e)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_MON2], a
+	ld [W_PEWTERGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 .asm_e0ffb ; 0x5c49b
 	jp TextScriptEnd
@@ -100031,9 +100150,9 @@ CeruleanGymScript: ; 5c6b3 (17:46b3)
 	call EnableAutoTextBoxDrawing
 	ld hl, CeruleanGymTrainerHeaders
 	ld de, CeruleanGymScriptPointers
-	ld a, [W_MON3]
+	ld a, [W_CERULEANGYMCURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MON3], a
+	ld [W_CERULEANGYMCURSCRIPT], a
 	ret
 
 CeruleanGymScript_5c6d0: ; 5c6d0 (17:46d0)
@@ -100050,7 +100169,7 @@ Gym2LeaderName: ; 5c6e7 (17:46e7)
 Func_5c6ed: ; 5c6ed (17:46ed)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_MON3], a
+	ld [W_CERULEANGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -100158,7 +100277,7 @@ CeruleanGymText1: ; 5c771 (17:4771)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_MON3], a
+	ld [W_CERULEANGYMCURSCRIPT], a
 .asm_95b04 ; 0x5c7bb
 	jp TextScriptEnd
 
@@ -100528,9 +100647,9 @@ VermilionGymScript: ; 5ca26 (17:4a26)
 	call EnableAutoTextBoxDrawing
 	ld hl, VermilionGymTrainerHeader0
 	ld de, VermilionGymScriptPointers
-	ld a, [W_MOVE1]
+	ld a, [W_VERMILIONGYMCURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MOVE1], a
+	ld [W_VERMILIONGYMCURSCRIPT], a
 	ret
 
 VermilionGymScript_5ca4c: ; 5ca4c (17:4a4c)
@@ -100563,7 +100682,7 @@ VermilionGymScript_5ca6d: ; 5ca6d (17:4a6d)
 VermilionGymScript_5ca8a: ; 5ca8a (17:4a8a)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_MOVE1], a
+	ld [W_VERMILIONGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -100681,7 +100800,7 @@ VermilionGymText1: ; 5cb1d (17:4b1d)
 	xor a
 	ldh [$b4], a
 	ld a, $3
-	ld [W_MOVE1], a
+	ld [W_VERMILIONGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 .asm_23621 ; 0x5cb6a
 	jp TextScriptEnd
@@ -113300,9 +113419,9 @@ ViridianGymScript: ; 748a3 (1d:48a3)
 	call EnableAutoTextBoxDrawing
 	ld hl, ViridianGymTrainerHeaders
 	ld de, ViridianGymScriptPointers
-	ld a, [W_MON1]
+	ld a, [W_VIRIDIANGYMCURSCRIPT]
 	call ExecuteCurMapScriptInTable
-	ld [W_MON1], a
+	ld [W_VIRIDIANGYMCURSCRIPT], a
 	ret
 
 Gym8CityName: ; 748bf (1d:48bf)
@@ -113313,7 +113432,7 @@ Gym8LeaderName: ; 748cd (1d:48cd)
 Func_748d6: ; 748d6 (1d:48d6)
 	xor a
 	ld [wJoypadForbiddenButtonsMask], a
-	ld [W_MON1], a
+	ld [W_VIRIDIANGYMCURSCRIPT], a
 	ld [W_CURMAPSCRIPT], a
 	ret
 
@@ -113607,7 +113726,7 @@ ViridianGymText1: ; 74a69 (1d:4a69)
 	ld a, $8
 	ld [$d05c], a
 	ld a, $3
-	ld [W_MON1], a
+	ld [W_VIRIDIANGYMCURSCRIPT], a
 .asm_6dff7 ; 0x74acb
 	jp TextScriptEnd
 
@@ -129600,9 +129719,8 @@ _IndigoPlateauStatuesText3: ; 89596 (22:5596)
 	db "#MON LEAGUE HQ", $57
 
 _PokemonBooksText: ; 895c1 (22:55c1)
-	db $0, "No time for", $4f
-	db "reading books!", $51
-	db "Go battle!", $57
+	db $0, "Crammed full of", $4f
+	db "#MON books!", $57
 
 _DiglettSculptureText: ; 895de (22:55de)
 	db $0, "It's a sculpture", $4f
@@ -140308,6 +140426,15 @@ _SpecialOpponentText:
 	db "FACTORY HEAD", $55
 	db "DETECTED...", $55
 	db "BEGIN BATTLE...", $57
+
+_NoConnectionText:
+	db $0, "Sorry, you need", $4f
+	db "to connect your", $55
+	db "link cable with a", $55
+	db "friend.", $57
+
+__MustSaveFirstText:
+	db $0, "Save first.", $57
 
 SECTION "bank2B",ROMX,BANK[$2B]
 

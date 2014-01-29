@@ -1079,40 +1079,40 @@ W_GAMEPROGRESSFLAGS: ; d5f0
 ; $c8 bytes
 	ds 0
 
-W_CURSTREAK: ; d5f0 current win streak
+W_OAKSLABCURSCRIPT: ; d5f0
 	ds 1
-W_BESTSTREAK: ; d5f1 best win streak
+W_PALLETTOWNCURSCRIPT: ; d5f1
 	ds 1
 	ds 1
-W_CURCLASS: ; d5f3 increments every time you beat 7 in a row
+W_BLUESHOUSECURSCRIPT: ; d5f3
 	ds 1
-W_CURTRAINER: ; d5f4 increments every time you beat a trainer
+W_VIRIDIANCITYCURSCRIPT: ; d5f4
 	ds 1
 	ds 2
 W_BATTLEFACTORYCURSCRIPT: ; d5f7
 	ds 1
 W_ROUTE3CURSCRIPT: ; d5f8
 	ds 1
-W_STARTBATTLE: ; d5f9
+W_ROUTE4CURSCRIPT: ; d5f9
 	ds 1
 	ds 1
-W_MON1: ; d5fb
+W_VIRIDIANGYMCURSCRIPT: ; d5fb
 	ds 1
-W_MON2: ; d5fc
+W_PEWTERGYMCURSCRIPT: ; d5fc
 	ds 1
-W_MON3: ; d5fd
+W_CERULEANGYMCURSCRIPT: ; d5fd
 	ds 1
-W_MOVE1: ; d5fe
+W_VERMILIONGYMCURSCRIPT: ; d5fe
 	ds 1
-W_MOVE2: ; d5ff
+W_CELADONGYMCURSCRIPT: ; d5ff
 	ds 1
-W_MOVE3: ; d600
+W_ROUTE6CURSCRIPT: ; d600
 	ds 1
-W_MOVE4: ; d601
+W_ROUTE8CURSCRIPT: ; d601
 	ds 1
-W_SWAPMONENEMYINDEX: ; d602
+W_ROUTE24CURSCRIPT: ; d602
 	ds 1
-W_INCHALLENGE: ; d603
+W_ROUTE25CURSCRIPT: ; d603
 	ds 1
 W_ROUTE9CURSCRIPT: ; d604
 	ds 1
@@ -1454,4 +1454,26 @@ W_BOXMON1NAME: ; de06
 W_BOXMON2NAME: ; de11
 	ds 11 * 19
 
+; free RAM space! I hope.
 ; dee2
+W_CURSTREAK: ; dee2 current win streak
+	ds 1
+W_BESTSTREAK: ; dee3 best win streak
+	ds 1
+W_CURCLASS: ; dee4 increments every time you beat 7 in a row
+	ds 1
+W_STARTBATTLE: ; dee5 flag for making the battle start in the battle factory
+	ds 1
+W_MOVE1: ; dee6
+	ds 1
+W_MOVE2: ; dee7
+	ds 1
+W_MOVE3: ; dee8
+	ds 1
+W_MOVE4: ; dee9
+	ds 1
+W_SWAPMONENEMYINDEX: ; deea
+	ds 1
+W_INCHALLENGE: ; d603
+; 1 = have picked team for normal challenge
+	ds 1
