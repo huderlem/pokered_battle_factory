@@ -1474,6 +1474,6 @@ W_MOVE4: ; dee9
 	ds 1
 W_SWAPMONENEMYINDEX: ; deea
 	ds 1
-W_INCHALLENGE: ; d603
+W_INCHALLENGE: ; deeb
 ; 1 = have picked team for normal challenge
 	ds 1

@@ -112089,14 +112089,14 @@ LoadSAVCheckSum: ; 73623 (1c:7623)
 	ld bc, $f8b ; but here checks the full SAV
 	call SAVCheckSum
 	ld c, a
-	ld a, [$b523] ; SAV's checksum
+	ld a, [$b523 + EXTRA_WRAM_BYTES] ; SAV's checksum
 	cp c
 	jp z, .Func_73652
 	ld hl, $a598
 	ld bc, $f8b
 	call SAVCheckSum
 	ld c, a
-	ld a, [$b523] ; SAV's checksum
+	ld a, [$b523 + EXTRA_WRAM_BYTES] ; SAV's checksum
 	cp c
 	jp nz, SAVBadCheckSum
 
@@ -112115,11 +112115,11 @@ LoadSAVCheckSum: ; 73623 (1c:7623)
 	ld de, wSpriteStateData1
 	ld bc, $200
 	call CopyData
-	ld a, [$b522]
+	ld a, [$b522 + EXTRA_WRAM_BYTES]
 	ld [$FF00+$d7], a
 	ld hl, $b0c0
 	ld de, W_NUMINBOX ; $da80
-	ld bc, $462
+	ld bc, $462 + EXTRA_WRAM_BYTES ; extra bytes in wram
 	call CopyData
 	and a
 	jp SAVGoodChecksum
@@ -112134,12 +112134,12 @@ LoadSAVCheckSum1: ; 73690 (1c:7690)
 	ld bc, $f8b  ; but here checks the full SAV
 	call SAVCheckSum
 	ld c, a
-	ld a, [$b523] ; SAV's checksum
+	ld a, [$b523 + EXTRA_WRAM_BYTES] ; SAV's checksum
 	cp c
 	jr nz, SAVBadCheckSum
 	ld hl, $b0c0
 	ld de, W_NUMINBOX ; $da80
-	ld bc, $462
+	ld bc, $462 + EXTRA_WRAM_BYTES
 	call CopyData
 	and a
 	jp SAVGoodChecksum
@@ -112154,7 +112154,7 @@ LoadSAVCheckSum2: ; 736bd (1c:76bd)
 	ld bc, $f8b  ; but here checks the full SAV
 	call SAVCheckSum
 	ld c, a
-	ld a, [$b523] ; SAV's checksum
+	ld a, [$b523 + EXTRA_WRAM_BYTES] ; SAV's checksum
 	cp c
 	jp nz, SAVBadCheckSum
 	ld hl, $af2c
@@ -112265,14 +112265,14 @@ SaveSAVtoSRAM0: ; 7378c (1c:778c)
 	call CopyData
 	ld hl, W_NUMINBOX ; $da80
 	ld de, $b0c0
-	ld bc, $462
+	ld bc, $462 + EXTRA_WRAM_BYTES
 	call CopyData
 	ld a, [$FF00+$d7]
-	ld [$b522], a
+	ld [$b522 + EXTRA_WRAM_BYTES], a
 	ld hl, $a598
 	ld bc, $f8b
 	call SAVCheckSum
-	ld [$b523], a
+	ld [$b523 + EXTRA_WRAM_BYTES], a
 	xor a
 	ld [$6000], a
 	ld [$0], a
@@ -112287,12 +112287,12 @@ SaveSAVtoSRAM1: ; 737e2 (1c:77e2)
 	ld [$4000], a
 	ld hl, W_NUMINBOX ; $da80
 	ld de, $b0c0
-	ld bc, $462
+	ld bc, $462 + EXTRA_WRAM_BYTES
 	call CopyData
 	ld hl, $a598
 	ld bc, $f8b
 	call SAVCheckSum
-	ld [$b523], a
+	ld [$b523 + EXTRA_WRAM_BYTES], a
 	xor a
 	ld [$6000], a
 	ld [$0], a
@@ -112315,7 +112315,7 @@ SaveSAVtoSRAM2: ; 7380f (1c:780f)
 	ld hl, $a598
 	ld bc, $f8b
 	call SAVCheckSum
-	ld [$b523], a
+	ld [$b523 + EXTRA_WRAM_BYTES], a
 	xor a
 	ld [$6000], a
 	ld [$0], a
@@ -112660,7 +112660,7 @@ SAVCheckRandomID: ;$7ad1
 	ld bc,$0f8b
 	call SAVCheckSum
 	ld c,a
-	ld a,[$b523]
+	ld a,[$b523 + EXTRA_WRAM_BYTES]
 	cp c
 	jr nz,.next
 	ld hl,$a605

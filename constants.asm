@@ -26,3 +26,5 @@ INCLUDE "constants/map_constants.asm"
 INCLUDE "constants/map_dimensions.asm"
 INCLUDE "constants/connection_constants.asm"
 INCLUDE "constants/credits_constants.asm"
+
+EXTRA_WRAM_BYTES   EQU 10
